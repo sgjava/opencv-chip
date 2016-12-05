@@ -22,3 +22,14 @@ I used the Headless 4.4 since OpenCV compile and runtime can use quite a bit of 
     * `sudo nano /etc/hostname`
     * `sudo nano /etc/hosts`
     * `sudo reboot`
+* Do updates
+    * `sudo apt-get update`
+    * `sudo apt-get upgrade`
+* Configure locales and timezone
+    * `sudo apt-get install locales`
+    * `sudo dpkg-reconfigure locales`
+    * `sudo dpkg-reconfigure tzdata`
+* No power limit
+    * `sudo nano /etc/crontab`
+         * `@reboot root /usr/sbin/i2cset -y -f 0 0x34 0x30 0x63`
+    
