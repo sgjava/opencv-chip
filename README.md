@@ -32,4 +32,37 @@ I used the Headless 4.4 since OpenCV compile and runtime can use quite a bit of 
 * No power limit
     * `sudo nano /etc/crontab`
          * `@reboot root /usr/sbin/i2cset -y -f 0 0x34 0x30 0x63`
+    * `sudo reboot`
+* Auto mount USB drive
+    * `sudo apt-get install usbmount`
+    * `sudo nano /etc/usbmount/usbmount.conf`
+         * Rremove  sync, from MOUNTOPTIONS
+    * `sudo reboot`
+* Set USB drive owner
+    * `sudo chown -R chip:chip /media/usb`
+    
+### Build OpenCV
+My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP.
+* Install Git client
+    * `sudo apt-get install git-core`
+* On ARM platforms with limited memory create a swap file or the build may fail
+with an out of memory exception. To create a 1GB swap file use:
+    * `sudo su -`
+    * `cd /media/usb`
+    * `dd if=/dev/zero of=tmpswap bs=1024 count=1M`
+    * `mkswap tmpswap`
+    * `swapon tmpswap`
+    * `free`
+* `git clone --depth 1 https://github.com/sgjava/install-opencv.git`
+* `cd install-opencv/scripts/ubuntu`
+* Edit config-*.sh files and change versions or switches as needed
+* Run individual scripts to update individual components
+    * `sudo ./install-java.sh` to install/update Java
+    * `sudo ./install-opencv.sh` to install/update OpenCV
+* Run script in foreground or background to install all components
+    * `sudo ./install.sh` to run script in foreground
+    * `sudo sh -c 'nohup ./install.sh &'` to run script in background
+
+
+  
     
