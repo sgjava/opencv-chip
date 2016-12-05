@@ -32,7 +32,6 @@ I used the Headless 4.4 since OpenCV compile and runtime can use quite a bit of 
 * No power limit (read warning above)
     * `sudo nano /etc/crontab`
          * `@reboot root /usr/sbin/i2cset -y -f 0 0x34 0x30 0x63`
-    * `sudo reboot`
 * Auto mount USB drive
     * `sudo apt-get install usbmount`
     * `sudo nano /etc/usb0mount/usb0mount.conf`
