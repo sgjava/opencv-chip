@@ -71,7 +71,7 @@ with an out of memory exception. To create a 512MB swap file use:
     * `sudo sh install-opencv.sh` to install/update OpenCV
 * Run script in foreground or background to install all components
     * `sudo sh install.sh` to run script in foreground
-    * `sudo nohup sh install.sh &'` to run script in background
+    * `sudo nohup sh install.sh &` to run script in background
 
 
   
