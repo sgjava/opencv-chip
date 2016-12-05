@@ -46,10 +46,11 @@ My OpenCV script works fine on Debian even though it was originally built and te
 * Install Git client
     * `sudo apt-get install git-core`
 * On ARM platforms with limited memory create a swap file or the build may fail
-with an out of memory exception. To create a 1GB swap file use:
+with an out of memory exception. To create a 512MB swap file use:
     * `sudo su -`
     * `cd /media/usb`
-    * `dd if=/dev/zero of=tmpswap bs=1024 count=1M`
+    * `dd if=/dev/zero of=tmpswap bs=512 count=1M`
+    * `chmod 0600 tmpswap`
     * `mkswap tmpswap`
     * `swapon tmpswap`
     * `free`
