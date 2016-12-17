@@ -61,7 +61,6 @@ with an out of memory exception. To create a 512MB swap file use:
     * Change $HOME to /media/usb0
 * `nano config-opencv.sh`
     * Change $HOME to /media/usb0
-    * Change $HOME to /media/usb0
 * `nano install-opencv.sh`
     * Change $HOME to /media/usb0
     * Change -DBUILD_TBB=ON to -DBUILD_TBB=OFF
