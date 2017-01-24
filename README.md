@@ -8,7 +8,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * Internet connection
 
 ### WARNING
-I used nolimit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU.
+I used nolimit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU. If you are using CHG-IN or battery for power do not use no limit settings.
 
 ### Flash CHIP
 I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hdmi-and-more/4319) since OpenCV compile and runtime can use quite a bit of memory. Plus all of my CV projects only require a headless server to run. After you flash your CHIP unplug everything and insert a ext4 formatted USB drive and the PSU. Boot up CHIP and ssh in (I had to ping the IP first in order for ssh to work).
@@ -58,12 +58,9 @@ with an out of memory exception. To create a 512MB swap file use:
 * `cd /media/usb0`
 * `git clone --depth 1 https://github.com/sgjava/install-opencv.git`
 * `cd install-opencv/scripts/ubuntu`
-* `nano config-java.sh`
-    * Change $HOME to /media/usb0
-* `nano config-opencv.sh`
+* `nano config-install.sh`
     * Change $HOME to /media/usb0
 * `nano install-opencv.sh`
-    * Change $HOME to /media/usb0
     * Change -DBUILD_TBB=ON to -DBUILD_TBB=OFF
 * Run individual scripts to update individual components
     * `sudo sh install-java.sh` to install/update Java
