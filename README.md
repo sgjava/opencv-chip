@@ -56,7 +56,8 @@ I will cover performance of both YUYV and MJPEG USB cameras later on. Make sure 
     * `lsusb`
          * `Bus 003 Device 002: ID 1871:0142 Aveo Technology Corp.`
     * `uvcdynctrl -f`
-         * ```
+         * 
+         ```
 Listing available frame formats for device video0:
 Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
   Frame size: 640x480
@@ -69,7 +70,7 @@ Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
     Frame rates: 30
   Frame size: 352x288
     Frame rates: 30
-    ```
+```
 
 ### Build OpenCV
 My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP. TBB does not build from source right now. I need to track down why. This is fine because OpenCV will use built in TBB.
