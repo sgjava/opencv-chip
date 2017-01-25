@@ -6,6 +6,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * 5V/2A PSU with micro USB connection
 * USB drive formatted as ext4
 * Internet connection
+* USB camera and micro USB male to USB female adapter (this is only if you wish to use a camera)
 
 ### WARNING
 I used nolimit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU. If you are using CHG-IN or battery for power do not use no limit settings.
@@ -40,7 +41,38 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
     * `sudo reboot`
 * Set USB drive owner
     * `sudo chown -R chip:chip /media/usb0`
-    
+
+### Configure and Test Camera
+If you plan on processing only video or image files then you can skip this section. Live video will allow you to create smart camera applications that react to a live video stream (versus a dumb streaming camera). You will need to select a USB camera that works under [Linux](http://elinux.org/RPi_USB_Webcams) and has the proper resolution. Typically with the low powered SoCs you will need to limit resolutions to 640x480 or 320x240 depending on the application. A less than $10 camera may be just fine for some applications.
+
+I will cover performance of both YUYV and MJPEG USB cameras later on. Make sure you plugged in your camera to the USB adapter and plug that into CHIP's OTG micro USB port.
+* Add chip user to video group
+    * `sudo usermod -a -G video chip`
+* Install uvcdynctrl
+    * `sudo apt-get install uvcdynctrl`
+* Reboot
+    * `sudo reboot`
+* Get camera information
+    * `lsusb`
+    ```
+Bus 003 Device 002: ID 1871:0142 Aveo Technology Corp.
+    ```
+    * `uvcdynctrl -f`
+    ```
+Listing available frame formats for device video0:
+Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
+  Frame size: 640x480
+    Frame rates: 30
+  Frame size: 160x120
+    Frame rates: 30
+  Frame size: 320x240
+    Frame rates: 30
+  Frame size: 176x144
+    Frame rates: 30
+  Frame size: 352x288
+    Frame rates: 30
+    ```
+
 ### Build OpenCV
 My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP. TBB does not build from source right now. I need to track down why. This is fine because OpenCV will use built in TBB.
 * Install Git client
