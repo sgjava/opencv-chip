@@ -24,7 +24,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
     * `sudo nano /etc/hostname`
     * `sudo nano /etc/hosts`
 * No power limit (read warning above)
-    * `sudo nano /etc/crontab`
+    * `sudo systemctl enable no-limit`
          * `@reboot root /usr/sbin/i2cset -y -f 0 0x34 0x30 0x63`
     * `sudo reboot`
 * Do updates
@@ -54,11 +54,9 @@ I will cover performance of both YUYV and MJPEG USB cameras later on. Make sure 
     * `sudo reboot`
 * Get camera information (using a cheap Kinobo Origami Webcam here for illustration)
     * `lsusb`
-    ```
-Bus 003 Device 002: ID 1871:0142 Aveo Technology Corp.
-    ```
+         * `Bus 003 Device 002: ID 1871:0142 Aveo Technology Corp.`
     * `uvcdynctrl -f`
-    ```
+         * ```
 Listing available frame formats for device video0:
 Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
   Frame size: 640x480
