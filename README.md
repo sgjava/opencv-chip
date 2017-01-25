@@ -57,7 +57,6 @@ I will cover performance of both YUYV and MJPEG USB cameras later on. Make sure 
          * `Bus 003 Device 002: ID 1871:0142 Aveo Technology Corp.`
     * `uvcdynctrl -f`
          * 
- 
   ```
 Listing available frame formats for device video0:
 Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
