@@ -45,7 +45,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
 ### Configure and Test Camera
 If you plan on processing only video or image files then you can skip this section. Live video will allow you to create smart camera applications that react to a live video stream (versus a dumb streaming camera). You will need to select a USB camera that works under [Linux](http://elinux.org/RPi_USB_Webcams) and has the proper resolution. Typically with the low powered SoCs you will need to limit resolutions to 640x480 or 320x240 depending on the application. A less than $10 camera may be just fine for some applications.
 
-I will cover performance of both YUYV and MJPEG USB cameras later on. Make sure you plugged in your camera to the USB adapter and plug that into CHIP's OTG micro USB port.
+I will cover performance of both YUYV and MJPEG USB cameras later on. Make sure you plugged in your USB drive to the USB adapter and plug that into CHIP's OTG micro USB port. The camera should be plugged into the full size USB port.
 * Add chip user to video group
     * `sudo usermod -a -G video chip`
 * Install uvcdynctrl
