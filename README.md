@@ -7,7 +7,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * USB drive formatted as ext4
 * Internet connection
 * USB camera (this is only if you wish to use a camera)
-    * You will need a powered USB HUB if you are powering off OTG port
+    * You will need a powered USB hub if you are powering off OTG port
     * For CHG-IN you need a micro USB male to USB female adapter for the USB drive
 
 ### WARNING
