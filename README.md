@@ -46,6 +46,34 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
 * Set USB drive owner
     * `sudo chown -R chip:chip /media/usb0`
 
+### Build OpenCV
+My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP. TBB does not build from source right now. I need to track down why. This is fine because OpenCV will use built in TBB.
+* Install Git client
+    * `sudo apt-get install git-core`
+* On ARM platforms with limited memory create a swap file or the build may fail
+with an out of memory exception. To create a 512MB swap file use:
+    * `sudo su -`
+    * `cd /media/usb0`
+    * `dd if=/dev/zero of=tmpswap bs=512 count=1M`
+    * `chmod 0600 tmpswap`
+    * `mkswap tmpswap`
+    * `swapon tmpswap`
+    * `free`
+    * `exit`
+* `cd /media/usb0`
+* `git clone --depth 1 https://github.com/sgjava/install-opencv.git`
+* `cd install-opencv/scripts/ubuntu`
+* `nano config-install.sh`
+    * Change $HOME to /media/usb0
+* `nano install-opencv.sh`
+    * Change -DBUILD_TBB=ON to -DBUILD_TBB=OFF
+* Run individual scripts to update individual components
+    * `sudo sh install-java.sh` to install/update Java
+    * `sudo sh install-opencv.sh` to install/update OpenCV
+* Run script in foreground or background to install all components
+    * `sudo sh install.sh` to run script in foreground
+    * `sudo nohup sh install.sh &` to run script in background
+
 ### Configure and Test Camera
 If you plan on processing only video or image files then you can skip this section. Live video will allow you to create smart camera applications that react to a live video stream (versus a dumb streaming camera). You will need to select a USB camera that works under [Linux](http://elinux.org/RPi_USB_Webcams) and has the proper resolution. Typically with the low powered SoCs you will need to limit resolutions to 640x480 or 320x240 depending on the application. A less than $10 camera may be just fine for some applications.
 
@@ -75,35 +103,4 @@ Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)
   Frame size: 352x288
     Frame rates: 30
  ```
-
-### Build OpenCV
-My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP. TBB does not build from source right now. I need to track down why. This is fine because OpenCV will use built in TBB.
-* Install Git client
-    * `sudo apt-get install git-core`
-* On ARM platforms with limited memory create a swap file or the build may fail
-with an out of memory exception. To create a 512MB swap file use:
-    * `sudo su -`
-    * `cd /media/usb0`
-    * `dd if=/dev/zero of=tmpswap bs=512 count=1M`
-    * `chmod 0600 tmpswap`
-    * `mkswap tmpswap`
-    * `swapon tmpswap`
-    * `free`
-    * `exit`
-* `cd /media/usb0`
-* `git clone --depth 1 https://github.com/sgjava/install-opencv.git`
-* `cd install-opencv/scripts/ubuntu`
-* `nano config-install.sh`
-    * Change $HOME to /media/usb0
-* `nano install-opencv.sh`
-    * Change -DBUILD_TBB=ON to -DBUILD_TBB=OFF
-* Run individual scripts to update individual components
-    * `sudo sh install-java.sh` to install/update Java
-    * `sudo sh install-opencv.sh` to install/update OpenCV
-* Run script in foreground or background to install all components
-    * `sudo sh install.sh` to run script in foreground
-    * `sudo nohup sh install.sh &` to run script in background
-
-
-  
-    
+ 
