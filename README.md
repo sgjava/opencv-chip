@@ -1,32 +1,35 @@
 # opencv-chip
-If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how. You should be experienced with flashing your CHIP and formatting a USB drive as ext4. It also does not hurt to know Linux and OpenCV basics.
+If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how. You should be experienced with flashing your CHIP and formatting a USB flash drive as ext4. It also does not hurt to know Linux and OpenCV basics.
 
 ### Requirements
 * CHIP
 * 5V/2A PSU with micro USB connection
-* USB drive formatted as ext4
+* USB flash drive formatted as ext4
 * Internet connection
 * USB camera (this is only if you wish to use a camera)
-    * You will need a powered USB hub if you are powering off OTG port
-    * For CHG-IN you need a micro USB male to USB female adapter for the USB drive
+    * You will need a powered USB hub if you are powering off the OTG port
+    * For CHG-IN you need an OTG flash drive or an adapter for OTG to USB
 
 ### WARNING
-I used no-limit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU. I'm testing with CHG-IN using 5V/2A PSU as well without no-limit and no USB hub.
+I used no-limit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU to power off the OTG port.
 
 ### Flash CHIP
 I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hdmi-and-more/4319) since OpenCV compile and runtime can use quite a bit of memory. Plus all of my CV projects only require a headless server to run. After you flash your CHIP unplug everything and insert a ext4 formatted USB drive and the PSU. Boot up CHIP and ssh in (I had to ping the IP first in order for ssh to work).
 
 * Set a static IP address
-    * `sudo nmtui` (activate wifi connection)
-    * `sudo nmtui` (edit and make static address)
-    * `sudo shutdown now -h`
+    * Activate wifi connection
+         * `sudo nmtui`
+    * Edit and make static address
+         * `sudo nmtui`
+    * Shutdown
+         * `sudo shutdown now -h`
 
 ### Configure OS
 * Assign hostname and IP
     * `sudo nano /etc/hostname`
     * `sudo nano /etc/hosts`
-* No power limit (read warning above)
-    * `sudo systemctl enable no-limit` (only for micro USB power)
+* No power limit (for OTG power only, read warning above)
+    * `sudo systemctl enable no-limit`
     * `sudo reboot`
 * Do updates
     * `sudo apt-get update`
