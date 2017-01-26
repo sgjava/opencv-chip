@@ -47,7 +47,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
     * `sudo chown -R chip:chip /media/usb0`
 
 ### Build OpenCV
-My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP. TBB does not build from source right now. I need to track down why. This is fine because OpenCV will use built in TBB.
+My OpenCV script works fine on Debian even though it was originally built and tested on Ubuntu. You will have to do a few edits on the script in order for it to work on the CHIP. TBB does not build from source right now. I need to track down why. This is fine because OpenCV will use built in TBB. The build will take about 5.5 hours.
 * Install Git client
     * `sudo apt-get install git-core`
 * On ARM platforms with limited memory create a swap file or the build may fail
