@@ -47,9 +47,7 @@ if [ -d "$buildhome/mjpg-streamer" ]; then
 	rm -rf "$buildhome/mjpg-streamer" >> $logfile 2>&1
 fi
 
-log "Installing mjpg-streamer..."
-
-cd "$buildhome"
+cd "$buildhome" >> $logfile 2>&1
 log "Installing mjpg-streamer dependenices..."
 apt-get -y install subversion g++ pkg-config build-essential cmake libjpeg62-turbo-dev imagemagick libv4l-dev >> $logfile 2>&1
 log "Create symlink videodev.h = videodev2.h"
