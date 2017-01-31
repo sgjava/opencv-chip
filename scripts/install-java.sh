@@ -4,9 +4,10 @@
 #
 # @author: sgoldsmith
 #
-# Install and configure JDK 8 and Apache Ant for Debian Jessie on CHIP. If JDK
-# or Ant was already installed with this script then they will be replaced.
-
+# Install and configure Oracle JDK 8 and Apache Ant for Debian Jessie on CHIP.
+# If JDK or Ant was already installed with this script then they will be
+# replaced.
+#
 # This should work on other ARM based systems with similar architecture and
 # Ubuntu as well.
 #
