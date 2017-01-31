@@ -24,7 +24,7 @@ starttimesec=$(date +%s)
 curdir=$(cd `dirname $0` && pwd)
 
 # Temp dir for downloads, etc.
-tmpdir="$HOME/temp"
+tmpdir="/media/usb0/temp"
 
 # Oracle JDK
 javahome=/usr/lib/jvm/jdk1.8.0
