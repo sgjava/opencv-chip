@@ -107,11 +107,12 @@ else
 	# Add $ANT_HOME/bin to PATH
 	if grep -q "PATH" /etc/environment; then
 		# Remove existing
-		sed -e 's|$anthome/bin:||g' -i /etc/environment >> $logfile 2>&1
+		sed -e "s|$anthome/bin:||g" -i /etc/environment >> $logfile 2>&1
 		# Add new
-		sed -e 's|PATH="\(.*\)"|PATH="$anthome/bin:\1"|g' -i /etc/environment >> $logfile 2>&1
+		sed -e "s|PATH=\"\(.*\)\"|PATH=\"$anthome/bin:\1\"|g" -i /etc/environment >> $logfile 2>&1
 	else
-		sed -i '1s/^/PATH="$anthome/bin"\n/' /etc/environment
+		# No PATH, so create one
+		sed -e "1i PATH=\"$anthome\/bin\"" -i /etc/environment
 	fi
 	. /etc/environment
 	log "ANT_HOME = $ANT_HOME"
