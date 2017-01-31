@@ -45,12 +45,14 @@ if [ -d "$buildhome/mjpg-streamer" ]; then
 	make uninstall >> $logfile 2>&1
 	log "Removing $buildhome/mjpg-streamer"
 	rm -rf "$buildhome/mjpg-streamer" >> $logfile 2>&1
+	log "Unlink videodev.h"
+	unlink /usr/include/linux/videodev.h >> $logfile 2>&1
 fi
 
 cd "$buildhome" >> $logfile 2>&1
 log "Installing mjpg-streamer dependenices..."
 apt-get -y install subversion g++ pkg-config build-essential cmake libjpeg62-turbo-dev imagemagick libv4l-dev >> $logfile 2>&1
-log "Create symlink videodev.h = videodev2.h"
+log "Create symlink videodev.h -> videodev2.h"
 ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h >> $logfile 2>&1
 log "Get source from subversion"
 svn co https://svn.code.sf.net/p/mjpg-streamer/code/mjpg-streamer/ mjpg-streamer >> $logfile 2>&1
