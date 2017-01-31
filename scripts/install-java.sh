@@ -104,16 +104,6 @@ else
 	# Add ANT_HOME to /etc/environment
 	log "Adding ANT_HOME to /etc/environment"
 	echo "ANT_HOME=$anthome" >> /etc/environment
-	# Add $ANT_HOME/bin to PATH
-	if grep -q "PATH" /etc/environment; then
-		# Remove existing
-		sed -e "s|$anthome/bin:||g" -i /etc/environment >> $logfile 2>&1
-		# Add new
-		sed -e "s|PATH=\"\(.*\)\"|PATH=\"$anthome/bin:\1\"|g" -i /etc/environment >> $logfile 2>&1
-	else
-		# No PATH, so create one
-		sed -e "1i PATH=\"\$PATH:$anthome\/bin\"" -i /etc/environment
-	fi
 	. /etc/environment
 	log "ANT_HOME = $ANT_HOME"
 	log "PATH = $PATH"
@@ -133,4 +123,4 @@ ds=$((elapsedtimesec % 60))
 dm=$(((elapsedtimesec / 60) % 60))
 dh=$((elapsedtimesec / 3600))
 displaytime=$(printf "%02d:%02d:%02d" $dh $dm $ds)
-log "Elapse time: $displaytime"
+log "Elapsed time: $displaytime"
