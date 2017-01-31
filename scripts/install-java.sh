@@ -112,7 +112,7 @@ else
 		sed -e "s|PATH=\"\(.*\)\"|PATH=\"$anthome/bin:\1\"|g" -i /etc/environment >> $logfile 2>&1
 	else
 		# No PATH, so create one
-		sed -e "1i PATH=\"$anthome\/bin\"" -i /etc/environment
+		sed -e "1i PATH=\"\$PATH:$anthome\/bin\"" -i /etc/environment
 	fi
 	. /etc/environment
 	log "ANT_HOME = $ANT_HOME"
