@@ -105,7 +105,12 @@ else
 	log "Adding ANT_HOME to /etc/environment"
 	echo "ANT_HOME=$anthome" >> /etc/environment
 	# Add $ANT_HOME/bin to PATH
-	sed -i 's@local/games@&'":$anthome/bin"'@g' /etc/environment >> $logfile 2>&1
+	if grep -q "PATH" /etc/environment; then
+		# Remove existing
+		sed -e 's|$anthome/bin:||g' -i /etc/environment >> $logfile 2>&1
+		# Add new
+		sed -e 's|PATH="\(.*\)"|PATH="$anthome/bin:\1"|g' -i /etc/environment >> $logfile 2>&1
+	fi
 	. /etc/environment
 	log "ANT_HOME = $ANT_HOME"
 	log "PATH = $PATH"
