@@ -49,10 +49,13 @@ if [ -d "$buildhome/libjpeg-turbo" ]; then
 fi
 
 cd "$buildhome" >> $logfile 2>&1
+log "Installing libjpeg-turbo dependenices..."
+apt-get -y install dh-autoreconf g++ pkg-config build-essential yasm >> $logfile 2>&1
 log "Cloning libjpeg-turbo"
 git clone --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git >> $logfile 2>&1
 cd libjpeg-turbo >> $logfile 2>&1
 mkdir build >> $logfile 2>&1
+autoreconf -fiv >> $logfile 2>&1
 cd build >> $logfile 2>&1
 export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
 export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
