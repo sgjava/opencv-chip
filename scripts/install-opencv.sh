@@ -25,8 +25,9 @@ curdir=$(cd `dirname $0` && pwd)
 tmpdir="/media/usb0/temp"
 
 # Build home
-opencvhome="/media/usb0/opencv"
-contribhome="/media/usb0/opencv_contrib"
+buildhome="/media/usb0"
+opencvhome="$buildhome/opencv"
+contribhome="$buildhome/opencv_contrib"
 
 # stdout and stderr for commands logged
 logfile="$curdir/install-opencv.log"
@@ -65,6 +66,22 @@ apt-get -y install python-dev python-numpy python3-dev python3-numpy >> $logfile
 
 # Install the parallel code processing and linear algebra library
 apt-get -y install opencl-headers libtbb2 libtbb-dev libeigen3-dev libatlas-dev libatlas3gf-base libatlas-base-dev >> $logfile 2>&1
+
+cd "$buildhome" >> $logfile 2>&1
+log "Cloning opencv"
+git clone --depth 1 git clone --depth 1 https://github.com/Itseez/opencv.git >> $logfile 2>&1
+log "Cloning opencv_contrib"
+git clone --depth 1 https://github.com/Itseez/opencv_contrib.git >> $logfile 2>&1
+
+# Compile OpenCV
+log "Compile OpenCV..."
+cd "$opencvhome"
+mkdir build
+cd build
+extra_c_flag="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
+log "Apply cflags in opencvCompilerOptions
+
+#cmake \$opencvextramodpath -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_QT=OFF -DWITH_TBB=ON -DBUILD_TBB=ON -DBUILD_EXAMPLES=ON -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_JPEG=ON -DENABLE_VFPV3=ON -DENABLE_NEON=ON .. >> $logfile 2>&1
 
 # Clean up
 log "Removing $tmpdir"
