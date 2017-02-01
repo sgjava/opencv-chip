@@ -58,8 +58,15 @@ log "Installing libjpeg-turbo dependenices..."
 apt-get -y install dh-autoreconf g++ pkg-config build-essential yasm >> $logfile 2>&1
 log "Cloning libjpeg-turbo"
 git clone --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git >> $logfile 2>&1
+# Patch source pre cmake
+log "Patching source pre compile"
+# Patch jdhuff.c to remove "Invalid SOS parameters for sequential JPEG" warning
+sed -i 's~WARNMS(cinfo, JWRN_NOT_SEQUENTIAL);~//WARNMS(cinfo, JWRN_NOT_SEQUENTIAL);\n      ; // NOP~g' "$buildhome/libjpeg-turbo/jdhuff.c" >> $logfile 2>&1
+# Patch jdmarker.c to remove "Corrupt JPEG data: xx extraneous bytes before marker 0xd9" warning
+sed -i 's~WARNMS2(cinfo, JWRN_EXTRANEOUS_DATA~//WARNMS2(cinfo, JWRN_EXTRANEOUS_DATA~g' "$buildhome/libjpeg-turbo/jdmarker.c" >> $logfile 2>&1
 cd libjpeg-turbo >> $logfile 2>&1
 mkdir build >> $logfile 2>&1
+log "autoreconf"
 autoreconf -fiv >> $logfile 2>&1
 cd build >> $logfile 2>&1
 export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
