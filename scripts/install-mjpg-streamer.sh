@@ -4,7 +4,8 @@
 #
 # @author: sgoldsmith
 #
-# Install mjpg_streamer
+# Install mjpg_streamer. This script will uninstall any previous version located
+# in the same build directory.
 #
 # This should work on other ARM based systems with similar architecture and
 # Ubuntu as well.
