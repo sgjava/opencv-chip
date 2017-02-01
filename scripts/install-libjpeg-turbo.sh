@@ -26,7 +26,7 @@ curdir=$(cd `dirname $0` && pwd)
 tmpdir="/media/usb0/temp"
 
 # Build home
-buildhome="/home/chip"
+buildhome="/media/usb0"
 
 # stdout and stderr for commands logged
 logfile="$curdir/install-libjpeg-turbo.log"
