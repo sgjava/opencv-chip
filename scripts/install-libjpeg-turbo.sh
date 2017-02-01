@@ -62,10 +62,10 @@ cd libjpeg-turbo >> $logfile 2>&1
 mkdir build >> $logfile 2>&1
 autoreconf -fiv >> $logfile 2>&1
 cd build >> $logfile 2>&1
-export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
-export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
+export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
+export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
 log "Configure..."
-sh ../configure --enable-static --disable-shared >> $logfile 2>&1
+sh ../configure >> $logfile 2>&1
 log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
