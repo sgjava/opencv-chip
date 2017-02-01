@@ -43,6 +43,11 @@ log(){
 	echo "$timestamp $1" >> $logfile 2>&1
 }
 
+# Remove temp dir
+log "Removing temp dir $tmpdir"
+rm -rf "$tmpdir" >> $logfile 2>&1
+mkdir -p "$tmpdir" >> $logfile 2>&1
+
 # Uninstall OpenCV if it exists
 if [ -d "$opencvhome" ]; then
 	log "Uninstalling OpenCV"
