@@ -28,14 +28,14 @@ tmpdir="/media/usb0/temp"
 # Build home
 buildhome="/home/chip"
 
+# stdout and stderr for commands logged
+logfile="$curdir/install-libjpeg-turbo.log"
+rm -f $logfile
+
 # Remove temp dir
 log "Removing temp dir $tmpdir"
 rm -rf "$tmpdir" >> $logfile 2>&1
 mkdir -p "$tmpdir" >> $logfile 2>&1
-
-# stdout and stderr for commands logged
-logfile="$curdir/install-libjpeg-turbo.log"
-rm -f $logfile
 
 # Simple logger
 log(){
