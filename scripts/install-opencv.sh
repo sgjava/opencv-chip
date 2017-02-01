@@ -24,6 +24,9 @@ curdir=$(cd `dirname $0` && pwd)
 # Temp dir for downloads, etc.
 tmpdir="/media/usb0/temp"
 
+# Oracle JDK
+javahome=/usr/lib/jvm/jdk1.8.0
+
 # Build home
 buildhome="/media/usb0"
 opencvhome="$buildhome/opencv"
