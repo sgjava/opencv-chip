@@ -26,7 +26,12 @@ curdir=$(cd `dirname $0` && pwd)
 tmpdir="/media/usb0/temp"
 
 # Build home
-buildhome="/media/usb0"
+buildhome="/home/chip"
+
+# Remove temp dir
+log "Removing temp dir $tmpdir"
+rm -rf "$tmpdir" >> $logfile 2>&1
+mkdir -p "$tmpdir" >> $logfile 2>&1
 
 # stdout and stderr for commands logged
 logfile="$curdir/install-libjpeg-turbo.log"
