@@ -45,6 +45,8 @@ if [ -d "$buildhome/mjpg-streamer" ]; then
 	make uninstall >> $logfile 2>&1
 	log "Removing $buildhome/mjpg-streamer"
 	rm -rf "$buildhome/mjpg-streamer" >> $logfile 2>&1
+	log "Remove www dir"
+	rm -rf /usr/local/www >> $logfile 2>&1
 	log "Unlink videodev.h"
 	unlink /usr/include/linux/videodev.h >> $logfile 2>&1
 fi
