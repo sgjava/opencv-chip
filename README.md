@@ -42,7 +42,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
 * Auto mount USB drive
     * `sudo apt-get install usbmount`
     * `sudo nano /etc/usbmount/usbmount.conf`
-         * Remove sync, from MOUNTOPTIONS
+         * Remove `sync` and `noexec` from MOUNTOPTIONS
     * `sudo reboot`
 * Set USB drive owner
     * `sudo chown -R chip:chip /media/usb0`
