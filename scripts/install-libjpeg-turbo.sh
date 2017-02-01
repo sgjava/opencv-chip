@@ -57,7 +57,7 @@ cd build >> $logfile 2>&1
 export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
 export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
 log "Configure..."
-./configure
+sh ../configure
 log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
