@@ -32,17 +32,17 @@ buildhome="/home/chip"
 logfile="$curdir/install-libjpeg-turbo.log"
 rm -f $logfile
 
-# Remove temp dir
-log "Removing temp dir $tmpdir"
-rm -rf "$tmpdir" >> $logfile 2>&1
-mkdir -p "$tmpdir" >> $logfile 2>&1
-
 # Simple logger
 log(){
 	timestamp=$(date +"%m-%d-%Y %k:%M:%S")
 	echo "$timestamp $1"
 	echo "$timestamp $1" >> $logfile 2>&1
 }
+
+# Remove temp dir
+log "Removing temp dir $tmpdir"
+rm -rf "$tmpdir" >> $logfile 2>&1
+mkdir -p "$tmpdir" >> $logfile 2>&1
 
 # Uninstall libjpeg-turbo if it exists
 if [ -d "$buildhome/libjpeg-turbo" ]; then
