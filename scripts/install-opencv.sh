@@ -79,9 +79,13 @@ cd "$opencvhome"
 mkdir build
 cd build
 extra_c_flag="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
-log "Apply cflags in opencvCompilerOptions
-
-#cmake \$opencvextramodpath -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_QT=OFF -DWITH_TBB=ON -DBUILD_TBB=ON -DBUILD_EXAMPLES=ON -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_JPEG=ON -DENABLE_VFPV3=ON -DENABLE_NEON=ON .. >> $logfile 2>&1
+log "Patch OpenCVCompilerOptions.cmake to apply cflags"
+sed -e "/set(OPENCV_EXTRA_C_FLAGS \"\")/c\set(OPENCV_EXTRA_C_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
+sed -e "/set(OPENCV_EXTRA_CXX_FLAGS \"\")/c\set(OPENCV_EXTRA_CXX_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
+export CFLAGS="$extra_c_flag"
+export CXXFLAGS="$extra_c_flag"
+log "CMake..."
+cmake $contribhome -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DEXTRA_C_FLAGS=$extra_c_flag -DEXTRA_CXX_FLAGS=$extra_c_flag -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_QT=OFF -DWITH_GTK=OFF -DWITH_TBB=ON -DBUILD_TBB=OFF -DENABLE_NEON=ON -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/opt/libjpeg-turbo/include -DJPEG_LIBRARY=/opt/libjpeg-turbo/lib32/libjpeg.a .. >> $logfile 2>&1
 
 # Clean up
 log "Removing $tmpdir"
