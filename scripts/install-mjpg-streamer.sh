@@ -71,6 +71,7 @@ wget -O input_uvc_patch.txt https://www.doorpi.org/forum/attachment/33-input-uvc
 log "Apply patch"
 patch -p0 < input_uvc_patch.txt >> $logfile 2>&1
 log "Make..."
+export CPATH="/opt/libjpeg-turbo"
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1
