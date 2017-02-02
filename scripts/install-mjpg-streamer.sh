@@ -84,7 +84,7 @@ rm -rf "$tmpdir"
 endtime=$(date "$dateformat")
 endtimesec=$(date +%s)
 
-# Show elapse time
+# Show elapsed time
 elapsedtimesec=$(expr $endtimesec - $starttimesec)
 ds=$((elapsedtimesec % 60))
 dm=$(((elapsedtimesec / 60) % 60))
