@@ -68,8 +68,8 @@ svn co https://svn.code.sf.net/p/mjpg-streamer/code/mjpg-streamer/ mjpg-streamer
 cd mjpg-streamer >> $logfile 2>&1
 log "Get patch"
 wget -O input_uvc_patch.txt https://www.doorpi.org/forum/attachment/33-input-uvc-patch-txt/?s=8b4f23ad598b0d2b672828153aac7aad47f7e69a >> $logfile 2>&1
-log "Apply patch"
-patch -p0 < input_uvc_patch.txt >> $logfile 2>&1
+#log "Apply patch"
+#patch -p0 < input_uvc_patch.txt >> $logfile 2>&1
 log "Make..."
 # Point to our libjpeg-turbo
 export CPATH="/opt/libjpeg-turbo/include"
