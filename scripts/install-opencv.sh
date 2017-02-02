@@ -27,6 +27,10 @@ tmpdir="/media/usb0/temp"
 # Oracle JDK
 javahome=/usr/lib/jvm/jdk1.8.0
 
+# Patch OpenCV Java code to fix memory leaks and performance issues.
+# See https://github.com/sgjava/opencvmem for details
+patchjava="False"
+
 # Build home
 buildhome="/media/usb0"
 opencvhome="$buildhome/opencv"
@@ -80,6 +84,38 @@ log "Cloning opencv..."
 git clone --depth 1 https://github.com/Itseez/opencv.git >> $logfile 2>&1
 log "Cloning opencv_contrib..."
 git clone --depth 1 https://github.com/Itseez/opencv_contrib.git >> $logfile 2>&1
+
+# Patch source pre cmake
+log "Patching source pre cmake"
+
+# Patch gen_java.py to generate constants by removing from const_ignore_list
+sed -i 's/\"CV_CAP_PROP_FPS\",/'\#\"CV_CAP_PROP_FPS\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
+sed -i 's/\"CV_CAP_PROP_FOURCC\",/'\#\"CV_CAP_PROP_FOURCC\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
+sed -i 's/\"CV_CAP_PROP_FRAME_COUNT\",/'\#\"CV_CAP_PROP_FRAME_COUNT\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
+
+# If patchjava is True then install OpenCV's contrib package
+if [ "$patchjava" = "True" ]; then
+	# Patch source pre cmake
+	log "Patching Java source pre cmake"
+
+	# Patch gen_java.py to generate nativeObj as not final, so it can be modified by free() method
+	sed -i ':a;N;$!ba;s/protected final long nativeObj/protected long nativeObj/g' "$opencvhome/modules/java/generator/gen_java.py"
+
+	# Patch gen_java.py to generate free() instead of finalize() methods
+	sed -i ':a;N;$!ba;s/@Override\n    protected void finalize() throws Throwable {\n        delete(nativeObj);\n    }/public void free() {\n        if (nativeObj != 0) {\n            delete(nativeObj);\n            nativeObj = 0;\n        }    \n    }/g' "$opencvhome/modules/java/generator/gen_java.py"
+
+	# Patch gen_java.py to generate Mat.free() instead of Mat.release() methods
+	sed -i 's/mat.release()/mat.free()/g' "$opencvhome/modules/java/generator/gen_java.py"
+
+	# Patch core+Mat.java remove final fron nativeObj, so new free() method can change
+	sed -i 's~public final long nativeObj~public long nativeObj~g' "$opencvhome/modules/core/misc/java/src/java/core+Mat.java"
+
+	# Patch core+Mat.java to replace finalize() with free() method
+	sed -i ':a;N;$!ba;s/@Override\n    protected void finalize() throws Throwable {\n        n_delete(nativeObj);\n        super.finalize();\n    }/public void free() {\n        if (nativeObj != 0) {\n            release();\n            n_delete(nativeObj);\n            nativeObj = 0;\n        }    \n    }/g' "$opencvhome/modules/core/misc/java/src/java/core+Mat.java"
+
+	# Patch utils+Converters.java to replace mi.release() with mi.free()
+	sed -i 's/mi.release()/mi.free()/g' "$opencvhome$converters"
+fi
 
 # Compile OpenCV
 log "Compile OpenCV..."
