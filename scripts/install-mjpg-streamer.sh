@@ -72,7 +72,7 @@ log "Apply patch"
 patch -p0 < input_uvc_patch.txt >> $logfile 2>&1
 log "Make..."
 export CPATH="/opt/libjpeg-turbo/include"
-export=LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
+export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1
