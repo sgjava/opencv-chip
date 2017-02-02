@@ -55,7 +55,7 @@ fi
 
 cd "$buildhome" >> $logfile 2>&1
 log "Installing libjpeg-turbo dependenices..."
-apt-get -y install dh-autoreconf g++ pkg-config build-essential yasm >> $logfile 2>&1
+apt-get -y install dh-autoreconf g++ pkg-config build-essential yasm libjpeg62-turbo-dev >> $logfile 2>&1
 log "Cloning libjpeg-turbo"
 git clone --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git >> $logfile 2>&1
 # Patch source pre cmake
@@ -77,7 +77,6 @@ log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1
-ldconfig
 
 # Clean up
 log "Removing $tmpdir"
