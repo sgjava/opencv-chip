@@ -2,7 +2,7 @@
 If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how. You should be experienced with flashing your CHIP and formatting a USB flash drive as ext4. It also does not hurt to know Linux and OpenCV basics. I have created a set of scripts that automate the process.
 
 ###Provides
-* Latest Oracle JDK and Apache Ant
+* Latest Oracle JDK 8 and Apache Ant
 * Latest libjpeg-turbo optimized for Cortex-A8 and Neon
 * Latest mjpg-streamer (10/27/2013 last commit) optimized with libjpeg-turbo
 * Latest OpenCV optimized for libjpeg-turbo, Cortex-A8 and Neon
