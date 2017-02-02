@@ -72,7 +72,7 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 ### Download project
 * `sudo apt-get install git-core`
 * `cd /media/usb0`
-* `git clone --depth 1 https://github.com/sgjava/install-opencv.git`
+* `git clone --depth 1 https://github.com/sgjava/opencv-chip.git`
 
 ### Install Java and Ant
 * `cd /media/usb0/opencv-chip/scripts`
