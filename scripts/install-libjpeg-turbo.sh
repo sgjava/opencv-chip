@@ -77,6 +77,7 @@ log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1
+ldconfig
 
 # Clean up
 log "Removing $tmpdir"
