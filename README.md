@@ -81,7 +81,7 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 * `ant -version`
 
 ### Install libjpeg-turbo
-* `cd /media/usb0/opencv-chip/scripts`
+* `cd /media/usb0/opencv-chip/scripts &`
 * `sudo nohup ./install-libjpeg-turbo.sh`
     * Use `top` to monitor until build completes (about 15 minutes)
 
@@ -117,7 +117,8 @@ MJPG 1280x720 5 FPS
 
 ### Install OpenCV
 * `cd /media/usb0/opencv-chip/scripts`
-* `sudo nohup ./install-opencv.sh`
+* `sudo rm nohup.out`
+* `sudo nohup ./install-opencv.sh &`
     * Use `top` to monitor until build completes (about 2.5 hours)
 
 ### References
