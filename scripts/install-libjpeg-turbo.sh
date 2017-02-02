@@ -69,6 +69,7 @@ mkdir build >> $logfile 2>&1
 log "autoreconf"
 autoreconf -fiv >> $logfile 2>&1
 cd build >> $logfile 2>&1
+# Optimize for CHIP
 export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
 export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
 log "Configure..."

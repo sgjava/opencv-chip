@@ -3,7 +3,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 
 ###Provides
 * Latest Oracle JDK and Apache Ant
-* Latest libjpeg-turbo from source optimized for Cortex-A8 and Neon
+* Latest libjpeg-turbo optimized for Cortex-A8 and Neon
 * Latest mjpg-streamer (10/27/2013 last commit) optimized with libjpeg-turbo
 * Latest OpenCV optimized for libjpeg-turbo, Cortex-A8 and Neon
 

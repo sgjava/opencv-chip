@@ -125,6 +125,7 @@ log "JAVA_HOME = $JAVA_HOME"
 cd "$opencvhome"
 mkdir build
 cd build
+# Optimize for CHIP
 extra_c_flag="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
 log "Patch OpenCVCompilerOptions.cmake to apply cflags"
 sed -e "/set(OPENCV_EXTRA_C_FLAGS \"\")/c\set(OPENCV_EXTRA_C_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
