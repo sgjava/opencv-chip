@@ -75,6 +75,11 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 * `cd /media/usb0`
 * `git clone --depth 1 https://github.com/sgjava/opencv-chip.git`
 
+### Install The Whole Enchilada
+This is probably the easiest way to install everything, but you can follow the individual steps below to rebuild individual components.
+* `cd /media/usb0/opencv-chip/scripts`
+* `sudo nohup ./install.sh &`
+
 ### Install Java and Ant
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo ./install-java.sh`
@@ -120,7 +125,7 @@ MJPG 1280x720 5 FPS
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo rm nohup.out`
 * `sudo nohup ./install-opencv.sh &`
-    * Use `top` to monitor until build completes (about 2.5 hours)
+    * Use `top` to monitor until build completes
 
 ### References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
