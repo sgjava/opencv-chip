@@ -1,14 +1,5 @@
-```
-   ____                    _______      __   _____ _    _ _____ _____   
-  / __ \                  / ____\ \    / /  / ____| |  | |_   _|  __ \  
- | |  | |_ __   ___ _ __ | |     \ \  / /  | |    | |__| | | | | |__) | 
- | |  | | '_ \ / _ \ '_ \| |      \ \/ /   | |    |  __  | | | |  ___/  
- | |__| | |_) |  __/ | | | |____   \  /    | |____| |  | |_| |_| |      
-  \____/| .__/ \___|_| |_|\_____|   \/      \_____|_|  |_|_____|_|      
-        | |                                                             
-        |_|                                                             
+![Title](images/title.png)
 
-```
 If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how. You should be experienced with flashing your CHIP and formatting a USB flash drive as ext4. It also does not hurt to know Linux and OpenCV basics. I have created a set of scripts that automate the process.
 
 ###Provides
