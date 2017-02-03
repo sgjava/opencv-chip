@@ -36,8 +36,8 @@ logger.info("OpenCV %s" % cv2.__version__)
 logger.info("URL: %s, frames to capture: %d" % (url, frames))
 # Set socket timeout
 socket.setdefaulttimeout(10)
-socketFile, streamSock, boundary = open()
-image = getFrame(socketFile)
+socketFile, streamSock, boundary = mjpegclient.open()
+image = mjpegclient.getFrame(socketFile)
 height, width, unknown = image.shape
 logger.info("Resolution: %dx%d" % (width, height))
 if width > 0 and height > 0:
