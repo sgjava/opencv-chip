@@ -79,26 +79,27 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. Skip the rest of the individual scripts below.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install.sh &`
-* Runtime ~5 hours
+    * Use `top` to monitor until build completes
+    * Runtime ~5 hours
 
 ### Install Java and Ant
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo ./install-java.sh`
+    * Runtime ~2 minutes
 * `java -version`
 * `ant -version`
-* Runtime ~2 minutes
 
 ### Install libjpeg-turbo
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install-libjpeg-turbo.sh &`
     * Use `top` to monitor until build completes
-* Runtime ~15 minutes
+    * Runtime ~15 minutes
 
 ### Install mjpg-streamer
 Sometimes all you need is a live video feed without further processing. This section will be what you are looking for. It also makes sense to move the UVC processing into a different Linux process or thread from the main CV code.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo sh install-mjpg-streamer.sh`
-* Runtime ~3 minutes
+    * Runtime ~3 minutes
 * `v4l2-ctl --list-formats`
     * Check Pixel Format for 'YUYV' and/or 'MJPG'
 * To run mjpg-streamer with 'YUYV' only camera use
@@ -130,7 +131,7 @@ MJPG 1280x720 5 FPS
 * `sudo rm nohup.out`
 * `sudo nohup ./install-opencv.sh &`
     * Use `top` to monitor until build completes
-* Runtime ~4.5 hours
+    * Runtime ~4.5 hours
 
 ### References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
