@@ -178,7 +178,7 @@ Custom code to read MJPEG stream and mjpg-streamer at 640x480 and 5, 10, 15, 20 
 To run example your self use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
-* `CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
+* `python CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
 
 The actual CPU% per frame processed is about the same for each method with the custom code being a little more efficient. If driving the camera near actual FPS is important then this is the solution.
 
