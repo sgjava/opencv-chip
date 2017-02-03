@@ -58,7 +58,7 @@ videoCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 # Set FPS
 videoCapture.set(cv2.CAP_PROP_FPS, fps)
 logger.info("OpenCV %s" % cv2.__version__)
-logger.info("URL: %s, frames to capture: %d, width: %d, height: %d" % (url, frames, width, height))
+logger.info("URL: %s, frames to capture: %d, width: %d, height: %d, fps: %d" % (url, frames, width, height, fps))
 logger.info("Resolution: %dx%d" % (videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH),
                                videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 # Deal with VideoCapture always returning True otherwise it will hang on VideoCapture.grab()
