@@ -11,7 +11,7 @@ sgoldsmith@codeferm.com
 
 """
 
-import sys, socket, urlparse, base64, numpy, cv2
+import socket, urlparse, base64, numpy, cv2
 
 def open(url, timeout):
     """Open socket"""

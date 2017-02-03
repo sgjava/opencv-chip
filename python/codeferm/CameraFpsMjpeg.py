@@ -17,7 +17,7 @@ http://host/?action=stream?dummy=param.mjpg
 
 """
 
-import logging, sys, time, re, socket, urlparse, base64, numpy, cv2, mjpegclient
+import logging, sys, time, cv2, mjpegclient
 
 logger = logging.getLogger("CameraFpsMjpeg")
 logger.setLevel("INFO")
