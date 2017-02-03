@@ -18,18 +18,18 @@ dateformat="+%a %b %-eth %Y %I:%M:%S %p %Z"
 starttime=$(date "$dateformat")
 starttimesec=$(date +%s)
 
-# Get current directory
-curdir=$(cd `dirname $0` && pwd)
-
-# Temp dir for downloads, etc.
-tmpdir="/media/usb0/temp"
-
 # Oracle JDK
 javahome=/usr/lib/jvm/jdk1.8.0
 
 # Patch OpenCV Java code to fix memory leaks and performance issues.
 # See https://github.com/sgjava/opencvmem for details
 patchjava="False"
+
+# Get current directory
+curdir=$(cd `dirname $0` && pwd)
+
+# Temp dir for downloads, etc.
+tmpdir="/media/usb0/temp"
 
 # Build home
 buildhome="/media/usb0"
