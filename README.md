@@ -1,4 +1,7 @@
-# opencv-chip
+╔═╗┌─┐┌─┐┌┐┌╔═╗╦  ╦  ╔═╗╦ ╦╦╔═╗
+║ ║├─┘├┤ │││║  ╚╗╔╝  ║  ╠═╣║╠═╝
+╚═╝┴  └─┘┘└┘╚═╝ ╚╝   ╚═╝╩ ╩╩╩  
+
 If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how. You should be experienced with flashing your CHIP and formatting a USB flash drive as ext4. It also does not hurt to know Linux and OpenCV basics. I have created a set of scripts that automate the process.
 
 ###Provides
