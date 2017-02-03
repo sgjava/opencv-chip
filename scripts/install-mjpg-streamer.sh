@@ -19,11 +19,18 @@ dateformat="+%a %b %-eth %Y %I:%M:%S %p %Z"
 starttime=$(date "$dateformat")
 starttimesec=$(date +%s)
 
+# Set to True if you get a white image or stream.
+whitepatch="True"
+
 # Get current directory
 curdir=$(cd `dirname $0` && pwd)
 
 # Temp dir for downloads, etc.
 tmpdir="/media/usb0/temp"
+
+# Patch OpenCV Java code to fix memory leaks and performance issues.
+# See https://github.com/sgjava/opencvmem for details
+patchjava="False"
 
 # Build home
 buildhome="/media/usb0"
@@ -66,6 +73,13 @@ ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h >> $logfile 2
 log "Get source from subversion"
 svn co https://svn.code.sf.net/p/mjpg-streamer/code/mjpg-streamer/ mjpg-streamer >> $logfile 2>&1
 cd mjpg-streamer >> $logfile 2>&1
+# If whitepatch is True then patch code for white image issue
+if [ "$whitepatch" = "True" ]; then
+	log "Get patch"
+	wget -O input_uvc_patch.txt https://www.doorpi.org/forum/attachment/33-input-uvc-patch-txt/?s=8b4f23ad598b0d2b672828153aac7aad47f7e69a >> $logfile 2>&1
+	log "Apply patch"
+	patch -p0 < input_uvc_patch.txt >> $logfile 2>&1
+fi
 log "Make..."
 # Point to our libjpeg-turbo
 export CPATH="/opt/libjpeg-turbo/include"
