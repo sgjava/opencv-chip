@@ -66,7 +66,7 @@ def open(url, timeout):
         raise Exception("Cannot find content-type")
     return socketFile, streamSock, boundary
 
-def getFrameLength(socketFile):
+def getFrameLength(socketFile, boundary):
     """Get frame length from stream"""
     line = socketFile.readline()
     # Find boundary

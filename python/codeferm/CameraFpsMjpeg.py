@@ -35,7 +35,7 @@ else:
 logger.info("OpenCV %s" % cv2.__version__)
 logger.info("URL: %s, frames to capture: %d" % (url, frames))
 socketFile, streamSock, boundary = mjpegclient.open(url, 10)
-image = mjpegclient.getFrame(socketFile)
+image = mjpegclient.getFrame(socketFile, boundary)
 height, width, unknown = image.shape
 logger.info("Resolution: %dx%d" % (width, height))
 if width > 0 and height > 0:
@@ -44,7 +44,7 @@ if width > 0 and height > 0:
     start = time.time()
     # Calculate FPS
     while(framesLeft > 0):
-        image = getFrame(socketFile)
+        image = getFrame(socketFile, boundary)
         framesLeft -= 1
     elapsed = time.time() - start
     fps = frames / elapsed
