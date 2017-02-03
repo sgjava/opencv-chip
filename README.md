@@ -76,7 +76,7 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 * `git clone --depth 1 https://github.com/sgjava/opencv-chip.git`
 
 ### Install The Whole Enchilada
-This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components.
+This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. Skip the rest of the individual scripts below.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install.sh &`
 
