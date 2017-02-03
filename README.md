@@ -6,7 +6,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * Latest Oracle JDK 8 and Apache Ant
 * Latest libjpeg-turbo optimized for Cortex-A8 and Neon
 * Latest mjpg-streamer (10/27/2013 last commit) optimized with libjpeg-turbo
-* Latest OpenCV optimized for libjpeg-turbo, Cortex-A8 and Neon
+* Latest OpenCV with opencv_contrib optimized for libjpeg-turbo, Cortex-A8 and Neon
 
 ### Requirements
 * CHIP
@@ -79,22 +79,26 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. Skip the rest of the individual scripts below.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install.sh &`
+* Runtime ~5 hours
 
 ### Install Java and Ant
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo ./install-java.sh`
 * `java -version`
 * `ant -version`
+* Runtime ~2 minutes
 
 ### Install libjpeg-turbo
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install-libjpeg-turbo.sh &`
-    * Use `top` to monitor until build completes (about 15 minutes)
+    * Use `top` to monitor until build completes
+* Runtime ~15 minutes
 
 ### Install mjpg-streamer
 Sometimes all you need is a live video feed without further processing. This section will be what you are looking for. It also makes sense to move the UVC processing into a different Linux process or thread from the main CV code.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo sh install-mjpg-streamer.sh`
+* Runtime ~3 minutes
 * `v4l2-ctl --list-formats`
     * Check Pixel Format for 'YUYV' and/or 'MJPG'
 * To run mjpg-streamer with 'YUYV' only camera use
@@ -103,7 +107,7 @@ Sometimes all you need is a live video feed without further processing. This sec
     * `mjpg_streamer -i "/usr/local/lib/input_uvc.so" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * In your web browser or VLC player goto `http://yourhost:8080/?action=stream` and you should see the video stream.
 
-#### mjpg_streamer performance
+#### mjpg-streamer performance
 The bottom line is you need an MJPEG USB camera because CPU usage is too high using YUYV. CHIP only has one core, so you want to use a little CPU as possible acquiring the frames. If you plan on streaming only then this might not be a big deal, but CV is CPU intensive. I used a Logitech C270 for the following tests:
 
 YUYV 640x480 5 FPS
@@ -126,6 +130,7 @@ MJPG 1280x720 5 FPS
 * `sudo rm nohup.out`
 * `sudo nohup ./install-opencv.sh &`
     * Use `top` to monitor until build completes
+* Runtime ~4.5 hours
 
 ### References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
