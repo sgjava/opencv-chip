@@ -133,6 +133,53 @@ MJPG 1280x720 5 FPS
     * Use `top` to monitor until build completes
     * Runtime ~4.5 hours
 
+### Performance testing
+I have included some Python code that will enable you to test various performance aspects of your camera. The goal is to see which methods are the most efficient and accurate. As a baseline we acquire a frame and convert it to a Numpy array. This is the format OpevCV utilizes for optimal performance. A Logitech C270 was used for testing.
+
+OpenCV's VideoCapture at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture returns less than 50% of the actual frame rate.
+
+| ~CPU % | Target FPS | Actual FPS |
+|--------|:----------:|-----------:|
+|      8 |          5 |        2.3 |
+|     13 |         10 |        4.5 |
+|     18 |         15 |        6.9 |
+|     24 |         20 |        9.1 |
+|     29 |         25 |       11.2 |
+
+To run example your self use (this is 5 FPS example):
+* `cd /media/usb0/opencv-chip/python/codeferm`
+* `python CameraFpsCv.py -1 200 640 480 5`
+
+OpenCV's VideoCapture and mjpg-streamer at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture returns less than 66% of the actual frame rate.
+
+| ~CPU % | Target FPS | Actual FPS |
+|--------|:----------:|-----------:|
+|     10 |          5 |        3.6 |
+|     19 |         10 |        7.3 |
+|     28 |         15 |        9.5 |
+|     37 |         20 |       12.6 |
+|     45 |         25 |       14.8 |
+
+To run example your self use (this is 5 FPS example):
+* `cd /media/usb0/opencv-chip/python/codeferm`
+* `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
+* `python CameraFpsCv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
+
+Custom code to read MJPEG stream and mjpg-streamer at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture returns almost 100% of the actual frame rate!
+
+| ~CPU % | Target FPS | Actual FPS |
+|--------|:----------:|-----------:|
+|     14 |          5 |        5.0 |
+|     29 |         10 |        9.9 |
+|     28 |         15 |        9.5 |
+|     37 |         20 |       12.6 |
+|     45 |         25 |       14.8 |
+
+To run example your self use (this is 5 FPS example):
+* `cd /media/usb0/opencv-chip/python/codeferm`
+* `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
+* `CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
+
 ### References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
 * [script for easy build opencv for raspberry pi 2/3, beaglebone, cubietruck, banana pi and odroid c2 ](https://gist.github.com/lhelontra/e4357758e4d533bd415678bf11942c0a)
