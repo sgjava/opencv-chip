@@ -44,7 +44,7 @@ if width > 0 and height > 0:
     start = time.time()
     # Calculate FPS
     while(framesLeft > 0):
-        image = getFrame(socketFile, boundary)
+        image = mjpegclient.getFrame(socketFile, boundary)
         framesLeft -= 1
     elapsed = time.time() - start
     fps = frames / elapsed
