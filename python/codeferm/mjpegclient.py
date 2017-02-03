@@ -81,7 +81,7 @@ def getFrameLength(socketFile, boundary):
         line = socketFile.readline()
     return length
 
-def getFrame(socketFile):
+def getFrame(socketFile, boundary):
     """Get raw frame data from stream and decode"""
-    image = socketFile.read(getFrameLength(socketFile))
+    image = socketFile.read(getFrameLength(socketFile, boundary))
     return cv2.imdecode(numpy.fromstring(image, numpy.uint8), cv2.IMREAD_COLOR)
