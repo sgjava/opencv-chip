@@ -110,7 +110,7 @@ socket.setdefaulttimeout(10)
 socketFile, streamSock, boundary = open()
 image = getFrame(socketFile)
 height, width, unknown = image.shape
-logger.info("Resolution: %dx%d" % (width,height))
+logger.info("Resolution: %dx%d" % (width, height))
 if width > 0 and height > 0:
     logger.info("Calculate FPS using %d frames" % frames)
     framesLeft = frames

@@ -11,6 +11,7 @@ sys.argv[1] = camera index, url or will default to "-1" if no args passed.
 sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
 sys.argv[3] = frame width, int or will default to "640" if no args passed.
 sys.argv[4] = frame height, int or will default to "480" if no args passed.
+sys.argv[5] = frame per second, int or will default to "5" if no args passed.
 
 For MJPEG streams use ?dummy=param.mjpg at end of URL. For example:
 http://host/?action=stream?dummy=param.mjpg
@@ -34,25 +35,28 @@ if len(sys.argv) < 4:
     frames = 200
     width = 640
     height = 480
+    fps = 5
 # If arg is an integer then convert to int
 elif re.match(r"[-+]?\d+$", sys.argv[1]) is not None:
     url = int(sys.argv[1])
     frames = int(sys.argv[2])
     width = int(sys.argv[3])
     height = int(sys.argv[4])
+    fps = int(sys.argv[5])
 else:
     url = sys.argv[1]
     frames = int(sys.argv[2])
     width = int(sys.argv[3])
     height = int(sys.argv[4])
+    fps = int(sys.argv[5])
 videoCapture = cv2.VideoCapture()
 # This returns True even for bad URLs
 success = videoCapture.open(url)
 # Set resolution
-videoCapture.set(cv2.CAP_PROP_FRAME_WIDTH,width)
-videoCapture.set(cv2.CAP_PROP_FRAME_HEIGHT,height)
+videoCapture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+videoCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 # Set FPS
-videoCapture.set(cv2.CAP_PROP_FPS,5)
+videoCapture.set(cv2.CAP_PROP_FPS, fps)
 logger.info("OpenCV %s" % cv2.__version__)
 logger.info("URL: %s, frames to capture: %d, width: %d, height: %d" % (url, frames, width, height))
 logger.info("Resolution: %dx%d" % (videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH),
