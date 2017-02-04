@@ -16,7 +16,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * USB camera (this is only if you wish to use a camera)
     * You will need a powered USB hub if you are powering off the OTG port
     * For CHG-IN you need an OTG flash drive or an adapter for OTG to USB
-    * Some USB cameras like the Logitech C270 can use 500 mA at higher FPS. If the camera pulls to many mA (640x480 >= 25 FPS with the C270) then the CHIP will shut down. This will not be a big deal for most applications.
+    * Some USB cameras like the Logitech C270 can use up to 500 mA. If your CHIP shuts down try a different PSU or cable. My shutdown issues were always caused by a shady PSU.
 
 ### WARNING
 I used no-limit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU to power off the OTG port.
@@ -136,7 +136,7 @@ MJPG 1280x720 5 FPS
 ### Performance testing
 I have included some Python code that will enable you to test various performance aspects of your camera. The goal is to see which methods are the most efficient and accurate. As a baseline we acquire a frame and convert it to a Numpy array. This is the format OpevCV utilizes for optimal performance. A Logitech C270 was used for testing.
 
-OpenCV's VideoCapture at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture returns less than 50% of the actual frame rate.
+OpenCV's VideoCapture at 640x480. VideoCapture returns less than 50% of the actual frame rate.
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
@@ -145,12 +145,14 @@ OpenCV's VideoCapture at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture retu
 |     18 |         15 |        6.9 |
 |     24 |         20 |        9.1 |
 |     29 |         25 |       11.2 |
+|     36 |         30 |       13.7 |
+
 
 To run example your self use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `python CameraFpsCv.py -1 200 640 480 5`
 
-OpenCV's VideoCapture and mjpg-streamer at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture returns less than 66% of the actual frame rate.
+OpenCV's VideoCapture and mjpg-streamer at 640x480. VideoCapture returns less than 66% of the actual frame rate.
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
@@ -159,13 +161,14 @@ OpenCV's VideoCapture and mjpg-streamer at 640x480 and 5, 10, 15, 20 and 25 FPS.
 |     28 |         15 |        9.5 |
 |     37 |         20 |       12.6 |
 |     45 |         25 |       14.8 |
+|     50 |         30 |       17.7 |
 
 To run example your self use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraFpsCv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
 
-Custom code to read MJPEG stream and mjpg-streamer at 640x480 and 5, 10, 15, 20 and 25 FPS. VideoCapture returns almost 100% of the actual frame rate!
+Custom code to read MJPEG stream and mjpg-streamer at 640x480. VideoCapture returns almost 100% of the actual frame rate!
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
@@ -173,7 +176,8 @@ Custom code to read MJPEG stream and mjpg-streamer at 640x480 and 5, 10, 15, 20 
 |     29 |         10 |        9.9 |
 |     40 |         15 |       14.9 |
 |     49 |         20 |       20.0 |
-|     59 |         25 |       25.0 |
+|     59 |         25 |       24.9 |
+|     62 |         30 |       29.8 |
 
 To run example your self use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
@@ -181,6 +185,23 @@ To run example your self use (this is 5 FPS example):
 * `python CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
 
 The actual CPU% per frame processed is about the same for each method with the custom code being a little more efficient. If driving the camera near actual FPS is important then this is the solution.
+
+Now we will look at writing a video from the camera. This will be the base line for CV processing. The more CPU we spend on decoding and encoding the less CPU there is for CV operations. This will form the basis for most CV projects analyzing frames from a camera, deciding what triggers a recording and finally doing something with that information. I'll skip X264 since it would only record about 2.5 FPS @ 640x480.
+
+XVID (943K) actually made smaller files than X264 and was much more efficient. 
+
+| ~CPU % | Target FPS | Actual FPS |
+|--------|:----------:|-----------:|
+|     46 |          5 |        5.0 |
+|     75 |         10 |        9.9 |
+|     95 |         15 |       13.2 |
+
+To run example your self use (this is 5 FPS example):
+* `cd /media/usb0/opencv-chip/python/codeferm`
+* `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
+* `python CameraWriter.py http://localhost:8080/?action=stream 200 XVID video-xvid.avi`
+
+OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU. 
 
 ### References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
