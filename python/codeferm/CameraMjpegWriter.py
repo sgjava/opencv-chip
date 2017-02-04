@@ -43,7 +43,9 @@ image = mjpegclient.getFrame(socketFile, boundary)
 height, width, unknown = image.shape
 logger.info("Resolution: %dx%d" % (width, height))
 if width > 0 and height > 0:
-    videoWriter = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc(*'X264'), 5, (width, height), True)
+    fourcc = "X264"
+#    videoWriter = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc(*'X264'), 5, (width, height), True)
+    videoWriter = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc(fourcc[0],fourcc[1],fourcc[2],fourcc[3]), 5, (width, height), True)
     logger.info("Calculate FPS using %d frames" % frames)
     framesLeft = frames
     start = time.time()
