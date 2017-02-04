@@ -171,7 +171,7 @@ To run example your self use (this is 5 FPS example):
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraFpsCv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
 
-Custom code to read MJPEG stream and mjpg-streamer at 640x480. VideoCapture returns almost 100% of the actual frame rate!
+My `mjpegclient` module to read MJPEG stream and mjpg-streamer at 640x480. `mjpegclient` returns almost 100% of the actual frame rate!
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
