@@ -9,7 +9,8 @@ sgoldsmith@codeferm.com
 
 sys.argv[1] = camera index, url or will default to "-1" if no args passed.
 sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
-sys.argv[3] = output file name, string or will default to "camera.avi" if no args passed.
+sys.argv[3] = fourcc, string or will default to "XVID" if no args passed.
+sys.argv[4] = output file name, string or will default to "camera.avi" if no args passed.
 
 Add ?dummy=param.mjpg at end of URL. For example:
 http://host/?action=stream?dummy=param.mjpg
@@ -27,14 +28,16 @@ handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 # If no args passed then use default camera
-if len(sys.argv) < 2:
+if len(sys.argv) < 4:
     url = "http://localhost:8080/?action=stream?dummy=param.mjpg"
     frames = 200
+    fourcc = "XVID"
     outputFile = "camera.avi"
 else:
     url = sys.argv[1]
     frames = int(sys.argv[2])
-    outputFile = sys.argv[3]
+    fourcc = sys.argv[3]
+    outputFile = sys.argv[4]
    
 logger.info("OpenCV %s" % cv2.__version__)
 logger.info("URL: %s, frames to capture: %d" % (url, frames))
@@ -43,8 +46,6 @@ image = mjpegclient.getFrame(socketFile, boundary)
 height, width, unknown = image.shape
 logger.info("Resolution: %dx%d" % (width, height))
 if width > 0 and height > 0:
-    fourcc = "X264"
-#    videoWriter = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc(*'X264'), 5, (width, height), True)
     videoWriter = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc(fourcc[0],fourcc[1],fourcc[2],fourcc[3]), 5, (width, height), True)
     logger.info("Calculate FPS using %d frames" % frames)
     framesLeft = frames
