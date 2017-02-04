@@ -16,7 +16,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * USB camera (this is only if you wish to use a camera)
     * You will need a powered USB hub if you are powering off the OTG port
     * For CHG-IN you need an OTG flash drive or an adapter for OTG to USB
-    * Some USB cameras like the Logitech C270 can use up to 500 mA. If your CHIP shuts down try a different PSU or cable. My shutdown issues were always caused by a shady PSU.
+    * Some USB cameras like the Logitech C270 can use up to 500 mA. If your CHIP shuts down try a different PSU or cable. My shutdown issues were always caused by a shady PSU. I found a good PSU in my supply and use home made CHG-IN cables. It had no problems running 100% CPU with camera and flash drive plugged in directly recording video.
 
 ### WARNING
 I used no-limit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU to power off the OTG port.
@@ -76,7 +76,7 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 * `git clone --depth 1 https://github.com/sgjava/opencv-chip.git`
 
 ### Install The Whole Enchilada
-This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. Skip the rest of the individual scripts below.
+This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. There are values you can change in the individual scripts, so read them over. Skip the rest of the individual scripts below if you run this.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install.sh &`
     * Use `top` to monitor until build completes
@@ -97,6 +97,9 @@ This is probably the easiest way to install everything, but you can follow the i
 
 ### Install mjpg-streamer
 Sometimes all you need is a live video feed without further processing. This section will be what you are looking for. It also makes sense to move the UVC processing into a different Linux process or thread from the main CV code.
+
+Change `whitepatch` in `install-mjpg-streamer.sh` to True if you get a white image. I had to set this to True for using MPJEG mode. In YUYV I set it to false. The default setting is True.
+
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo sh install-mjpg-streamer.sh`
     * Runtime ~3 minutes
