@@ -16,6 +16,7 @@ sys.argv[1] = url or will default to "http://localhost:8080/?action=stream" if n
 sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
 sys.argv[3] = fourcc, string or will default to "XVID" if no args passed.
 sys.argv[4] = frames per second for writer, int or will default to 5 if no args passed.
+sys.argv[5] = recording dir, string or will default to "motion" if no args passed.
 
 @author: sgoldsmith
 
@@ -53,16 +54,18 @@ if __name__ == '__main__':
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     # If no args passed then use defaults
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         url = "http://localhost:8080/?action=stream"
         frames = 200
         fourcc = "XVID"
         fps = 5
+        recordDir = "motion"
     else:
         url = sys.argv[1]
         frames = int(sys.argv[2])
         fourcc = sys.argv[3]
         fps = int(sys.argv[4])
+        recordDir = sys.argv[5]
         
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
@@ -77,7 +80,7 @@ if __name__ == '__main__':
             widthDivisor = 1
         frameResizeWidth = int(frameWidth / widthDivisor)
         frameResizeHeight = int(frameHeight / widthDivisor)
-        logger.info("Resolution: %dx%d, resized to: %dx%d" % (frameWidth, frameHeight, frameResizeWidth, frameResizeHeight))
+        logger.info("Resized to: %dx%d" % (frameResizeWidth, frameResizeHeight))
         # Used for full size image marking
         widthMultiplier = int(frameWidth / frameResizeWidth)
         heightMultiplier = int(frameHeight / frameResizeHeight)     
@@ -126,7 +129,7 @@ if __name__ == '__main__':
                 if not recording:
                     now = datetime.datetime.now()
                     # Construct directory from configuration, camera name and date
-                    fileDir = "%s%s%s%s%s%s" % (os.path.dirname(os.path.realpath(__file__)), os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
                     # Create dir for if it doesn"t exist
                     if not os.path.exists(fileDir):
                         os.makedirs(fileDir)
