@@ -195,9 +195,9 @@ XVID (943K) actually made smaller files than X264 and was much more efficient.
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
-|     46 |          5 |        5.0 |
-|     75 |         10 |        9.9 |
-|     95 |         15 |       13.2 |
+|     43 |          5 |        5.0 |
+|     72 |         10 |        9.9 |
+|     95 |         15 |       14.9 |
 
 To run example your self use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
