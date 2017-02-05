@@ -161,7 +161,7 @@ if __name__ == '__main__':
                     if w > 63 and h > 127:
                         imageRoi = resizeImg[y:y + h, x:x + w]
                         # foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(16, 16), scale=1.05)
-                        foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(32, 32), scale=1.3)
+                        foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(32, 32), scale=1.2)
                         if len(foundLocations) > 0:
                             i = 0
                             for x2, y2, w2, h2 in foundLocations:
