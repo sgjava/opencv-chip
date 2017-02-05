@@ -177,7 +177,7 @@ if __name__ == '__main__':
                 # Write first image in buffer (the oldest)
                 videoWriter.write(frameBuf[0][0])
                 # Threshold to stop recording
-                if motionPercent <= 0.75:
+                if motionPercent <= 0.5:
                     logger.info("Stop recording")
                     del videoWriter
                     recording = False
