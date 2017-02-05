@@ -151,7 +151,7 @@ OpenCV's VideoCapture at 640x480. VideoCapture returns less than 50% of the actu
 |     36 |         30 |       13.7 |
 
 
-To run example your self use (this is 5 FPS example):
+To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `python CameraFpsCv.py -1 200 640 480 5`
 
@@ -166,7 +166,7 @@ OpenCV's VideoCapture and mjpg-streamer at 640x480. VideoCapture returns less th
 |     45 |         25 |       14.8 |
 |     50 |         30 |       17.7 |
 
-To run example your self use (this is 5 FPS example):
+To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraFpsCv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
@@ -182,7 +182,7 @@ My `mjpegclient` module to read MJPEG stream and mjpg-streamer at 640x480. `mjpe
 |     59 |         25 |       24.9 |
 |     62 |         30 |       29.8 |
 
-To run example your self use (this is 5 FPS example):
+To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
@@ -199,12 +199,24 @@ XVID (943K) actually made smaller files than X264 and was much more efficient.
 |     72 |         10 |        9.9 |
 |     95 |         15 |       14.9 |
 
-To run example your self use (this is 5 FPS example):
+To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraWriter.py http://localhost:8080/?action=stream 200 XVID 5 video-xvid.avi`
 
-OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU. 
+OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU.
+
+### Motion Detection
+This is the first example into the foray that is Computer Vision. This is also a practical example that you can use as the basis for other CV projects. From experience I can tell you that you need to understand the usage scenario. Simple motion detection will work well with static backgrounds, but using it outside you have to deal with cars, tree branches blowing, sudden light changes, etc. This is why built in motion detection is mostly useless on most security cameras. You can use ignore bitmaps and ROIs (regions of interest) to improve results with dynamic backgrounds. For instance, I can ignore my palm tree, but trigger motion if you walk in my doorway.
+
+For starters we will do basic moving average based detection. It will return ROIs that can be used in further processing. MotionDetect.py marks the motion ROIs before writing to video. You can use this for debugging and fine tuning. I ran a 12 hour test with MotionDetect.py and it stayed rock solid at 5 FPS while using 33% CPU while idle and 50% while recording according to Zabbix. This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing.
+
+To run example yourself use (this is 5 FPS example):
+* `cd /media/usb0/opencv-chip/python/codeferm`
+* `nohup mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www" &`
+* `python MotionDetect.py http://localhost:8080/?action=stream 400 XVID 5 /media/usb0`
+
+Videos will record to /media/usb0/motion-detect using the date to build the directory and name time for file name. You can increase the frames parameter to something really large (216000 is 12 hours at 5 FPS) and run using `nohup`. This is what I will do for long term testing and burn in.
 
 ### References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
