@@ -165,7 +165,7 @@ if __name__ == '__main__':
                 # See if we are recording
                 if not recording:
                     # Construct directory name from recordDir and date
-                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "people-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
                     # Create dir if it doesn"t exist
                     if not os.path.exists(fileDir):
                         os.makedirs(fileDir)
