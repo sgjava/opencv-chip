@@ -196,7 +196,7 @@ if __name__ == '__main__':
                                 # Print weight
                                 cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                 i += 1
-                            logger.debug("People detected locations: %s" % (foundLocations))
+                            logger.info("People detected locations: %s" % (foundLocations))
             # If recording write frame and check motion percent
             if recording:
                 # Write first image in buffer (the oldest)
