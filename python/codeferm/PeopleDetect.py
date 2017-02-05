@@ -47,29 +47,6 @@ def contours(source):
         movementLocations.append(rect)
     return movementLocations
 
-def padRects(image, rects, minWidth, minHeight, padSize):
-    """Pad rectangles for better hit rate"""
-    imgHeight, imgWidth, imgUnknown = image.shape
-    paddedRects = []
-    # Get consolidated image width and height from rects
-    for x, y, w, h in rects:
-        # Filter based on resize size if True
-        if w > minWidth and h > minHeight:
-            y1 = y - padSize
-            if y1 < 0:
-                y1 = 0
-            y2 = y + h + padSize
-            if y2 > imgHeight:
-                y2 = imgHeight
-            x1 = x - padSize
-            if x1 < 0:
-                x1 = 0
-            x2 = x + w + padSize
-            if x2 > imgWidth:
-                x2 = imgWidth
-            paddedRects.append([x1, y1, x2 - x1, y2 - y1])
-    return paddedRects
-
 if __name__ == '__main__':
     # Configure logger
     logger = logging.getLogger("MotionDetect")
@@ -179,14 +156,12 @@ if __name__ == '__main__':
                     cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
                                   ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                   (0, 255, 0), 2)
-                # Pad rectangles for better detection
-                paddedRects = padRects(resizeImg, movementLocationsFiltered, 31, 63, 20)
-                for x, y, w, h in paddedRects:
+                for x, y, w, h in movementLocationsFiltered:
                     # Make sure ROI is big enough for detector
                     if w > 63 and h > 127:
                         imageRoi = resizeImg[y:y + h, x:x + w]
                         # foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(16, 16), scale=1.05)
-                        foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(32, 32), scale=1.1)
+                        foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(32, 32), scale=1.2)
                         if len(foundLocations) > 0:
                             i = 0
                             for x2, y2, w2, h2 in foundLocations:
