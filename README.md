@@ -187,7 +187,7 @@ To run example your self use (this is 5 FPS example):
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
 
-The actual CPU% per frame processed is about the same for each method with the custom code being a little more efficient. If driving the camera near actual FPS is important then this is the solution.
+The actual CPU% per frame processed is about the same for each method with `mjpegclient` being a little more efficient. If driving the camera near actual FPS is important then `mjpegclient` is one solution.
 
 Now we will look at writing a video from the camera. This will be the base line for CV processing. The more CPU we spend on decoding and encoding the less CPU there is for CV operations. This will form the basis for most CV projects analyzing frames from a camera, deciding what triggers a recording and finally doing something with that information. I'll skip X264 since it would only record about 2.5 FPS @ 640x480.
 
@@ -202,7 +202,7 @@ XVID (943K) actually made smaller files than X264 and was much more efficient.
 To run example your self use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
-* `python CameraWriter.py http://localhost:8080/?action=stream 200 XVID video-xvid.avi`
+* `python CameraWriter.py http://localhost:8080/?action=stream 200 XVID 5 video-xvid.avi`
 
 OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU. 
 
