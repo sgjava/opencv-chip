@@ -70,7 +70,7 @@ if __name__ == '__main__':
     image = mjpegclient.getFrame(socketFile, boundary)
     frameHeight, frameWidth, unknown = image.shape
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
-    if width > 0 and height > 0:
+    if frameWidth > 0 and frameHeight > 0:
         # Motion detection generally works best with 320 or wider images
         widthDivisor = int(frameWidth / 320)
         if widthDivisor < 1:
