@@ -124,6 +124,7 @@ if __name__ == '__main__':
             # Threshold to trigger motion
             if motionPercent > 2.0:
                 if not recording:
+                    now = datetime.datetime.now()
                     # Construct directory from configuration, camera name and date
                     fileDir = "%s%s%s%s%s%s" % (os.path.dirname(os.path.realpath(__file__)), os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
                     # Create dir for if it doesn"t exist
