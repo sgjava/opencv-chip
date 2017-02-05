@@ -28,7 +28,7 @@ formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(module)s %(message)
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-# If no args passed then use default camera
+# If no args passed then use defaults
 if len(sys.argv) < 5:
     url = "http://localhost:8080/?action=stream"
     frames = 200
