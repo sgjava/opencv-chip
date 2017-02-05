@@ -8,9 +8,11 @@ from email.mime import image
 
 """Motion detector.
 
-Resizes frame and uses moving average to determine change percent. Inner
-rectangles are filtered out as well. This can result in ~40% better
-performance and a more stable ROI.
+Resizes frame and use moving average to determine change percent. Inner
+rectangles are filtered out as well. This can result in better performance and
+a more stable ROI.
+
+A frame buffer is used to record 1 second before motion threshold is triggered.
 
 sys.argv[1] = url or will default to "http://localhost:8080/?action=stream" if no args passed.
 sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
@@ -153,9 +155,10 @@ if __name__ == '__main__':
                                   (0, 255, 0), 2)
             # If recording write frame and check motion percent
             if recording:
-                videoWriter.write(frameBuf[-1][0])
+                # Write first image in buffer (the oldest)
+                videoWriter.write(frameBuf[0][0])
                 # Threshold to stop recording
-                if motionPercent <= 0.5:
+                if motionPercent <= 0.75:
                     logger.info("Stop recording")
                     del videoWriter
                     recording = False
