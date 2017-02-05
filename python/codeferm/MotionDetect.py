@@ -90,13 +90,13 @@ if __name__ == '__main__':
         totalPixels = frameResizeWidth * frameResizeHeight
         framesLeft = frames
         movementLocations = []
-        frameBuf = [] # Frame buffer, so we can record just before motion starts
-        frameBufSize = fps # Buffer one second of video
+        frameBuf = []  # Frame buffer, so we can record just before motion starts
+        frameBufSize = fps  # Buffer one second of video
         recording = False
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0):
-            now = datetime.datetime.now() # Used for timestamp in frame buffer and filename
+            now = datetime.datetime.now()  # Used for timestamp in frame buffer and filename
             image = mjpegclient.getFrame(socketFile, boundary)
             # Buffer image
             if len(frameBuf) == frameBufSize:
@@ -144,7 +144,7 @@ if __name__ == '__main__':
                     if not os.path.exists(fileDir):
                         os.makedirs(fileDir)
                     fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
-                    videoWriter = cv2.VideoWriter("%s/%s" % (fileDir,fileName), cv2.VideoWriter_fourcc(fourcc[0],fourcc[1],fourcc[2],fourcc[3]), fps, (frameWidth, frameHeight), True)
+                    videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
                     logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                     recording = True
                 for x, y, w, h in movementLocationsFiltered:
