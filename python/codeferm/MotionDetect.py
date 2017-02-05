@@ -21,7 +21,7 @@ sys.argv[4] = frames per second for writer, int or will default to 5 if no args 
 
 """
 
-import logging, sys, time, numpy, cv2, mjpegclient
+import logging, sys, os, time, numpy, cv2, mjpegclient
 
 def inside(r, q):
     """See if one rectangle inside another"""
@@ -81,11 +81,11 @@ if __name__ == '__main__':
         # Used for full size image marking
         widthMultiplier = int(frameWidth / frameResizeWidth)
         heightMultiplier = int(frameHeight / frameResizeHeight)     
-        framesWithMotion = 0
         movingAvgImg = None
         totalPixels = frameResizeWidth * frameResizeHeight
         framesLeft = frames
         movementLocations = []
+        recording = False
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0):
@@ -123,14 +123,29 @@ if __name__ == '__main__':
                     movementLocationsFiltered.append(r)
             # Threshold to trigger motion
             if motionPercent > 2.0:
-                logger.info("Motion percent: %4.2f" % motionPercent)
-                framesWithMotion += 1
+                if not recording:
+                    # Construct directory from configuration, camera name and date
+                    fileDir = "%s%s%s%s%s%s" % (os.path.dirname(os.path.realpath(__file__)), os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                    # Create dir for if it doesn"t exist
+                    if not os.path.exists(fileDir):
+                        os.makedirs(fileDir)
+                    fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
+                    videoWriter = cv2.VideoWriter("%s/%s" % (fileDir,fileName), cv2.VideoWriter_fourcc(fourcc[0],fourcc[1],fourcc[2],fourcc[3]), fps, (frameWidth, frameHeight), True)
+                    logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                    recording = True
                 for x, y, w, h in movementLocationsFiltered:
                     cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                     # Draw rectangle around fond objects
                     cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
                                   ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                   (0, 255, 0), 2)
+            # If recording write frame and check motion percent
+            if recording:
+                videoWriter.write(image)
+                if motionPercent <= 0.0:
+                    logger.info("Stop recording")
+                    del videoWriter
+                    recording = False
             framesLeft -= 1
         elapsed = time.time() - start
         fps = frames / elapsed
