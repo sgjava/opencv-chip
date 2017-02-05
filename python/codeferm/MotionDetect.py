@@ -94,13 +94,14 @@ if __name__ == '__main__':
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0):
+            now = datetime.datetime.now() # Used for timestamp in frame buffer and filename
             image = mjpegclient.getFrame(socketFile, boundary)
             # Buffer image
             if len(frameBuf) == frameBufSize:
                 # Toss first image in list (oldest)
                 frameBuf.pop(0)
             # Add new image to end of list
-            frameBuf.append((image, int(time.mktime(timestamp.timetuple()) * 1000000 + timestamp.microsecond)))            
+            frameBuf.append((image, int(time.mktime(now.timetuple()) * 1000000 + now.microsecond)))            
             # Resize image if not the same size as the original
             if frameResizeWidth != frameWidth:
                 resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
@@ -135,7 +136,6 @@ if __name__ == '__main__':
             # Threshold to trigger motion
             if motionPercent > 2.0:
                 if not recording:
-                    now = datetime.datetime.now()
                     # Construct directory name from recordDir and date
                     fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
                     # Create dir if it doesn"t exist
