@@ -21,7 +21,7 @@ sys.argv[4] = frames per second for writer, int or will default to 5 if no args 
 
 """
 
-import logging, sys, os, time, numpy, cv2, mjpegclient
+import logging, sys, os, time, datetime, numpy, cv2, mjpegclient
 
 def inside(r, q):
     """See if one rectangle inside another"""
