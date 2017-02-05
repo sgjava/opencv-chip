@@ -154,7 +154,8 @@ if __name__ == '__main__':
             # If recording write frame and check motion percent
             if recording:
                 videoWriter.write(frameBuf[-1][0])
-                if motionPercent <= 0.0:
+                # Threshold to stop recording
+                if motionPercent <= 0.5:
                     logger.info("Stop recording")
                     del videoWriter
                     recording = False
