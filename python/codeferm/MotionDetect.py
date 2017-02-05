@@ -88,11 +88,19 @@ if __name__ == '__main__':
         totalPixels = frameResizeWidth * frameResizeHeight
         framesLeft = frames
         movementLocations = []
+        frameBuf = [] # Frame buffer, so we can record just before motion starts
+        frameBufSize = fps # Buffer one second of video
         recording = False
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0):
             image = mjpegclient.getFrame(socketFile, boundary)
+            # Buffer image
+            if len(frameBuf) == frameBufSize:
+                # Toss first image in list (oldest)
+                frameBuf.pop(0)
+            # Add new image to end of list
+            frameBuf.append((image, int(time.mktime(timestamp.timetuple()) * 1000000 + timestamp.microsecond)))            
             # Resize image if not the same size as the original
             if frameResizeWidth != frameWidth:
                 resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
@@ -128,9 +136,9 @@ if __name__ == '__main__':
             if motionPercent > 2.0:
                 if not recording:
                     now = datetime.datetime.now()
-                    # Construct directory from configuration, camera name and date
-                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
-                    # Create dir for if it doesn"t exist
+                    # Construct directory name from recordDir and date
+                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                    # Create dir if it doesn"t exist
                     if not os.path.exists(fileDir):
                         os.makedirs(fileDir)
                     fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
@@ -145,7 +153,7 @@ if __name__ == '__main__':
                                   (0, 255, 0), 2)
             # If recording write frame and check motion percent
             if recording:
-                videoWriter.write(image)
+                videoWriter.write(frameBuf[-1][0])
                 if motionPercent <= 0.0:
                     logger.info("Stop recording")
                     del videoWriter
