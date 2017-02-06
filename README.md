@@ -206,7 +206,7 @@ To run example yourself use (this is 5 FPS example):
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python CameraFpsCv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
 
-My `mjpegclient` module to read MJPEG stream and mjpg-streamer at 640x480. `mjpegclient` returns almost 100% of the actual frame rate!
+My `mjpegclient` module and mjpg-streamer at 640x480. `mjpegclient` returns almost 100% of the actual frame rate!
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
@@ -226,7 +226,7 @@ The actual CPU% per frame processed is about the same for each method with `mjpe
 
 Now we will look at writing a video from the camera. This will be the base line for CV processing. The more CPU we spend on decoding and encoding the less CPU there is for CV operations. This will form the basis for most CV projects analyzing frames from a camera, deciding what triggers a recording and finally doing something with that information. I'll skip X264 since it would only record about 2.5 FPS @ 640x480.
 
-XVID (943K) actually made smaller files than X264 and was much more efficient. 
+XVID actually made smaller files than X264 and was much more efficient. 
 
 | ~CPU % | Target FPS | Actual FPS |
 |--------|:----------:|-----------:|
