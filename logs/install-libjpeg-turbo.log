@@ -1,0 +1,741 @@
+02-04-2017 20:34:14 Removing temp dir /media/usb0/temp
+02-04-2017 20:34:14 Installing libjpeg-turbo dependenices...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following extra packages will be installed:
+  autoconf automake autopoint autotools-dev cpp cpp-4.9 debhelper dpkg-dev
+  fakeroot g++-4.9 gcc gcc-4.9 gettext gettext-base intltool-debian
+  libalgorithm-diff-perl libalgorithm-diff-xs-perl libalgorithm-merge-perl
+  libasan1 libasprintf-dev libasprintf0c2 libatomic1 libc-dev-bin libc6-dev
+  libcloog-isl4 libcroco3 libdpkg-perl libfakeroot libfile-fcntllock-perl
+  libgcc-4.9-dev libgettextpo-dev libgettextpo0 libgomp1 libisl10 libltdl-dev
+  libltdl7 libmail-sendmail-perl libmpc3 libstdc++-4.9-dev
+  libsys-hostname-long-perl libtimedate-perl libtool libubsan0 libunistring0
+  linux-libc-dev m4 make manpages-dev po-debconf
+Suggested packages:
+  autoconf-archive gnu-standards autoconf-doc cpp-doc gcc-4.9-locales dh-make
+  debian-keyring gcc-4.9-doc libstdc++6-4.9-dbg gcc-multilib flex bison gdb
+  gcc-doc libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg libasan1-dbg
+  liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg libquadmath-dbg
+  gettext-doc glibc-doc libtool-doc libstdc++-4.9-doc automaken gfortran
+  fortran95-compiler gcj-jdk make-doc libmail-box-perl
+The following NEW packages will be installed:
+  autoconf automake autopoint autotools-dev build-essential cpp cpp-4.9
+  debhelper dh-autoreconf dpkg-dev fakeroot g++ g++-4.9 gcc gcc-4.9 gettext
+  gettext-base intltool-debian libalgorithm-diff-perl
+  libalgorithm-diff-xs-perl libalgorithm-merge-perl libasan1 libasprintf-dev
+  libasprintf0c2 libatomic1 libc-dev-bin libc6-dev libcloog-isl4 libcroco3
+  libdpkg-perl libfakeroot libfile-fcntllock-perl libgcc-4.9-dev
+  libgettextpo-dev libgettextpo0 libgomp1 libisl10 libltdl-dev libltdl7
+  libmail-sendmail-perl libmpc3 libstdc++-4.9-dev libsys-hostname-long-perl
+  libtimedate-perl libtool libubsan0 libunistring0 linux-libc-dev m4 make
+  manpages-dev pkg-config po-debconf yasm
+0 upgraded, 54 newly installed, 0 to remove and 0 not upgraded.
+Need to get 36.5 MB of archives.
+After this operation, 97.5 MB of additional disk space will be used.
+Get:1 http://ftp.us.debian.org/debian/ jessie/main libasprintf0c2 armhf 0.19.3-2 [31.1 kB]
+Get:2 http://ftp.us.debian.org/debian/ jessie/main libasan1 armhf 4.9.2-10 [168 kB]
+Get:3 http://ftp.us.debian.org/debian/ jessie/main libatomic1 armhf 4.9.2-10 [6,062 B]
+Get:4 http://ftp.us.debian.org/debian/ jessie/main libisl10 armhf 0.12.2-2 [338 kB]
+Get:5 http://ftp.us.debian.org/debian/ jessie/main libcloog-isl4 armhf 0.18.2-1+b2 [50.8 kB]
+Get:6 http://ftp.us.debian.org/debian/ jessie/main libcroco3 armhf 0.6.8-3+b1 [123 kB]
+Get:7 http://ftp.us.debian.org/debian/ jessie/main libunistring0 armhf 0.9.3-5.2+b1 [263 kB]
+Get:8 http://ftp.us.debian.org/debian/ jessie/main libgettextpo0 armhf 0.19.3-2 [118 kB]
+Get:9 http://ftp.us.debian.org/debian/ jessie/main libgomp1 armhf 4.9.2-10 [35.7 kB]
+Get:10 http://ftp.us.debian.org/debian/ jessie/main libltdl7 armhf 2.4.2-1.11 [42.3 kB]
+Get:11 http://ftp.us.debian.org/debian/ jessie/main libubsan0 armhf 4.9.2-10 [69.6 kB]
+Get:12 http://ftp.us.debian.org/debian/ jessie/main libmpc3 armhf 1.0.2-1 [31.4 kB]
+Get:13 http://ftp.us.debian.org/debian/ jessie/main gettext-base armhf 0.19.3-2 [117 kB]
+Get:14 http://ftp.us.debian.org/debian/ jessie/main m4 armhf 1.4.17-4 [239 kB]
+Get:15 http://ftp.us.debian.org/debian/ jessie/main autoconf all 2.69-8 [340 kB]
+Get:16 http://ftp.us.debian.org/debian/ jessie/main autotools-dev all 20140911.1 [70.5 kB]
+Get:17 http://ftp.us.debian.org/debian/ jessie/main automake all 1:1.14.1-4+deb8u1 [724 kB]
+Get:18 http://ftp.us.debian.org/debian/ jessie/main autopoint all 0.19.3-2 [413 kB]
+Get:19 http://ftp.us.debian.org/debian/ jessie/main libc-dev-bin armhf 2.19-18+deb8u7 [232 kB]
+Get:20 http://ftp.us.debian.org/debian/ jessie/main linux-libc-dev armhf 3.16.39-1 [1,026 kB]
+Get:21 http://ftp.us.debian.org/debian/ jessie/main libc6-dev armhf 2.19-18+deb8u7 [1,750 kB]
+Get:22 http://ftp.us.debian.org/debian/ jessie/main cpp-4.9 armhf 4.9.2-10 [4,220 kB]
+Get:23 http://ftp.us.debian.org/debian/ jessie/main cpp armhf 4:4.9.2-2 [17.4 kB]
+Get:24 http://ftp.us.debian.org/debian/ jessie/main libgcc-4.9-dev armhf 4.9.2-10 [358 kB]
+Get:25 http://ftp.us.debian.org/debian/ jessie/main gcc-4.9 armhf 4.9.2-10 [4,450 kB]
+Get:26 http://ftp.us.debian.org/debian/ jessie/main gcc armhf 4:4.9.2-2 [5,138 B]
+Get:27 http://ftp.us.debian.org/debian/ jessie/main libstdc++-4.9-dev armhf 4.9.2-10 [1,135 kB]
+Get:28 http://ftp.us.debian.org/debian/ jessie/main g++-4.9 armhf 4.9.2-10 [11.8 MB]
+Get:29 http://ftp.us.debian.org/debian/ jessie/main g++ armhf 4:4.9.2-2 [1,510 B]
+Get:30 http://ftp.us.debian.org/debian/ jessie/main make armhf 4.0-8.1 [335 kB]
+Get:31 http://ftp.us.debian.org/debian/ jessie/main libtimedate-perl all 2.3000-2 [42.2 kB]
+Get:32 http://ftp.us.debian.org/debian/ jessie/main libdpkg-perl all 1.17.27 [1,075 kB]
+Get:33 http://ftp.us.debian.org/debian/ jessie/main dpkg-dev all 1.17.27 [1,548 kB]
+Get:34 http://ftp.us.debian.org/debian/ jessie/main build-essential armhf 11.7 [6,934 B]
+Get:35 http://ftp.us.debian.org/debian/ jessie/main gettext armhf 0.19.3-2 [1,183 kB]
+Get:36 http://ftp.us.debian.org/debian/ jessie/main intltool-debian all 0.35.0+20060710.1 [30.8 kB]
+Get:37 http://ftp.us.debian.org/debian/ jessie/main po-debconf all 1.0.16+nmu3 [220 kB]
+Get:38 http://ftp.us.debian.org/debian/ jessie/main debhelper all 9.20150101+deb8u2 [817 kB]
+Get:39 http://ftp.us.debian.org/debian/ jessie/main libtool all 2.4.2-1.11 [190 kB]
+Get:40 http://ftp.us.debian.org/debian/ jessie/main dh-autoreconf all 10 [15.2 kB]
+Get:41 http://ftp.us.debian.org/debian/ jessie/main libfakeroot armhf 1.20.2-1 [40.5 kB]
+Get:42 http://ftp.us.debian.org/debian/ jessie/main fakeroot armhf 1.20.2-1 [83.5 kB]
+Get:43 http://ftp.us.debian.org/debian/ jessie/main libalgorithm-diff-perl all 1.19.02-3 [51.7 kB]
+Get:44 http://ftp.us.debian.org/debian/ jessie/main libalgorithm-diff-xs-perl armhf 0.04-3+b1 [11.9 kB]
+Get:45 http://ftp.us.debian.org/debian/ jessie/main libalgorithm-merge-perl all 0.08-2 [13.5 kB]
+Get:46 http://ftp.us.debian.org/debian/ jessie/main libasprintf-dev armhf 0.19.3-2 [30.9 kB]
+Get:47 http://ftp.us.debian.org/debian/ jessie/main libfile-fcntllock-perl armhf 0.22-1+b1 [36.1 kB]
+Get:48 http://ftp.us.debian.org/debian/ jessie/main libgettextpo-dev armhf 0.19.3-2 [134 kB]
+Get:49 http://ftp.us.debian.org/debian/ jessie/main libltdl-dev armhf 2.4.2-1.11 [156 kB]
+Get:50 http://ftp.us.debian.org/debian/ jessie/main libsys-hostname-long-perl all 1.4-3 [11.6 kB]
+Get:51 http://ftp.us.debian.org/debian/ jessie/main libmail-sendmail-perl all 0.79.16-1 [26.6 kB]
+Get:52 http://ftp.us.debian.org/debian/ jessie/main manpages-dev all 3.74-1 [1,865 kB]
+Get:53 http://ftp.us.debian.org/debian/ jessie/main pkg-config armhf 0.28-1 [55.4 kB]
+Get:54 http://ftp.us.debian.org/debian/ jessie/main yasm armhf 1.2.0-2 [288 kB]
+Extracting templates from packages: 55%Extracting templates from packages: 100%
+Fetched 36.5 MB in 35s (1,037 kB/s)
+Selecting previously unselected package libasprintf0c2:armhf.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21678 files and directories currently installed.)
+Preparing to unpack .../libasprintf0c2_0.19.3-2_armhf.deb ...
+Unpacking libasprintf0c2:armhf (0.19.3-2) ...
+Selecting previously unselected package libasan1:armhf.
+Preparing to unpack .../libasan1_4.9.2-10_armhf.deb ...
+Unpacking libasan1:armhf (4.9.2-10) ...
+Selecting previously unselected package libatomic1:armhf.
+Preparing to unpack .../libatomic1_4.9.2-10_armhf.deb ...
+Unpacking libatomic1:armhf (4.9.2-10) ...
+Selecting previously unselected package libisl10:armhf.
+Preparing to unpack .../libisl10_0.12.2-2_armhf.deb ...
+Unpacking libisl10:armhf (0.12.2-2) ...
+Selecting previously unselected package libcloog-isl4:armhf.
+Preparing to unpack .../libcloog-isl4_0.18.2-1+b2_armhf.deb ...
+Unpacking libcloog-isl4:armhf (0.18.2-1+b2) ...
+Selecting previously unselected package libcroco3:armhf.
+Preparing to unpack .../libcroco3_0.6.8-3+b1_armhf.deb ...
+Unpacking libcroco3:armhf (0.6.8-3+b1) ...
+Selecting previously unselected package libunistring0:armhf.
+Preparing to unpack .../libunistring0_0.9.3-5.2+b1_armhf.deb ...
+Unpacking libunistring0:armhf (0.9.3-5.2+b1) ...
+Selecting previously unselected package libgettextpo0:armhf.
+Preparing to unpack .../libgettextpo0_0.19.3-2_armhf.deb ...
+Unpacking libgettextpo0:armhf (0.19.3-2) ...
+Selecting previously unselected package libgomp1:armhf.
+Preparing to unpack .../libgomp1_4.9.2-10_armhf.deb ...
+Unpacking libgomp1:armhf (4.9.2-10) ...
+Selecting previously unselected package libltdl7:armhf.
+Preparing to unpack .../libltdl7_2.4.2-1.11_armhf.deb ...
+Unpacking libltdl7:armhf (2.4.2-1.11) ...
+Selecting previously unselected package libubsan0:armhf.
+Preparing to unpack .../libubsan0_4.9.2-10_armhf.deb ...
+Unpacking libubsan0:armhf (4.9.2-10) ...
+Selecting previously unselected package libmpc3:armhf.
+Preparing to unpack .../libmpc3_1.0.2-1_armhf.deb ...
+Unpacking libmpc3:armhf (1.0.2-1) ...
+Selecting previously unselected package gettext-base.
+Preparing to unpack .../gettext-base_0.19.3-2_armhf.deb ...
+Unpacking gettext-base (0.19.3-2) ...
+Selecting previously unselected package m4.
+Preparing to unpack .../archives/m4_1.4.17-4_armhf.deb ...
+Unpacking m4 (1.4.17-4) ...
+Selecting previously unselected package autoconf.
+Preparing to unpack .../autoconf_2.69-8_all.deb ...
+Unpacking autoconf (2.69-8) ...
+Selecting previously unselected package autotools-dev.
+Preparing to unpack .../autotools-dev_20140911.1_all.deb ...
+Unpacking autotools-dev (20140911.1) ...
+Selecting previously unselected package automake.
+Preparing to unpack .../automake_1%3a1.14.1-4+deb8u1_all.deb ...
+Unpacking automake (1:1.14.1-4+deb8u1) ...
+Selecting previously unselected package autopoint.
+Preparing to unpack .../autopoint_0.19.3-2_all.deb ...
+Unpacking autopoint (0.19.3-2) ...
+Selecting previously unselected package libc-dev-bin.
+Preparing to unpack .../libc-dev-bin_2.19-18+deb8u7_armhf.deb ...
+Unpacking libc-dev-bin (2.19-18+deb8u7) ...
+Selecting previously unselected package linux-libc-dev:armhf.
+Preparing to unpack .../linux-libc-dev_3.16.39-1_armhf.deb ...
+Unpacking linux-libc-dev:armhf (3.16.39-1) ...
+Selecting previously unselected package libc6-dev:armhf.
+Preparing to unpack .../libc6-dev_2.19-18+deb8u7_armhf.deb ...
+Unpacking libc6-dev:armhf (2.19-18+deb8u7) ...
+Selecting previously unselected package cpp-4.9.
+Preparing to unpack .../cpp-4.9_4.9.2-10_armhf.deb ...
+Unpacking cpp-4.9 (4.9.2-10) ...
+Selecting previously unselected package cpp.
+Preparing to unpack .../cpp_4%3a4.9.2-2_armhf.deb ...
+Unpacking cpp (4:4.9.2-2) ...
+Selecting previously unselected package libgcc-4.9-dev:armhf.
+Preparing to unpack .../libgcc-4.9-dev_4.9.2-10_armhf.deb ...
+Unpacking libgcc-4.9-dev:armhf (4.9.2-10) ...
+Selecting previously unselected package gcc-4.9.
+Preparing to unpack .../gcc-4.9_4.9.2-10_armhf.deb ...
+Unpacking gcc-4.9 (4.9.2-10) ...
+Selecting previously unselected package gcc.
+Preparing to unpack .../gcc_4%3a4.9.2-2_armhf.deb ...
+Unpacking gcc (4:4.9.2-2) ...
+Selecting previously unselected package libstdc++-4.9-dev:armhf.
+Preparing to unpack .../libstdc++-4.9-dev_4.9.2-10_armhf.deb ...
+Unpacking libstdc++-4.9-dev:armhf (4.9.2-10) ...
+Selecting previously unselected package g++-4.9.
+Preparing to unpack .../g++-4.9_4.9.2-10_armhf.deb ...
+Unpacking g++-4.9 (4.9.2-10) ...
+Selecting previously unselected package g++.
+Preparing to unpack .../g++_4%3a4.9.2-2_armhf.deb ...
+Unpacking g++ (4:4.9.2-2) ...
+Selecting previously unselected package make.
+Preparing to unpack .../make_4.0-8.1_armhf.deb ...
+Unpacking make (4.0-8.1) ...
+Selecting previously unselected package libtimedate-perl.
+Preparing to unpack .../libtimedate-perl_2.3000-2_all.deb ...
+Unpacking libtimedate-perl (2.3000-2) ...
+Selecting previously unselected package libdpkg-perl.
+Preparing to unpack .../libdpkg-perl_1.17.27_all.deb ...
+Unpacking libdpkg-perl (1.17.27) ...
+Selecting previously unselected package dpkg-dev.
+Preparing to unpack .../dpkg-dev_1.17.27_all.deb ...
+Unpacking dpkg-dev (1.17.27) ...
+Selecting previously unselected package build-essential.
+Preparing to unpack .../build-essential_11.7_armhf.deb ...
+Unpacking build-essential (11.7) ...
+Selecting previously unselected package gettext.
+Preparing to unpack .../gettext_0.19.3-2_armhf.deb ...
+Unpacking gettext (0.19.3-2) ...
+Selecting previously unselected package intltool-debian.
+Preparing to unpack .../intltool-debian_0.35.0+20060710.1_all.deb ...
+Unpacking intltool-debian (0.35.0+20060710.1) ...
+Selecting previously unselected package po-debconf.
+Preparing to unpack .../po-debconf_1.0.16+nmu3_all.deb ...
+Unpacking po-debconf (1.0.16+nmu3) ...
+Selecting previously unselected package debhelper.
+Preparing to unpack .../debhelper_9.20150101+deb8u2_all.deb ...
+Unpacking debhelper (9.20150101+deb8u2) ...
+Selecting previously unselected package libtool.
+Preparing to unpack .../libtool_2.4.2-1.11_all.deb ...
+Unpacking libtool (2.4.2-1.11) ...
+Selecting previously unselected package dh-autoreconf.
+Preparing to unpack .../dh-autoreconf_10_all.deb ...
+Unpacking dh-autoreconf (10) ...
+Selecting previously unselected package libfakeroot:armhf.
+Preparing to unpack .../libfakeroot_1.20.2-1_armhf.deb ...
+Unpacking libfakeroot:armhf (1.20.2-1) ...
+Selecting previously unselected package fakeroot.
+Preparing to unpack .../fakeroot_1.20.2-1_armhf.deb ...
+Unpacking fakeroot (1.20.2-1) ...
+Selecting previously unselected package libalgorithm-diff-perl.
+Preparing to unpack .../libalgorithm-diff-perl_1.19.02-3_all.deb ...
+Unpacking libalgorithm-diff-perl (1.19.02-3) ...
+Selecting previously unselected package libalgorithm-diff-xs-perl.
+Preparing to unpack .../libalgorithm-diff-xs-perl_0.04-3+b1_armhf.deb ...
+Unpacking libalgorithm-diff-xs-perl (0.04-3+b1) ...
+Selecting previously unselected package libalgorithm-merge-perl.
+Preparing to unpack .../libalgorithm-merge-perl_0.08-2_all.deb ...
+Unpacking libalgorithm-merge-perl (0.08-2) ...
+Selecting previously unselected package libasprintf-dev:armhf.
+Preparing to unpack .../libasprintf-dev_0.19.3-2_armhf.deb ...
+Unpacking libasprintf-dev:armhf (0.19.3-2) ...
+Selecting previously unselected package libfile-fcntllock-perl.
+Preparing to unpack .../libfile-fcntllock-perl_0.22-1+b1_armhf.deb ...
+Unpacking libfile-fcntllock-perl (0.22-1+b1) ...
+Selecting previously unselected package libgettextpo-dev:armhf.
+Preparing to unpack .../libgettextpo-dev_0.19.3-2_armhf.deb ...
+Unpacking libgettextpo-dev:armhf (0.19.3-2) ...
+Selecting previously unselected package libltdl-dev:armhf.
+Preparing to unpack .../libltdl-dev_2.4.2-1.11_armhf.deb ...
+Unpacking libltdl-dev:armhf (2.4.2-1.11) ...
+Selecting previously unselected package libsys-hostname-long-perl.
+Preparing to unpack .../libsys-hostname-long-perl_1.4-3_all.deb ...
+Unpacking libsys-hostname-long-perl (1.4-3) ...
+Selecting previously unselected package libmail-sendmail-perl.
+Preparing to unpack .../libmail-sendmail-perl_0.79.16-1_all.deb ...
+Unpacking libmail-sendmail-perl (0.79.16-1) ...
+Selecting previously unselected package manpages-dev.
+Preparing to unpack .../manpages-dev_3.74-1_all.deb ...
+Unpacking manpages-dev (3.74-1) ...
+Selecting previously unselected package pkg-config.
+Preparing to unpack .../pkg-config_0.28-1_armhf.deb ...
+Unpacking pkg-config (0.28-1) ...
+Selecting previously unselected package yasm.
+Preparing to unpack .../yasm_1.2.0-2_armhf.deb ...
+Unpacking yasm (1.2.0-2) ...
+Processing triggers for man-db (2.7.0.2-5) ...
+Setting up libasprintf0c2:armhf (0.19.3-2) ...
+Setting up libasan1:armhf (4.9.2-10) ...
+Setting up libatomic1:armhf (4.9.2-10) ...
+Setting up libisl10:armhf (0.12.2-2) ...
+Setting up libcloog-isl4:armhf (0.18.2-1+b2) ...
+Setting up libcroco3:armhf (0.6.8-3+b1) ...
+Setting up libunistring0:armhf (0.9.3-5.2+b1) ...
+Setting up libgettextpo0:armhf (0.19.3-2) ...
+Setting up libgomp1:armhf (4.9.2-10) ...
+Setting up libltdl7:armhf (2.4.2-1.11) ...
+Setting up libubsan0:armhf (4.9.2-10) ...
+Setting up libmpc3:armhf (1.0.2-1) ...
+Setting up gettext-base (0.19.3-2) ...
+Setting up m4 (1.4.17-4) ...
+Setting up autoconf (2.69-8) ...
+Setting up autotools-dev (20140911.1) ...
+Setting up automake (1:1.14.1-4+deb8u1) ...
+update-alternatives: using /usr/bin/automake-1.14 to provide /usr/bin/automake (automake) in auto mode
+Setting up autopoint (0.19.3-2) ...
+Setting up libc-dev-bin (2.19-18+deb8u7) ...
+Setting up linux-libc-dev:armhf (3.16.39-1) ...
+Setting up libc6-dev:armhf (2.19-18+deb8u7) ...
+Setting up cpp-4.9 (4.9.2-10) ...
+Setting up cpp (4:4.9.2-2) ...
+Setting up libgcc-4.9-dev:armhf (4.9.2-10) ...
+Setting up gcc-4.9 (4.9.2-10) ...
+Setting up gcc (4:4.9.2-2) ...
+Setting up libstdc++-4.9-dev:armhf (4.9.2-10) ...
+Setting up g++-4.9 (4.9.2-10) ...
+Setting up g++ (4:4.9.2-2) ...
+update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+Setting up make (4.0-8.1) ...
+Setting up libtimedate-perl (2.3000-2) ...
+Setting up libdpkg-perl (1.17.27) ...
+Setting up dpkg-dev (1.17.27) ...
+Setting up build-essential (11.7) ...
+Setting up gettext (0.19.3-2) ...
+Setting up intltool-debian (0.35.0+20060710.1) ...
+Setting up po-debconf (1.0.16+nmu3) ...
+Setting up debhelper (9.20150101+deb8u2) ...
+Setting up libtool (2.4.2-1.11) ...
+Setting up dh-autoreconf (10) ...
+Setting up libfakeroot:armhf (1.20.2-1) ...
+Setting up fakeroot (1.20.2-1) ...
+update-alternatives: using /usr/bin/fakeroot-sysv to provide /usr/bin/fakeroot (fakeroot) in auto mode
+Setting up libalgorithm-diff-perl (1.19.02-3) ...
+Setting up libalgorithm-diff-xs-perl (0.04-3+b1) ...
+Setting up libalgorithm-merge-perl (0.08-2) ...
+Setting up libasprintf-dev:armhf (0.19.3-2) ...
+Setting up libfile-fcntllock-perl (0.22-1+b1) ...
+Setting up libgettextpo-dev:armhf (0.19.3-2) ...
+Setting up libltdl-dev:armhf (2.4.2-1.11) ...
+Setting up libsys-hostname-long-perl (1.4-3) ...
+Setting up libmail-sendmail-perl (0.79.16-1) ...
+Setting up manpages-dev (3.74-1) ...
+Setting up pkg-config (0.28-1) ...
+Setting up yasm (1.2.0-2) ...
+Processing triggers for libc-bin (2.19-18+deb8u7) ...
+02-04-2017 20:36:53 Cloning libjpeg-turbo
+Cloning into 'libjpeg-turbo'...
+02-04-2017 20:36:57 Patching source pre compile
+02-04-2017 20:36:57 autoreconf
+autoreconf: Entering directory `.'
+autoreconf: configure.ac: not using Gettext
+autoreconf: running: aclocal --force 
+autoreconf: configure.ac: tracing
+autoreconf: running: libtoolize --copy --force
+libtoolize: putting auxiliary files in `.'.
+libtoolize: copying file `./ltmain.sh'
+libtoolize: Consider adding `AC_CONFIG_MACRO_DIR([m4])' to configure.ac and
+libtoolize: rerunning libtoolize, to keep the correct libtool macros in-tree.
+libtoolize: Consider adding `-I m4' to ACLOCAL_AMFLAGS in Makefile.am.
+autoreconf: running: /usr/bin/autoconf --force
+autoreconf: running: /usr/bin/autoheader --force
+autoreconf: running: automake --add-missing --copy --force-missing
+configure.ac:17: installing './ar-lib'
+configure.ac:15: installing './compile'
+configure.ac:21: installing './config.guess'
+configure.ac:21: installing './config.sub'
+configure.ac:7: installing './install-sh'
+configure.ac:7: installing './missing'
+Makefile.am: installing './depcomp'
+autoreconf: Leaving directory `.'
+02-04-2017 20:37:47 Configure...
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking whether make supports nested variables... (cached) yes
+checking for style of include used by make... GNU
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether gcc understands -c and -o together... yes
+checking dependency style of gcc... gcc3
+checking how to run the C preprocessor... gcc -E
+checking for gcc... (cached) gcc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc accepts -g... (cached) yes
+checking for gcc option to accept ISO C89... (cached) none needed
+checking whether gcc understands -c and -o together... (cached) yes
+checking dependency style of gcc... (cached) gcc3
+checking for ar... ar
+checking the archiver (ar) interface... ar
+checking dependency style of gcc... gcc3
+checking build system type... armv7l-unknown-linux-gnueabihf
+checking host system type... armv7l-unknown-linux-gnueabihf
+checking how to print strings... printf
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert armv7l-unknown-linux-gnueabihf file names to armv7l-unknown-linux-gnueabihf format... func_convert_file_noop
+checking how to convert armv7l-unknown-linux-gnueabihf file names to toolchain format... func_convert_file_noop
+checking for /usr/bin/ld option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for archiver @FILE support... @
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from gcc object... ok
+checking for sysroot... no
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc supports -fno-rtti -fno-exceptions... no
+checking for gcc option to produce PIC... -fPIC -DPIC
+checking if gcc PIC flag -fPIC -DPIC works... yes
+checking if gcc static flag -static works... yes
+checking if gcc supports -c -o file.o... yes
+checking if gcc supports -c -o file.o... (cached) yes
+checking whether the gcc linker (/usr/bin/ld) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking whether ln -s works... yes
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking size of size_t... 4
+checking whether compiler supports pointers to undefined structures... yes
+checking whether __SUNPRO_C is declared... no
+checking for ANSI C header files... (cached) yes
+checking stddef.h usability... yes
+checking stddef.h presence... yes
+checking for stddef.h... yes
+checking for stdlib.h... (cached) yes
+checking locale.h usability... yes
+checking locale.h presence... yes
+checking for locale.h... yes
+checking for string.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking whether char is unsigned... yes
+checking for inline... inline
+checking for size_t... yes
+checking for unsigned char... yes
+checking for unsigned short... yes
+checking if right shift is signed... yes
+checking for memset... yes
+checking for memcpy... yes
+checking libjpeg API version... 6.2
+checking whether to include in-memory source/destination managers... yes
+checking libjpeg shared library version... 62.2.0
+checking whether the linker supports version scripts... yes (GNU style)
+checking whether to use version script when building libjpeg-turbo... yes
+checking for inline... inline __attribute__((always_inline))
+checking whether to include arithmetic encoding support... yes
+checking whether to include arithmetic decoding support... yes
+checking whether to use 12-bit samples... no
+checking whether to build TurboJPEG C wrapper... yes
+checking whether to build TurboJPEG Java wrapper... no
+checking if we have SIMD optimisations for cpu type... yes (arm)
+checking if the assembler is GNU-compatible and can be used... yes
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating pkgscripts/libjpeg-turbo.spec.tmpl
+config.status: creating pkgscripts/makecygwinpkg.tmpl
+config.status: creating pkgscripts/makedpkg.tmpl
+config.status: creating pkgscripts/makemacpkg.tmpl
+config.status: creating pkgscripts/uninstall.tmpl
+config.status: creating pkgscripts/libjpeg.pc
+config.status: creating pkgscripts/libturbojpeg.pc
+config.status: creating tjbenchtest
+config.status: creating libjpeg.map
+config.status: creating Makefile
+config.status: creating simd/Makefile
+config.status: creating java/Makefile
+config.status: creating md5/Makefile
+config.status: creating config.h
+config.status: creating jconfig.h
+config.status: creating jconfigint.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+02-04-2017 20:38:21 Make...
+make  all-recursive
+make[1]: Entering directory '/media/usb0/libjpeg-turbo/build'
+Making all in java
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build/java'
+echo timestamp > classnoinst.stamp
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build/java'
+Making all in simd
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build/simd'
+  GEN      jsimdcfg.inc
+make  all-am
+make[3]: Entering directory '/media/usb0/libjpeg-turbo/build/simd'
+  CC       jsimd_arm.lo
+../../simd/jsimd_arm.c:65:1: warning: 'parse_proc_cpuinfo' defined but not used [-Wunused-function]
+ parse_proc_cpuinfo (int bufsize)
+ ^
+  CPPAS    jsimd_arm_neon.lo
+  CCLD     libsimd.la
+make[3]: Leaving directory '/media/usb0/libjpeg-turbo/build/simd'
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build/simd'
+Making all in md5
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build/md5'
+  CC       md5cmp-md5cmp.o
+  CC       md5cmp-md5.o
+  CC       md5cmp-md5hl.o
+  CCLD     md5cmp
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build/md5'
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build'
+  CC       jcapimin.lo
+  CC       jcapistd.lo
+  CC       jccoefct.lo
+  CC       jccolor.lo
+  CC       jcdctmgr.lo
+  CC       jchuff.lo
+  CC       jcinit.lo
+  CC       jcmainct.lo
+  CC       jcmarker.lo
+  CC       jcmaster.lo
+  CC       jcomapi.lo
+  CC       jcparam.lo
+  CC       jcphuff.lo
+  CC       jcprepct.lo
+  CC       jcsample.lo
+  CC       jctrans.lo
+  CC       jdapimin.lo
+  CC       jdapistd.lo
+  CC       jdatadst.lo
+  CC       jdatasrc.lo
+  CC       jdcoefct.lo
+  CC       jdcolor.lo
+  CC       jddctmgr.lo
+  CC       jdhuff.lo
+  CC       jdinput.lo
+  CC       jdmainct.lo
+  CC       jdmarker.lo
+  CC       jdmaster.lo
+  CC       jdmerge.lo
+  CC       jdphuff.lo
+  CC       jdpostct.lo
+  CC       jdsample.lo
+  CC       jdtrans.lo
+  CC       jerror.lo
+  CC       jfdctflt.lo
+  CC       jfdctfst.lo
+  CC       jfdctint.lo
+  CC       jidctflt.lo
+  CC       jidctfst.lo
+  CC       jidctint.lo
+  CC       jidctred.lo
+  CC       jquant1.lo
+  CC       jquant2.lo
+  CC       jutils.lo
+  CC       jmemmgr.lo
+  CC       jmemnobs.lo
+  CC       jaricom.lo
+  CC       jcarith.lo
+  CC       jdarith.lo
+  CCLD     libjpeg.la
+  CC       libturbojpeg_la-jcapimin.lo
+  CC       libturbojpeg_la-jcapistd.lo
+  CC       libturbojpeg_la-jccoefct.lo
+  CC       libturbojpeg_la-jccolor.lo
+  CC       libturbojpeg_la-jcdctmgr.lo
+  CC       libturbojpeg_la-jchuff.lo
+  CC       libturbojpeg_la-jcinit.lo
+  CC       libturbojpeg_la-jcmainct.lo
+  CC       libturbojpeg_la-jcmarker.lo
+  CC       libturbojpeg_la-jcmaster.lo
+  CC       libturbojpeg_la-jcomapi.lo
+  CC       libturbojpeg_la-jcparam.lo
+  CC       libturbojpeg_la-jcphuff.lo
+  CC       libturbojpeg_la-jcprepct.lo
+  CC       libturbojpeg_la-jcsample.lo
+  CC       libturbojpeg_la-jctrans.lo
+  CC       libturbojpeg_la-jdapimin.lo
+  CC       libturbojpeg_la-jdapistd.lo
+  CC       libturbojpeg_la-jdatadst.lo
+  CC       libturbojpeg_la-jdatasrc.lo
+  CC       libturbojpeg_la-jdcoefct.lo
+  CC       libturbojpeg_la-jdcolor.lo
+  CC       libturbojpeg_la-jddctmgr.lo
+  CC       libturbojpeg_la-jdhuff.lo
+  CC       libturbojpeg_la-jdinput.lo
+  CC       libturbojpeg_la-jdmainct.lo
+  CC       libturbojpeg_la-jdmarker.lo
+  CC       libturbojpeg_la-jdmaster.lo
+  CC       libturbojpeg_la-jdmerge.lo
+  CC       libturbojpeg_la-jdphuff.lo
+  CC       libturbojpeg_la-jdpostct.lo
+  CC       libturbojpeg_la-jdsample.lo
+  CC       libturbojpeg_la-jdtrans.lo
+  CC       libturbojpeg_la-jerror.lo
+  CC       libturbojpeg_la-jfdctflt.lo
+  CC       libturbojpeg_la-jfdctfst.lo
+  CC       libturbojpeg_la-jfdctint.lo
+  CC       libturbojpeg_la-jidctflt.lo
+  CC       libturbojpeg_la-jidctfst.lo
+  CC       libturbojpeg_la-jidctint.lo
+  CC       libturbojpeg_la-jidctred.lo
+  CC       libturbojpeg_la-jquant1.lo
+  CC       libturbojpeg_la-jquant2.lo
+  CC       libturbojpeg_la-jutils.lo
+  CC       libturbojpeg_la-jmemmgr.lo
+  CC       libturbojpeg_la-jmemnobs.lo
+  CC       libturbojpeg_la-jaricom.lo
+  CC       libturbojpeg_la-jcarith.lo
+  CC       libturbojpeg_la-jdarith.lo
+  CC       libturbojpeg_la-turbojpeg.lo
+  CC       libturbojpeg_la-transupp.lo
+  CC       libturbojpeg_la-jdatadst-tj.lo
+  CC       libturbojpeg_la-jdatasrc-tj.lo
+  CCLD     libturbojpeg.la
+  CC       cjpeg-cdjpeg.o
+  CC       cjpeg-cjpeg.o
+  CC       cjpeg-rdgif.o
+  CC       cjpeg-rdppm.o
+  CC       cjpeg-rdswitch.o
+  CC       cjpeg-rdbmp.o
+  CC       cjpeg-rdtarga.o
+  CCLD     cjpeg
+  CC       djpeg-cdjpeg.o
+  CC       djpeg-djpeg.o
+  CC       djpeg-rdcolmap.o
+  CC       djpeg-rdswitch.o
+  CC       djpeg-wrgif.o
+  CC       djpeg-wrppm.o
+  CC       djpeg-wrbmp.o
+  CC       djpeg-wrtarga.o
+  CCLD     djpeg
+  CC       jpegtran.o
+  CC       rdswitch.o
+  CC       cdjpeg.o
+  CC       transupp.o
+  CCLD     jpegtran
+  CC       rdjpgcom.o
+  CCLD     rdjpgcom
+  CC       wrjpgcom.o
+  CCLD     wrjpgcom
+  CC       tjbench-tjbench.o
+  CC       tjbench-bmp.o
+  CC       tjbench-tjutil.o
+  CC       tjbench-rdbmp.o
+  CC       tjbench-rdppm.o
+  CC       tjbench-wrbmp.o
+  CC       tjbench-wrppm.o
+  CCLD     tjbench
+  CC       jcstest.o
+  CCLD     jcstest
+  CC       tjunittest.o
+  CC       tjutil.o
+  CCLD     tjunittest
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build'
+make[1]: Leaving directory '/media/usb0/libjpeg-turbo/build'
+02-04-2017 20:48:52 Install...
+Making install in java
+make[1]: Entering directory '/media/usb0/libjpeg-turbo/build/java'
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build/java'
+make[2]: Nothing to be done for 'install-exec-am'.
+make[2]: Nothing to be done for 'install-data-am'.
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build/java'
+make[1]: Leaving directory '/media/usb0/libjpeg-turbo/build/java'
+Making install in simd
+make[1]: Entering directory '/media/usb0/libjpeg-turbo/build/simd'
+make  install-am
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build/simd'
+make[3]: Entering directory '/media/usb0/libjpeg-turbo/build/simd'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/media/usb0/libjpeg-turbo/build/simd'
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build/simd'
+make[1]: Leaving directory '/media/usb0/libjpeg-turbo/build/simd'
+Making install in md5
+make[1]: Entering directory '/media/usb0/libjpeg-turbo/build/md5'
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build/md5'
+make[2]: Nothing to be done for 'install-exec-am'.
+make[2]: Nothing to be done for 'install-data-am'.
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build/md5'
+make[1]: Leaving directory '/media/usb0/libjpeg-turbo/build/md5'
+make[1]: Entering directory '/media/usb0/libjpeg-turbo/build'
+make[2]: Entering directory '/media/usb0/libjpeg-turbo/build'
+ /bin/mkdir -p '/opt/libjpeg-turbo/lib32'
+ /bin/sh ./libtool   --mode=install /usr/bin/install -c   libjpeg.la libturbojpeg.la '/opt/libjpeg-turbo/lib32'
+libtool: install: /usr/bin/install -c .libs/libjpeg.so.62.2.0 /opt/libjpeg-turbo/lib32/libjpeg.so.62.2.0
+libtool: install: (cd /opt/libjpeg-turbo/lib32 && { ln -s -f libjpeg.so.62.2.0 libjpeg.so.62 || { rm -f libjpeg.so.62 && ln -s libjpeg.so.62.2.0 libjpeg.so.62; }; })
+libtool: install: (cd /opt/libjpeg-turbo/lib32 && { ln -s -f libjpeg.so.62.2.0 libjpeg.so || { rm -f libjpeg.so && ln -s libjpeg.so.62.2.0 libjpeg.so; }; })
+libtool: install: /usr/bin/install -c .libs/libjpeg.lai /opt/libjpeg-turbo/lib32/libjpeg.la
+libtool: install: /usr/bin/install -c .libs/libturbojpeg.so.0.1.0 /opt/libjpeg-turbo/lib32/libturbojpeg.so.0.1.0
+libtool: install: (cd /opt/libjpeg-turbo/lib32 && { ln -s -f libturbojpeg.so.0.1.0 libturbojpeg.so.0 || { rm -f libturbojpeg.so.0 && ln -s libturbojpeg.so.0.1.0 libturbojpeg.so.0; }; })
+libtool: install: (cd /opt/libjpeg-turbo/lib32 && { ln -s -f libturbojpeg.so.0.1.0 libturbojpeg.so || { rm -f libturbojpeg.so && ln -s libturbojpeg.so.0.1.0 libturbojpeg.so; }; })
+libtool: install: /usr/bin/install -c .libs/libturbojpeg.lai /opt/libjpeg-turbo/lib32/libturbojpeg.la
+libtool: install: /usr/bin/install -c .libs/libjpeg.a /opt/libjpeg-turbo/lib32/libjpeg.a
+libtool: install: chmod 644 /opt/libjpeg-turbo/lib32/libjpeg.a
+libtool: install: ranlib /opt/libjpeg-turbo/lib32/libjpeg.a
+libtool: install: /usr/bin/install -c .libs/libturbojpeg.a /opt/libjpeg-turbo/lib32/libturbojpeg.a
+libtool: install: chmod 644 /opt/libjpeg-turbo/lib32/libturbojpeg.a
+libtool: install: ranlib /opt/libjpeg-turbo/lib32/libturbojpeg.a
+libtool: finish: PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/sbin" ldconfig -n /opt/libjpeg-turbo/lib32
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /opt/libjpeg-turbo/lib32
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+ /bin/mkdir -p '/opt/libjpeg-turbo/bin'
+  /bin/sh ./libtool   --mode=install /usr/bin/install -c cjpeg djpeg jpegtran rdjpgcom wrjpgcom tjbench '/opt/libjpeg-turbo/bin'
+libtool: install: /usr/bin/install -c .libs/cjpeg /opt/libjpeg-turbo/bin/cjpeg
+libtool: install: /usr/bin/install -c .libs/djpeg /opt/libjpeg-turbo/bin/djpeg
+libtool: install: /usr/bin/install -c .libs/jpegtran /opt/libjpeg-turbo/bin/jpegtran
+libtool: install: /usr/bin/install -c .libs/rdjpgcom /opt/libjpeg-turbo/bin/rdjpgcom
+libtool: install: /usr/bin/install -c .libs/wrjpgcom /opt/libjpeg-turbo/bin/wrjpgcom
+libtool: install: /usr/bin/install -c .libs/tjbench /opt/libjpeg-turbo/bin/tjbench
+ /bin/mkdir -p '/opt/libjpeg-turbo/doc'
+ /usr/bin/install -c -m 644 ../README.ijg ../README.md ../libjpeg.txt ../structure.txt ../usage.txt ../wizard.txt ../LICENSE.md '/opt/libjpeg-turbo/doc'
+ /bin/mkdir -p '/opt/libjpeg-turbo/doc'
+ /usr/bin/install -c -m 644 ../example.c '/opt/libjpeg-turbo/doc'
+ /bin/mkdir -p '/opt/libjpeg-turbo/include'
+ /usr/bin/install -c -m 644 ../jerror.h ../jmorecfg.h ../jpeglib.h ../turbojpeg.h '/opt/libjpeg-turbo/include'
+ /bin/mkdir -p '/opt/libjpeg-turbo/man/man1'
+ /usr/bin/install -c -m 644 ../cjpeg.1 ../djpeg.1 ../jpegtran.1 ../rdjpgcom.1 ../wrjpgcom.1 '/opt/libjpeg-turbo/man/man1'
+ /bin/mkdir -p '/opt/libjpeg-turbo/include'
+ /usr/bin/install -c -m 644 jconfig.h '/opt/libjpeg-turbo/include'
+ /bin/mkdir -p '/opt/libjpeg-turbo/lib32/pkgconfig'
+ /usr/bin/install -c -m 644 pkgscripts/libjpeg.pc pkgscripts/libturbojpeg.pc '/opt/libjpeg-turbo/lib32/pkgconfig'
+make[2]: Leaving directory '/media/usb0/libjpeg-turbo/build'
+make[1]: Leaving directory '/media/usb0/libjpeg-turbo/build'
+02-04-2017 20:48:56 Removing /media/usb0/temp
+02-04-2017 20:48:56 Elapsed time: 00:14:42
