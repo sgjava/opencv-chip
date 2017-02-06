@@ -6,6 +6,17 @@ This is intended for a headless server, but you can modify install-opencv.sh to 
 
 If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co/t/powering-chip-off-chg-in-using-cheap-cables/14469).
 
+*[Provides](#provides)
+*[Low Cost CV Camera](#low-cost-cv-camera)
+*[Requirements](#requirements)
+*[WARNING](#warning)
+*[]()
+*[]()
+*[]()
+*[]()
+*[]()
+*[]()
+
 ###Provides
 * Latest Oracle JDK 8 and Apache Ant
 * Latest libjpeg-turbo optimized for Cortex-A8 and Neon
