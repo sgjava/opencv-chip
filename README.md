@@ -1,6 +1,6 @@
 ![Title](images/title.png)
 
-If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how. You should be experienced with [flashing](https://docs.getchip.com/chip.html#flash-chip-with-an-os) your CHIP and formatting a USB flash drive as ext4. It also does not hurt to know Linux and OpenCV as well. I have created a set of scripts that automate the install process. I'm also including Python code to play with CV after OpenCV is installed.
+If you are interested in compiling the latest version of OpenCV for the [CHIP](https://getchip.com/pages/chip) SoC then this project will show you how (it should work with some tweaks on other ARM platforms). You should be experienced with [flashing](https://docs.getchip.com/chip.html#flash-chip-with-an-os) your CHIP and formatting a USB flash drive as ext4. It also does not hurt to know Linux and OpenCV as well. I have created a set of scripts that automate the install process. I'm also including Python code to play with CV after OpenCV is installed.
 
 This is intended for a headless server, but you can modify install-opencv.sh to use a GUI. You can see where I built OpenCV using QT [here](https://bbs.nextthing.co/t/opencv-3-2-using-hdmi-dip-for-face-detection-gui/13432). I used the HDMI DIP for the display.
 
@@ -13,7 +13,20 @@ If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co
 * Latest OpenCV with opencv_contrib optimized for libjpeg-turbo, Cortex-A8 and Neon
 * CV examples in Python for the CHIP
 
-### Requirements
+###Low Cost CV Camera
+I have made my own cameras for several years now, but the CHIPcam will be the least expensive so far. I ended up buying 10 CHIPS, so the shipping costs were spread over 5 units on each shipment. I would have just bought 10 if I knew they worked so well. The prices I give here are in US dollars, so you can expect to pay more or less depending on where you live.
+* CHIP $9 + $1.85 shipping ($9.25 shipping for 5 units), say $12
+* [10x 1M/3.3ft Black 22AWG USB A Male Plug 2 wire Power Cable Cord Connectors DIY](http://www.ebay.com/itm/321827926426) $7.59 / 10 = $0.76 (this will take a month or so from China)
+* Dupont pins [2.54mm Dupont Jumper Wire Cable Male Pin Connector,100pcs](https://www.amazon.com/gp/product/B01GFTZEVY) $4.99 for 100, so $0.10 for 2 pins. You can find them cheaper elsewhere. Prime was easy and fast.
+* 5V/2A PSU. Most of the 2A PSUs I get from Ebay do not come close to 2A. I'm going to give you $5 here and wish you luck.
+* [32GB USB Memory Stick Yoosion 2-in-1](https://www.amazon.com/gp/product/B01CTVQZUQ) $10.99
+* [Logitech C270 Webcam](https://www.amazon.com/gp/product/B004FHO5Y6) $18.99
+
+Total cost: $47.84
+
+You can pay more or less depending on the camera and flash drive. This is my first less than $50 CV camera I've built. If you were just to build a video streamer you can forego the flash drive saving another $11.
+
+###Requirements
 * CHIP
 * USB 5V/2A PSU with micro USB cable or USB cable with Dupont pins for CHG-IN.
 * USB flash drive formatted as ext4
@@ -23,10 +36,10 @@ If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co
     * For CHG-IN you need an OTG flash drive or an adapter for OTG to USB
     * Some USB cameras like the Logitech C270 can use up to 500 mA. If your CHIP shuts down try a different PSU or cable. My shutdown issues were always caused by a shady PSU. I found a good PSU in my supply and use home made CHG-IN cables. It had no problems running 100% CPU with camera and flash drive plugged in directly recording video.
 
-### WARNING
+###WARNING
 I used no-limit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU to power off the OTG port.
 
-### Flash CHIP
+###Flash CHIP
 I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hdmi-and-more/4319) since OpenCV compile and runtime can use quite a bit of memory. Plus all of my CV projects only require a headless server to run. After you flash your CHIP unplug everything and insert a ext4 formatted USB drive and the PSU. Boot up CHIP and ssh in (I had to ping the IP first in order for ssh to work).
 
 * Set a static IP address
@@ -37,7 +50,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
     * Shutdown
          * `sudo shutdown now -h`
 
-### Configure OS
+###Configure OS
 * Assign hostname and IP
     * `sudo nano /etc/hostname`
     * `sudo nano /etc/hosts`
@@ -59,7 +72,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
 * Set USB drive owner
     * `sudo chown -R chip:chip /media/usb0`
 
-### Test Camera
+###Test Camera
 If you plan on processing only video or image files then you can skip this section. Live video will allow you to create smart camera applications that react to a live video stream (versus a streaming only camera). You will need to select a USB camera that works under [Linux](http://elinux.org/RPi_USB_Webcams) and has the proper resolution.
 
 Make sure you plugged in your USB drive to the USB adapter and plug that into CHIP's OTG micro USB port (or use a OTG flash drive). The camera should be plugged into the full size USB port.
@@ -75,32 +88,32 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
     * `uvcdynctrl -f`
          * `Pixel format: YUYV (YUYV 4:2:2; MIME type: video/x-raw-yuv)`
 
-### Download project
+###Download project
 * `sudo apt-get install git-core`
 * `cd /media/usb0`
 * `git clone --depth 1 https://github.com/sgjava/opencv-chip.git`
 
-### Install The Whole Enchilada
+###Install The Whole Enchilada
 This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. There are values you can change in the individual scripts, so read them over. Skip the rest of the individual scripts below if you run this.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install.sh &`
     * Use `top` to monitor until build completes
     * Runtime ~5 hours
 
-### Install Java and Ant
+###Install Java and Ant
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo ./install-java.sh`
     * Runtime ~2 minutes
 * `java -version`
 * `ant -version`
 
-### Install libjpeg-turbo
+###Install libjpeg-turbo
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install-libjpeg-turbo.sh &`
     * Use `top` to monitor until build completes
     * Runtime ~15 minutes
 
-### Install mjpg-streamer
+###Install mjpg-streamer
 Sometimes all you need is a live video feed without further processing. This section will be what you are looking for. It also makes sense to move the UVC processing into a different Linux process or thread from the main CV code.
 
 Change `whitepatch` in `install-mjpg-streamer.sh` to True if you get a white image. I had to set this to True for using MPJEG mode. In YUYV I set it to false. The default setting is True.
@@ -116,7 +129,7 @@ Change `whitepatch` in `install-mjpg-streamer.sh` to True if you get a white ima
     * `mjpg_streamer -i "/usr/local/lib/input_uvc.so" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * In your web browser or VLC player goto `http://yourhost:8080/?action=stream` and you should see the video stream.
 
-#### mjpg-streamer performance
+####mjpg-streamer performance
 The bottom line is you need an MJPEG USB camera because CPU usage is too high using YUYV. CHIP only has one core, so you want to use a little CPU as possible acquiring the frames. If you plan on streaming only then this might not be a big deal, but CV is CPU intensive. I used a Logitech C270 for the following tests:
 
 YUYV 640x480 5 FPS
@@ -134,14 +147,14 @@ MJPG 1280x720 5 FPS
 * CPU < 1%
 * Bitrate 1689 kb/s
 
-### Install OpenCV
+###Install OpenCV
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo rm nohup.out`
 * `sudo nohup ./install-opencv.sh &`
     * Use `top` to monitor until build completes
     * Runtime ~4.5 hours
 
-### Performance testing
+###Performance testing
 I have included some Python code that will enable you to test various performance aspects of your camera. The goal is to see which methods are the most efficient and accurate. As a baseline we acquire a frame and convert it to a Numpy array. This is the format OpevCV utilizes for optimal performance. A Logitech C270 was used for testing.
 
 OpenCV's VideoCapture at 640x480. VideoCapture returns less than 50% of the actual frame rate.
@@ -211,7 +224,7 @@ To run example yourself use (this is 5 FPS example):
 
 OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU.
 
-### Motion Detection
+###Motion Detection
 
 ![Motion detection](images/peopleroi.png)
 
@@ -226,11 +239,11 @@ To run example yourself use (this is 5 FPS example):
 
 Videos will record to /media/usb0/motion-detect using the date to build the directory and name time for file name. You can increase the frames parameter to something really large (216000 is 12 hours at 5 FPS) and run using `nohup`. This is what I will do for long term testing and burn in.
 
-### References
+###References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
 * [script for easy build opencv for raspberry pi 2/3, beaglebone, cubietruck, banana pi and odroid c2 ](https://gist.github.com/lhelontra/e4357758e4d533bd415678bf11942c0a)
 
-### FreeBSD License
+###FreeBSD License
 Copyright (c) Steven P. Goldsmith
 
 All rights reserved.
