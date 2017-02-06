@@ -208,6 +208,9 @@ To run example yourself use (this is 5 FPS example):
 OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU.
 
 ### Motion Detection
+
+![Motion detection](images/peopleroi.png)
+
 This is the first example into the foray that is Computer Vision. This is also a practical example that you can use as the basis for other CV projects. From experience I can tell you that you need to understand the usage scenario. Simple motion detection will work well with static backgrounds, but using it outside you have to deal with cars, tree branches blowing, sudden light changes, etc. This is why built in motion detection is mostly useless on most security cameras. You can use ignore bitmaps and ROIs (regions of interest) to improve results with dynamic backgrounds. For instance, I can ignore my palm tree, but trigger motion if you walk in my doorway.
 
 For starters we will do basic moving average based detection. It will return ROIs that can be used in further processing. MotionDetect.py marks the motion ROIs before writing to video. You can use this for debugging and fine tuning. I ran a 12 hour test with MotionDetect.py and it stayed rock solid at 5 FPS while using 33% CPU while idle and 50% while recording according to Zabbix. This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing.
