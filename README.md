@@ -125,6 +125,7 @@ This is probably the easiest way to install everything, but you can follow the i
 * `ant -version`
 
 ###Install libjpeg-turbo
+Patches jdhuff.c to remove "Invalid SOS parameters for sequential JPEG" warning and jdmarker.c to remove "Corrupt JPEG data: xx extraneous bytes before marker 0xd9" warning. These will fill up the logs if not muted.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo nohup ./install-libjpeg-turbo.sh &`
     * Use `top` to monitor until build completes
@@ -133,7 +134,7 @@ This is probably the easiest way to install everything, but you can follow the i
 ###Install mjpg-streamer
 Sometimes all you need is a live video feed without further processing. This section will be what you are looking for. It also makes sense to move the UVC processing into a different Linux process or thread from the main CV code.
 
-Change `whitepatch` in `install-mjpg-streamer.sh` to True if you get a white image. I had to set this to True for using MPJEG mode. In YUYV I set it to false. The default setting is True.
+Change `whitepatch` in `install-mjpg-streamer.sh` to `True` if you get a white image. I had to set this to True for using MPJEG mode. In YUYV I set it to `False`. The default setting is `True`.
 
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo sh install-mjpg-streamer.sh`
@@ -165,6 +166,7 @@ MJPG 1280x720 5 FPS
 * Bitrate 1689 kb/s
 
 ###Install OpenCV
+I have included a Java patch that is disabled by default. The patch will fix memory leaks and performance issues with Java. See [OpenCV Java memory management](https://github.com/sgjava/opencvmem) for details.
 * `cd /media/usb0/opencv-chip/scripts`
 * `sudo rm nohup.out`
 * `sudo nohup ./install-opencv.sh &`
