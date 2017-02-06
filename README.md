@@ -4,6 +4,8 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 
 This is intended for a headless server, but you can modify install-opencv.sh to use a GUI. You can see where I built OpenCV using QT [here](https://bbs.nextthing.co/t/opencv-3-2-using-hdmi-dip-for-face-detection-gui/13432). I used the HDMI DIP for the display.
 
+If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co/t/powering-chip-off-chg-in-using-cheap-cables/14469).
+
 ###Provides
 * Latest Oracle JDK 8 and Apache Ant
 * Latest libjpeg-turbo optimized for Cortex-A8 and Neon
