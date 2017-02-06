@@ -7,6 +7,7 @@ If you are interested in compiling the latest version of OpenCV for the [CHIP](h
 * Latest libjpeg-turbo optimized for Cortex-A8 and Neon
 * Latest mjpg-streamer (10/27/2013 last commit) optimized with libjpeg-turbo
 * Latest OpenCV with opencv_contrib optimized for libjpeg-turbo, Cortex-A8 and Neon
+* CV examples in Python for the CHIP
 
 ### Requirements
 * CHIP
