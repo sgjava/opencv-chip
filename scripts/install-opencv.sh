@@ -86,7 +86,7 @@ log "Cloning opencv_contrib..."
 git clone --depth 1 https://github.com/Itseez/opencv_contrib.git >> $logfile 2>&1
 
 # Patch source pre cmake
-log "Patching source pre cmake"
+log "Patching gen_java.py to enable extra constants pre cmake"
 
 # Patch gen_java.py to generate constants by removing from const_ignore_list
 sed -i 's/\"CV_CAP_PROP_FPS\",/'\#\"CV_CAP_PROP_FPS\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
@@ -96,7 +96,7 @@ sed -i 's/\"CV_CAP_PROP_FRAME_COUNT\",/'\#\"CV_CAP_PROP_FRAME_COUNT\",'/g' "$ope
 # If patchjava is True then install OpenCV's contrib package
 if [ "$patchjava" = "True" ]; then
 	# Patch source pre cmake
-	log "Patching Java source pre cmake"
+log "Patching Java source to fix memory issues pre cmake"
 
 	# Patch gen_java.py to generate nativeObj as not final, so it can be modified by free() method
 	sed -i ':a;N;$!ba;s/protected final long nativeObj/protected long nativeObj/g' "$opencvhome/modules/java/generator/gen_java.py"
@@ -125,8 +125,10 @@ log "JAVA_HOME = $JAVA_HOME"
 cd "$opencvhome"
 mkdir build
 cd build
-# Optimize for CHIP
-extra_c_flag="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
+
+# Optimize for CHIP R8. OpenCV 3.2 auto detects NEON, so we leave that out
+extra_c_flag="-mtune=cortex-a8 -mfloat-abi=hard"
+
 log "Patch OpenCVCompilerOptions.cmake to apply cflags"
 sed -e "/set(OPENCV_EXTRA_C_FLAGS \"\")/c\set(OPENCV_EXTRA_C_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
 sed -e "/set(OPENCV_EXTRA_CXX_FLAGS \"\")/c\set(OPENCV_EXTRA_CXX_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
