@@ -128,7 +128,7 @@ cd build
 # Optimize for CHIP R8. OpenCV 3.2 auto detects NEON, so we leave that out
 extra_c_flag="-mtune=cortex-a8 -mfloat-abi=hard"
 
-log "Patch OpenCVCompilerOptions.cmake to apply cflags"
+log "Patch OpenCVCompilerOptions.cmake to apply cflags pre cmake"
 sed -e "/set(OPENCV_EXTRA_C_FLAGS \"\")/c\set(OPENCV_EXTRA_C_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
 sed -e "/set(OPENCV_EXTRA_CXX_FLAGS \"\")/c\set(OPENCV_EXTRA_CXX_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
 export CFLAGS="$extra_c_flag"
