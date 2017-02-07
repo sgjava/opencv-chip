@@ -85,18 +85,17 @@ git clone --depth 1 https://github.com/Itseez/opencv.git >> $logfile 2>&1
 log "Cloning opencv_contrib..."
 git clone --depth 1 https://github.com/Itseez/opencv_contrib.git >> $logfile 2>&1
 
-# Patch source pre cmake
-log "Patching gen_java.py to enable extra constants pre cmake"
-
-# Patch gen_java.py to generate constants by removing from const_ignore_list
-sed -i 's/\"CV_CAP_PROP_FPS\",/'\#\"CV_CAP_PROP_FPS\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
-sed -i 's/\"CV_CAP_PROP_FOURCC\",/'\#\"CV_CAP_PROP_FOURCC\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
-sed -i 's/\"CV_CAP_PROP_FRAME_COUNT\",/'\#\"CV_CAP_PROP_FRAME_COUNT\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
-
 # If patchjava is True then install OpenCV's contrib package
 if [ "$patchjava" = "True" ]; then
 	# Patch source pre cmake
-log "Patching Java source to fix memory issues pre cmake"
+	log "Patching gen_java.py to enable extra constants pre cmake"
+
+	# Patch gen_java.py to generate constants by removing from const_ignore_list
+	sed -i 's/\"CV_CAP_PROP_FPS\",/'\#\"CV_CAP_PROP_FPS\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
+	sed -i 's/\"CV_CAP_PROP_FOURCC\",/'\#\"CV_CAP_PROP_FOURCC\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
+	sed -i 's/\"CV_CAP_PROP_FRAME_COUNT\",/'\#\"CV_CAP_PROP_FRAME_COUNT\",'/g' "$opencvhome/modules/java/generator/gen_java.py"
+
+	log "Patching Java source to fix memory issues pre cmake"
 
 	# Patch gen_java.py to generate nativeObj as not final, so it can be modified by free() method
 	sed -i ':a;N;$!ba;s/protected final long nativeObj/protected long nativeObj/g' "$opencvhome/modules/java/generator/gen_java.py"
