@@ -114,7 +114,7 @@ log "Patching Java source to fix memory issues pre cmake"
 	sed -i ':a;N;$!ba;s/@Override\n    protected void finalize() throws Throwable {\n        n_delete(nativeObj);\n        super.finalize();\n    }/public void free() {\n        if (nativeObj != 0) {\n            release();\n            n_delete(nativeObj);\n            nativeObj = 0;\n        }    \n    }/g' "$opencvhome/modules/core/misc/java/src/java/core+Mat.java"
 
 	# Patch utils+Converters.java to replace mi.release() with mi.free()
-	sed -i 's/mi.release()/mi.free()/g' "$opencvhome$converters"
+	sed -i 's/mi.release()/mi.free()/g' "$opencvhome/modules/java/generator/src/java/utils+Converters.java"
 fi
 
 # Compile OpenCV
