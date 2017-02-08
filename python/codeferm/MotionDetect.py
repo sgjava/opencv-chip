@@ -123,7 +123,7 @@ if __name__ == '__main__':
                                       (0, 255, 0), 2)
                     # Detect pedestrians ?
                     if detectType == "P":
-                        foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, image)
+                        foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                         if len(foundLocationsList) > 0:
                             peopleFound = True
                             for foundLocations in foundLocationsList:
