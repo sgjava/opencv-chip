@@ -126,7 +126,7 @@ if __name__ == '__main__':
                         foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                         if len(foundLocationsList) > 0:
                             peopleFound = True
-                            for foundLocations in foundLocationsList:
+                            for (foundLocations, foundWeights) in (foundLocationsList,foundWeightsList):
                                 i = 0
                                 for x2, y2, w2, h2 in foundLocations:
                                     imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
