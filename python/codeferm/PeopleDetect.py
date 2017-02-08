@@ -149,13 +149,14 @@ if __name__ == '__main__':
                 if motionPercent > 2.0:
                     if not recording:
                         # Construct directory name from recordDir and date
-                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "people-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
                         # Create dir if it doesn"t exist
                         if not os.path.exists(fileDir):
                             os.makedirs(fileDir)
                         fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
                         videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
                         logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                        peopleFound = False
                         recording = True
                     for x, y, w, h in movementLocationsFiltered:
                         cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
@@ -171,6 +172,7 @@ if __name__ == '__main__':
                             # foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(16, 16), scale=1.05)
                             foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(8, 8), scale=1.1)
                             if len(foundLocations) > 0:
+                                peopleFound = True
                                 i = 0
                                 for x2, y2, w2, h2 in foundLocations:
                                     imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
@@ -190,6 +192,11 @@ if __name__ == '__main__':
                 if motionPercent <= 0.25:
                     logger.info("Stop recording")
                     del videoWriter
+                    # Change name if people found during motion
+                    if peopleFound:
+                        os.rename(fileName,"people-%s" % filename)
+                    else:
+                        os.rename(fileName,"motion-%s" % filename)
                     recording = False
             framesLeft -= 1
         elapsed = time.time() - start
