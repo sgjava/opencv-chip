@@ -4,9 +4,8 @@ Copyright (c) Steven P. Goldsmith. All rights reserved.
 Created by Steven P. Goldsmith on February 4, 2017
 sgoldsmith@codeferm.com
 """
-from email.mime import image
 
-"""People detector using resize and motion ROIs.
+"""People detector using sampling, resize and motion ROIs.
 
 Resizes frame and uses moving average to determine change percent. This can
 result in up to ~1200% better performance and a more stable ROI. Histogram
@@ -49,7 +48,7 @@ def contours(source):
 
 if __name__ == '__main__':
     # Configure logger
-    logger = logging.getLogger("MotionDetect")
+    logger = logging.getLogger("PeopleDetect")
     logger.setLevel("INFO")
     formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(module)s %(message)s")
     handler = logging.StreamHandler(sys.stdout)
@@ -61,7 +60,7 @@ if __name__ == '__main__':
         frames = 200
         fourcc = "XVID"
         fps = 5
-        recordDir = "motion"
+        recordDir = "people"
     else:
         url = sys.argv[1]
         frames = int(sys.argv[2])
@@ -85,7 +84,13 @@ if __name__ == '__main__':
         logger.info("Resized to: %dx%d" % (frameResizeWidth, frameResizeHeight))
         # Used for full size image marking
         widthMultiplier = int(frameWidth / frameResizeWidth)
-        heightMultiplier = int(frameHeight / frameResizeHeight)     
+        heightMultiplier = int(frameHeight / frameResizeHeight)
+        # Analyze only ~3 FPS which works well with this type of detection
+        frameToCheck = int(fps / 3)
+        # 0 means check every frame
+        if frameToCheck < 1:
+            frameToCheck = 0
+        skipCount = 0         
         movingAvgImg = None
         totalPixels = frameResizeWidth * frameResizeHeight
         framesLeft = frames
@@ -106,78 +111,83 @@ if __name__ == '__main__':
                 frameBuf.pop(0)
             # Add new image to end of list
             frameBuf.append((image, int(time.mktime(now.timetuple()) * 1000000 + now.microsecond)))            
-            # Resize image if not the same size as the original
-            if frameResizeWidth != frameWidth:
-                resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
-            else:
-                resizeImg = image
-            # Generate work image by blurring
-            workImg = cv2.blur(resizeImg, (8, 8))
-            # Generate moving average image if needed
-            if movingAvgImg is None:
-                movingAvgImg = numpy.float32(workImg)
-            # Generate moving average image
-            cv2.accumulateWeighted(workImg, movingAvgImg, .03)
-            diffImg = cv2.absdiff(workImg, cv2.convertScaleAbs(movingAvgImg))
-            # Convert to grayscale
-            grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
-            # Convert to BW
-            return_val, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
-            # Total number of changed motion pixels
-            motionPercent = 100.0 * cv2.countNonZero(grayImg) / totalPixels
-            # Detect if camera is adjusting and reset reference if more than maxChange
-            if motionPercent > 25.0:
-                movingAvgImg = numpy.float32(workImg)
-            movementLocations = contours(grayImg)
-            movementLocationsFiltered = []
-            # Filter out inside rectangles
-            for ri, r in enumerate(movementLocations):
-                for qi, q in enumerate(movementLocations):
-                    if ri != qi and inside(r, q):
-                        break
+            # Skip frames until skip count <= 0
+            if skipCount <= 0:
+                skipCount = frameToCheck
+                # Resize image if not the same size as the original
+                if frameResizeWidth != frameWidth:
+                    resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
                 else:
-                    movementLocationsFiltered.append(r)
-            # Threshold to trigger motion
-            if motionPercent > 2.0:
-                # See if we are recording
-                if not recording:
-                    # Construct directory name from recordDir and date
-                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "people-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
-                    # Create dir if it doesn"t exist
-                    if not os.path.exists(fileDir):
-                        os.makedirs(fileDir)
-                    fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
-                    videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
-                    logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
-                    recording = True
-                for x, y, w, h in movementLocationsFiltered:
-                    cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                    # Draw rectangle around fond objects
-                    cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
-                                  ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
-                                  (0, 255, 0), 2)
-                for x, y, w, h in movementLocationsFiltered:
-                    # Make sure ROI is big enough for detector
-                    if w > 63 and h > 127:
-                        imageRoi = resizeImg[y:y + h, x:x + w]
-                        # foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(16, 16), scale=1.05)
-                        foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(32, 32), scale=1.2)
-                        if len(foundLocations) > 0:
-                            i = 0
-                            for x2, y2, w2, h2 in foundLocations:
-                                imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
-                                # Draw rectangle around people
-                                cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
-                                # Print weight
-                                cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                                i += 1
-                            logger.info("People detected locations: %s" % (foundLocations))
+                    resizeImg = image
+                # Generate work image by blurring
+                workImg = cv2.blur(resizeImg, (8, 8))
+                # Generate moving average image if needed
+                if movingAvgImg is None:
+                    movingAvgImg = numpy.float32(workImg)
+                # Generate moving average image
+                cv2.accumulateWeighted(workImg, movingAvgImg, .03)
+                diffImg = cv2.absdiff(workImg, cv2.convertScaleAbs(movingAvgImg))
+                # Convert to grayscale
+                grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
+                # Convert to BW
+                return_val, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
+                # Total number of changed motion pixels
+                motionPercent = 100.0 * cv2.countNonZero(grayImg) / totalPixels
+                # Detect if camera is adjusting and reset reference if more than maxChange
+                if motionPercent > 25.0:
+                    movingAvgImg = numpy.float32(workImg)
+                movementLocations = contours(grayImg)
+                movementLocationsFiltered = []
+                # Filter out inside rectangles
+                for ri, r in enumerate(movementLocations):
+                    for qi, q in enumerate(movementLocations):
+                        if ri != qi and inside(r, q):
+                            break
+                    else:
+                        movementLocationsFiltered.append(r)
+                # Threshold to trigger motion
+                if motionPercent > 2.0:
+                    if not recording:
+                        # Construct directory name from recordDir and date
+                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                        # Create dir if it doesn"t exist
+                        if not os.path.exists(fileDir):
+                            os.makedirs(fileDir)
+                        fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
+                        videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
+                        logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                        recording = True
+                    for x, y, w, h in movementLocationsFiltered:
+                        cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                        # Draw rectangle around found objects
+                        cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
+                                      ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
+                                      (0, 255, 0), 2)
+                    # Check motion ROIs for people
+                    for x, y, w, h in movementLocationsFiltered:
+                        # Make sure ROI is big enough for detector
+                        if w > 63 and h > 127:
+                            imageRoi = resizeImg[y:y + h, x:x + w]
+                            # foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(16, 16), scale=1.05)
+                            foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(8, 8), scale=1.1)
+                            if len(foundLocations) > 0:
+                                i = 0
+                                for x2, y2, w2, h2 in foundLocations:
+                                    imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                    # Draw rectangle around people
+                                    cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                    # Print weight
+                                    cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                    i += 1
+                                logger.info("People detected locations: %s" % (foundLocations))
+            else:
+                skipCount -= 1                        
             # If recording write frame and check motion percent
             if recording:
                 # Write first image in buffer (the oldest)
                 videoWriter.write(frameBuf[0][0])
                 # Threshold to stop recording
-                if motionPercent <= 0.5:
+                if motionPercent <= 0.25:
                     logger.info("Stop recording")
                     del videoWriter
                     recording = False
