@@ -4,7 +4,6 @@ Copyright (c) Steven P. Goldsmith. All rights reserved.
 Created by Steven P. Goldsmith on February 4, 2017
 sgoldsmith@codeferm.com
 """
-from email.mime import image
 
 """Motion detector.
 
@@ -75,8 +74,10 @@ if __name__ == '__main__':
         skipCount = 0         
         framesLeft = frames
         movementLocations = []
-        frameBuf = []  # Frame buffer, so we can record just before motion starts
-        frameBufSize = fps  # Buffer one second of video
+        # Frame buffer, so we can record just before motion starts
+        frameBuf = []
+        # Buffer one second of video
+        frameBufSize = fps
         recording = False
         start = time.time()
         # Calculate FPS
