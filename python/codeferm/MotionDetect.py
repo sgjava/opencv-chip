@@ -79,6 +79,7 @@ if __name__ == '__main__':
         # Buffer one second of video
         frameBufSize = fps
         recording = False
+        movingAvgImg = None
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0):
@@ -98,7 +99,7 @@ if __name__ == '__main__':
                     resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
                 else:
                     resizeImg = image
-                motionPercent, movementLocationsFiltered = motiondet.detect(resizeImg)
+                movingAvgImg, motionPercent, movementLocationsFiltered = motiondet.detect(resizeImg, movingAvgImg)
                 # Threshold to trigger motion
                 if motionPercent > 2.0:
                     if not recording:
