@@ -18,12 +18,13 @@ sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
 sys.argv[3] = fourcc, string or will default to "XVID" if no args passed.
 sys.argv[4] = frames per second for writer, int or will default to 5 if no args passed.
 sys.argv[5] = recording dir, string or will default to "motion" if no args passed.
+sys.argv[6] = detection type, string or will default to "M" if no args passed.
 
 @author: sgoldsmith
 
 """
 
-import logging, sys, os, time, datetime, numpy, cv2, mjpegclient, motiondet
+import logging, sys, os, time, datetime, numpy, cv2, mjpegclient, motiondet, pedestriandet
 
 if __name__ == '__main__':
     # Configure logger
@@ -34,18 +35,20 @@ if __name__ == '__main__':
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     # If no args passed then use defaults
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 6:
         url = "http://localhost:8080/?action=stream"
         frames = 200
         fourcc = "XVID"
         fps = 5
         recordDir = "motion"
+        detectType = "M"
     else:
         url = sys.argv[1]
         frames = int(sys.argv[2])
         fourcc = sys.argv[3]
         fps = int(sys.argv[4])
         recordDir = sys.argv[5]
+        detectType = sys.argv[6]
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
     # Open MJPEG stream
@@ -73,13 +76,11 @@ if __name__ == '__main__':
             frameToCheck = 0
         skipCount = 0         
         framesLeft = frames
-        movementLocations = []
         # Frame buffer, so we can record just before motion starts
         frameBuf = []
         # Buffer one second of video
         frameBufSize = fps
         recording = False
-        movingAvgImg = None
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0):
@@ -99,7 +100,8 @@ if __name__ == '__main__':
                     resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
                 else:
                     resizeImg = image
-                motionPercent, movementLocationsFiltered = motiondet.detect(resizeImg)
+                # Detect motion
+                motionPercent, movementLocations = motiondet.detect(resizeImg)
                 # Threshold to trigger motion
                 if motionPercent > 2.0:
                     if not recording:
@@ -112,12 +114,26 @@ if __name__ == '__main__':
                         videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
                         logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                         recording = True
-                    for x, y, w, h in movementLocationsFiltered:
+                    for x, y, w, h in movementLocations:
                         cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                         # Draw rectangle around found objects
                         cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
                                       ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                       (0, 255, 0), 2)
+                    # Detect pedestrians ?
+                    if detectType == "P":
+                        foundLocations, foundWeights = pedestriandet.detect(movementLocations, image)
+                        if len(foundLocations) > 0:
+                            peopleFound = True
+                            i = 0
+                            for x2, y2, w2, h2 in foundLocations:
+                                imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                # Draw rectangle around people
+                                cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                # Print weight
+                                cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                i += 1
+                            logger.info("People detected locations: %s" % (foundLocations))
             else:
                 skipCount -= 1                        
             # If recording write frame and check motion percent
@@ -131,7 +147,7 @@ if __name__ == '__main__':
                     recording = False
             framesLeft -= 1
         elapsed = time.time() - start
-        fps = frames / elapsed
-        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (fps, elapsed))
+        fpsElapsed = frames / elapsed
+        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (fpsElapsed, elapsed))
         socketFile.close()
         streamSock.close()

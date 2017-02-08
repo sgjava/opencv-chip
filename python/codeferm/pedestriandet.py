@@ -17,12 +17,12 @@ import cv2
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
-def detect(locations, image, resizeImg, mark):
+def detect(locations, image):
     """Check ROIs for pedestrians"""
     global hog
     for x, y, w, h in locations:
         # Make sure ROI is big enough for detector
         if w > 63 and h > 127:
-            imageRoi = resizeImg[y:y + h, x:x + w]
+            imageRoi = image[y:y + h, x:x + w]
             foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(8, 8), scale=1.1)
-    return foundLocations
+    return foundLocations, foundWeights
