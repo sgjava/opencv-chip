@@ -11,6 +11,10 @@ Resizes frame, sampling and use moving average to determine change percent. Inne
 rectangles are filtered out as well. This can result in better performance and
 a more stable ROI.
 
+Optional pedestrian detector using sampling, resize and motion ROIs. Histogram of Oriented
+Gradients ([Dalal2005]) object detector is used. You can get up to 1200%
+performance boost using this method.
+
 A frame buffer is used to record 1 second before motion threshold is triggered.
 
 sys.argv[1] = url or will default to "http://localhost:8080/?action=stream" if no args passed.
@@ -106,7 +110,7 @@ if __name__ == '__main__':
                 if motionPercent > 2.0:
                     if not recording:
                         # Construct directory name from recordDir and date
-                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
                         # Create dir if it doesn"t exist
                         if not os.path.exists(fileDir):
                             os.makedirs(fileDir)
