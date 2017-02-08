@@ -24,63 +24,7 @@ sys.argv[5] = recording dir, string or will default to "motion" if no args passe
 
 """
 
-import logging, sys, os, time, datetime, numpy, cv2, mjpegclient
-
-def inside(r, q):
-    """See if one rectangle inside another"""
-    rx, ry, rw, rh = r
-    qx, qy, qw, qh = q
-    return rx > qx and ry > qy and rx + rw < qx + qw and ry + rh < qy + qh
-
-def contours(source):
-    """Return contours"""
-    # The background (bright) dilates around the black regions of frame
-    source = cv2.dilate(source, None, iterations=15);
-    # The bright areas of the image (the background, apparently), get thinner, whereas the dark zones bigger
-    source = cv2.erode(source, None, iterations=10);
-    # Find contours
-    image, contours, heirarchy = cv2.findContours(source, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    # Add objects with motion
-    movementLocations = []
-    for contour in contours:
-        rect = cv2.boundingRect(contour)
-        movementLocations.append(rect)
-    return movementLocations
-
-def motion(movingAvgImg):
-    """Detect motion"""
-    # Resize image if not the same size as the original
-    if frameResizeWidth != frameWidth:
-        resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
-    else:
-        resizeImg = image
-    # Generate work image by blurring
-    workImg = cv2.blur(resizeImg, (8, 8))
-    # Generate moving average image if needed
-    if movingAvgImg is None:
-        movingAvgImg = numpy.float32(workImg)
-    # Generate moving average image
-    cv2.accumulateWeighted(workImg, movingAvgImg, .03)
-    diffImg = cv2.absdiff(workImg, cv2.convertScaleAbs(movingAvgImg))
-    # Convert to grayscale
-    grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
-    # Convert to BW
-    return_val, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
-    # Total number of changed motion pixels
-    motionPercent = 100.0 * cv2.countNonZero(grayImg) / totalPixels
-    # Detect if camera is adjusting and reset reference if more than percentage
-    if motionPercent > 25.0:
-        movingAvgImg = numpy.float32(workImg)
-    movementLocations = contours(grayImg)
-    movementLocationsFiltered = []
-    # Filter out inside rectangles
-    for ri, r in enumerate(movementLocations):
-        for qi, q in enumerate(movementLocations):
-            if ri != qi and inside(r, q):
-                break
-        else:
-            movementLocationsFiltered.append(r)
-    return movingAvgImg, motionPercent, movementLocationsFiltered
+import logging, sys, os, time, datetime, numpy, cv2, mjpegclient, motiondet
 
 if __name__ == '__main__':
     # Configure logger
@@ -90,7 +34,6 @@ if __name__ == '__main__':
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    
     # If no args passed then use defaults
     if len(sys.argv) < 5:
         url = "http://localhost:8080/?action=stream"
@@ -104,13 +47,15 @@ if __name__ == '__main__':
         fourcc = sys.argv[3]
         fps = int(sys.argv[4])
         recordDir = sys.argv[5]
-        
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
+    # Open MJPEG stream
     socketFile, streamSock, boundary = mjpegclient.open(url, 10)
+    # Determine image dimensions
     image = mjpegclient.getFrame(socketFile, boundary)
     frameHeight, frameWidth, unknown = image.shape
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
+    # Make sure we have positive values
     if frameWidth > 0 and frameHeight > 0:
         # Motion detection generally works best with 320 or wider images
         widthDivisor = int(frameWidth / 320)
@@ -128,8 +73,6 @@ if __name__ == '__main__':
         if frameToCheck < 1:
             frameToCheck = 0
         skipCount = 0         
-        movingAvgImg = None
-        totalPixels = frameResizeWidth * frameResizeHeight
         framesLeft = frames
         movementLocations = []
         frameBuf = []  # Frame buffer, so we can record just before motion starts
@@ -149,25 +92,30 @@ if __name__ == '__main__':
             # Skip frames until skip count <= 0
             if skipCount <= 0:
                 skipCount = frameToCheck
-            movingAvgImg, motionPercent, movementLocationsFiltered = motion(movingAvgImg)
-            # Threshold to trigger motion
-            if motionPercent > 2.0:
-                if not recording:
-                    # Construct directory name from recordDir and date
-                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
-                    # Create dir if it doesn"t exist
-                    if not os.path.exists(fileDir):
-                        os.makedirs(fileDir)
-                    fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
-                    videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
-                    logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
-                    recording = True
-                for x, y, w, h in movementLocationsFiltered:
-                    cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                    # Draw rectangle around found objects
-                    cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
-                                  ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
-                                  (0, 255, 0), 2)
+                # Resize image if not the same size as the original
+                if frameResizeWidth != frameWidth:
+                    resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
+                else:
+                    resizeImg = image
+                motionPercent, movementLocationsFiltered = motiondet.detect(resizeImg)
+                # Threshold to trigger motion
+                if motionPercent > 2.0:
+                    if not recording:
+                        # Construct directory name from recordDir and date
+                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                        # Create dir if it doesn"t exist
+                        if not os.path.exists(fileDir):
+                            os.makedirs(fileDir)
+                        fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
+                        videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
+                        logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                        recording = True
+                    for x, y, w, h in movementLocationsFiltered:
+                        cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                        # Draw rectangle around found objects
+                        cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
+                                      ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
+                                      (0, 255, 0), 2)
             else:
                 skipCount -= 1                        
             # If recording write frame and check motion percent
