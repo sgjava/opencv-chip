@@ -123,18 +123,19 @@ if __name__ == '__main__':
                                       (0, 255, 0), 2)
                     # Detect pedestrians ?
                     if detectType == "P":
-                        foundLocations, foundWeights = pedestriandet.detect(movementLocations, image)
-                        if len(foundLocations) > 0:
+                        foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, image)
+                        if len(foundLocationsList) > 0:
                             peopleFound = True
-                            i = 0
-                            for x2, y2, w2, h2 in foundLocations:
-                                imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
-                                # Draw rectangle around people
-                                cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
-                                # Print weight
-                                cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                                i += 1
-                            logger.info("People detected locations: %s" % (foundLocations))
+                            for foundLocations in foundLocationsList:
+                                i = 0
+                                for x2, y2, w2, h2 in foundLocations:
+                                    imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                    # Draw rectangle around people
+                                    cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                    # Print weight
+                                    cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                    i += 1
+                            logger.info("People detected locations: %s" % (foundLocationsList))
             else:
                 skipCount -= 1                        
             # If recording write frame and check motion percent
