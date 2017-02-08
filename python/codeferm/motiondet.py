@@ -13,6 +13,8 @@ sgoldsmith@codeferm.com
 
 import numpy, cv2
 
+movingAvgImg = None
+
 def inside(r, q):
     """See if one rectangle inside another"""
     rx, ry, rw, rh = r
@@ -34,8 +36,10 @@ def contours(image):
         movementLocations.append(rect)
     return movementLocations
 
-def detect(image, movingAvgImg):
+def detect(image):
     """Detect motion"""
+    global movingAvgImg
+    movementLocationsFiltered = []
     # Generate work image by blurring
     workImg = cv2.blur(image, (8, 8))
     # Generate moving average image if needed
@@ -54,13 +58,13 @@ def detect(image, movingAvgImg):
     # Detect if camera is adjusting and reset reference if more than threshold
     if motionPercent > 25.0:
         movingAvgImg = numpy.float32(workImg)
-    movementLocations = contours(grayImg)
-    # Filter out inside rectangles
-    movementLocationsFiltered = []
-    for ri, r in enumerate(movementLocations):
-        for qi, q in enumerate(movementLocations):
-            if ri != qi and inside(r, q):
-                break
-        else:
-            movementLocationsFiltered.append(r)
-    return movingAvgImg, motionPercent, movementLocationsFiltered
+    else:
+        movementLocations = contours(grayImg)
+        # Filter out inside rectangles
+        for ri, r in enumerate(movementLocations):
+            for qi, q in enumerate(movementLocations):
+                if ri != qi and inside(r, q):
+                    break
+            else:
+                movementLocationsFiltered.append(r)
+    return motionPercent, movementLocationsFiltered
