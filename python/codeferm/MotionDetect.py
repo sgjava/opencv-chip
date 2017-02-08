@@ -47,7 +47,7 @@ def contours(source):
         movementLocations.append(rect)
     return movementLocations
 
-def motion():
+def motion(movingAvgImg):
     """Detect motion"""
     # Resize image if not the same size as the original
     if frameResizeWidth != frameWidth:
@@ -149,7 +149,7 @@ if __name__ == '__main__':
             # Skip frames until skip count <= 0
             if skipCount <= 0:
                 skipCount = frameToCheck
-            movingAvgImg, motionPercent, movementLocationsFiltered = motion()
+            movingAvgImg, motionPercent, movementLocationsFiltered = motion(movingAvgImg)
             # Threshold to trigger motion
             if motionPercent > 2.0:
                 if not recording:
