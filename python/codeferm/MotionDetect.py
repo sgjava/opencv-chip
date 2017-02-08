@@ -173,7 +173,7 @@ if __name__ == '__main__':
                     logger.info("Stop recording")
                     del videoWriter
                     recording = False
-                framesLeft -= 1
+            framesLeft -= 1
         elapsed = time.time() - start
         fps = frames / elapsed
         logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (fps, elapsed))
