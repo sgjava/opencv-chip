@@ -39,7 +39,6 @@ def contours(image):
 def detect(image):
     """Detect motion"""
     global movingAvgImg
-    movementLocationsFiltered = []
     # Generate work image by blurring
     workImg = cv2.blur(image, (8, 8))
     # Generate moving average image if needed
@@ -58,13 +57,13 @@ def detect(image):
     # Detect if camera is adjusting and reset reference if more than threshold
     if motionPercent > 25.0:
         movingAvgImg = numpy.float32(workImg)
-    else:
-        movementLocations = contours(grayImg)
-        # Filter out inside rectangles
-        for ri, r in enumerate(movementLocations):
-            for qi, q in enumerate(movementLocations):
-                if ri != qi and inside(r, q):
-                    break
-            else:
-                movementLocationsFiltered.append(r)
+    movementLocations = contours(grayImg)
+    # Filter out inside rectangles
+    movementLocationsFiltered = []
+    for ri, r in enumerate(movementLocations):
+        for qi, q in enumerate(movementLocations):
+            if ri != qi and inside(r, q):
+                break
+        else:
+            movementLocationsFiltered.append(r)
     return motionPercent, movementLocationsFiltered
