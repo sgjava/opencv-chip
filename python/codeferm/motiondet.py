@@ -11,7 +11,7 @@ sgoldsmith@codeferm.com
 
 """
 
-import cv2
+import numpy, cv2
 
 movingAvgImg = None
 
