@@ -80,7 +80,7 @@ def motion(source, movingAvgImg, totalPixels):
                 break
         else:
             movementLocationsFiltered.append(r)
-    return motionPercent, movementLocationsFiltered
+    return movingAvgImg, motionPercent, movementLocationsFiltered
 
 if __name__ == '__main__':
     # Configure logger
@@ -149,7 +149,7 @@ if __name__ == '__main__':
             # Skip frames until skip count <= 0
             if skipCount <= 0:
                 skipCount = frameToCheck
-            motionPercent, movementLocationsFiltered = motion(image, movingAvgImg, totalPixels)
+            movingAvgImg, motionPercent, movementLocationsFiltered = motion(image, movingAvgImg, totalPixels)
             # Threshold to trigger motion
             if motionPercent > 2.0:
                 if not recording:
