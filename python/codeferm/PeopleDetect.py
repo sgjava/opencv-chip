@@ -194,9 +194,9 @@ if __name__ == '__main__':
                     del videoWriter
                     # Change name if people found during motion
                     if peopleFound:
-                        os.rename(fileName,"people-%s" % filename)
+                        os.rename(fileName,"people-%s" % fileName)
                     else:
-                        os.rename(fileName,"motion-%s" % filename)
+                        os.rename(fileName,"motion-%s" % fileName)
                     recording = False
             framesLeft -= 1
         elapsed = time.time() - start
