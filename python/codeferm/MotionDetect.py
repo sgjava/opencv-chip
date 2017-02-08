@@ -47,6 +47,41 @@ def contours(source):
         movementLocations.append(rect)
     return movementLocations
 
+def motion(source):
+    """Detect motion"""
+    # Resize image if not the same size as the original
+    if frameResizeWidth != frameWidth:
+        resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
+    else:
+        resizeImg = image
+    # Generate work image by blurring
+    workImg = cv2.blur(resizeImg, (8, 8))
+    # Generate moving average image if needed
+    if movingAvgImg is None:
+        movingAvgImg = numpy.float32(workImg)
+    # Generate moving average image
+    cv2.accumulateWeighted(workImg, movingAvgImg, .03)
+    diffImg = cv2.absdiff(workImg, cv2.convertScaleAbs(movingAvgImg))
+    # Convert to grayscale
+    grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
+    # Convert to BW
+    return_val, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
+    # Total number of changed motion pixels
+    motionPercent = 100.0 * cv2.countNonZero(grayImg) / totalPixels
+    # Detect if camera is adjusting and reset reference if more than percentage
+    if motionPercent > 25.0:
+        movingAvgImg = numpy.float32(workImg)
+    movementLocations = contours(grayImg)
+    movementLocationsFiltered = []
+    # Filter out inside rectangles
+    for ri, r in enumerate(movementLocations):
+        for qi, q in enumerate(movementLocations):
+            if ri != qi and inside(r, q):
+                break
+        else:
+            movementLocationsFiltered.append(r)
+    return movementLocationsFiltered
+
 if __name__ == '__main__':
     # Configure logger
     logger = logging.getLogger("MotionDetect")
@@ -55,6 +90,7 @@ if __name__ == '__main__':
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+    
     # If no args passed then use defaults
     if len(sys.argv) < 5:
         url = "http://localhost:8080/?action=stream"
@@ -113,55 +149,25 @@ if __name__ == '__main__':
             # Skip frames until skip count <= 0
             if skipCount <= 0:
                 skipCount = frameToCheck
-                # Resize image if not the same size as the original
-                if frameResizeWidth != frameWidth:
-                    resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
-                else:
-                    resizeImg = image
-                # Generate work image by blurring
-                workImg = cv2.blur(resizeImg, (8, 8))
-                # Generate moving average image if needed
-                if movingAvgImg is None:
-                    movingAvgImg = numpy.float32(workImg)
-                # Generate moving average image
-                cv2.accumulateWeighted(workImg, movingAvgImg, .03)
-                diffImg = cv2.absdiff(workImg, cv2.convertScaleAbs(movingAvgImg))
-                # Convert to grayscale
-                grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
-                # Convert to BW
-                return_val, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
-                # Total number of changed motion pixels
-                motionPercent = 100.0 * cv2.countNonZero(grayImg) / totalPixels
-                # Detect if camera is adjusting and reset reference if more than maxChange
-                if motionPercent > 25.0:
-                    movingAvgImg = numpy.float32(workImg)
-                movementLocations = contours(grayImg)
-                movementLocationsFiltered = []
-                # Filter out inside rectangles
-                for ri, r in enumerate(movementLocations):
-                    for qi, q in enumerate(movementLocations):
-                        if ri != qi and inside(r, q):
-                            break
-                    else:
-                        movementLocationsFiltered.append(r)
-                # Threshold to trigger motion
-                if motionPercent > 2.0:
-                    if not recording:
-                        # Construct directory name from recordDir and date
-                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
-                        # Create dir if it doesn"t exist
-                        if not os.path.exists(fileDir):
-                            os.makedirs(fileDir)
-                        fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
-                        videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
-                        logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
-                        recording = True
-                    for x, y, w, h in movementLocationsFiltered:
-                        cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                        # Draw rectangle around found objects
-                        cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
-                                      ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
-                                      (0, 255, 0), 2)
+            movementLocationsFiltered = motion(image)
+            # Threshold to trigger motion
+            if motionPercent > 2.0:
+                if not recording:
+                    # Construct directory name from recordDir and date
+                    fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion-detect", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                    # Create dir if it doesn"t exist
+                    if not os.path.exists(fileDir):
+                        os.makedirs(fileDir)
+                    fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
+                    videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
+                    logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                    recording = True
+                for x, y, w, h in movementLocationsFiltered:
+                    cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                    # Draw rectangle around found objects
+                    cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
+                                  ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
+                                  (0, 255, 0), 2)
             else:
                 skipCount -= 1                        
             # If recording write frame and check motion percent
