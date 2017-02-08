@@ -24,9 +24,9 @@ def inside(r, q):
 def contours(image):
     """Return contours"""
     # The background (bright) dilates around the black regions of frame
-    source = cv2.dilate(image, None, iterations=15);
+    image = cv2.dilate(image, None, iterations=15);
     # The bright areas of the image (the background, apparently), get thinner, whereas the dark zones bigger
-    source = cv2.erode(image, None, iterations=10);
+    image = cv2.erode(image, None, iterations=10);
     # Find contours
     image, contours, heirarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # Add objects with motion
