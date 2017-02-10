@@ -23,12 +23,13 @@ sys.argv[3] = fourcc, string or will default to "XVID" if no args passed.
 sys.argv[4] = frames per second for writer, int or will default to 5 if no args passed.
 sys.argv[5] = recording dir, string or will default to "motion" if no args passed.
 sys.argv[6] = detection type, string or will default to "M" if no args passed.
+sys.argv[7] = mark objects, boolean or will default to "False" if no args passed.
 
 @author: sgoldsmith
 
 """
 
-import logging, sys, os, time, datetime, numpy, cv2, mjpegclient, motiondet, pedestriandet
+import logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet
 
 if __name__ == '__main__':
     # Configure logger
@@ -46,6 +47,7 @@ if __name__ == '__main__':
         fps = 5
         recordDir = "motion"
         detectType = "M"
+        mark = False
     else:
         url = sys.argv[1]
         frames = int(sys.argv[2])
@@ -53,12 +55,27 @@ if __name__ == '__main__':
         fps = int(sys.argv[4])
         recordDir = sys.argv[5]
         detectType = sys.argv[6]
+        mark = sys.argv[7]
+    # See if we should use MJPEG stream
+    if urlparse.urlparse(url).scheme == "http":
+        mjpeg = True
+    else:
+        mjpeg = False
+    # Init video capture
+    if mjpeg:
+        # Open MJPEG stream
+        socketFile, streamSock, boundary = mjpegclient.open(url, 10)
+        # Determine image dimensions
+        image = mjpegclient.getFrame(socketFile, boundary)
+        frameHeight, frameWidth, unknown = image.shape
+    else:
+        videoCapture = cv2.VideoCapture(url)
+        frameHeight = videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        frameWidth = videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        fps = videoCapture.get(cv2.CAP_PROP_FPS)
+    logger.info("mjpeg %s" % mjpeg)
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
-    # Open MJPEG stream
-    socketFile, streamSock, boundary = mjpegclient.open(url, 10)
-    # Determine image dimensions
-    image = mjpegclient.getFrame(socketFile, boundary)
     frameHeight, frameWidth, unknown = image.shape
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
     # Make sure we have positive values
@@ -74,7 +91,7 @@ if __name__ == '__main__':
         widthMultiplier = int(frameWidth / frameResizeWidth)
         heightMultiplier = int(frameHeight / frameResizeHeight)
         # Analyze only ~3 FPS which works well with this type of detection
-        frameToCheck = int(fps / 3)
+        frameToCheck = int(fps / 4)
         # 0 means check every frame
         if frameToCheck < 1:
             frameToCheck = 0
@@ -89,7 +106,10 @@ if __name__ == '__main__':
         # Calculate FPS
         while(framesLeft > 0):
             now = datetime.datetime.now()  # Used for timestamp in frame buffer and filename
-            image = mjpegclient.getFrame(socketFile, boundary)
+            if mjpeg:
+                image = mjpegclient.getFrame(socketFile, boundary)
+            else:
+                ret, image = videoCapture.read()
             # Buffer image
             if len(frameBuf) == frameBufSize:
                 # Toss first image in list (oldest)
@@ -119,26 +139,28 @@ if __name__ == '__main__':
                         logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                         peopleFound = False
                         recording = True
-                    for x, y, w, h in movementLocations:
-                        cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                        # Draw rectangle around found objects
-                        cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
-                                      ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
-                                      (0, 255, 0), 2)
+                    if mark:
+                        for x, y, w, h in movementLocations:
+                            cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                            # Draw rectangle around found objects
+                            cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
+                                          ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
+                                          (0, 255, 0), 2)
                     # Detect pedestrians ?
                     if detectType == "P":
                         foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                         if len(foundLocationsList) > 0:
                             peopleFound = True
-                            for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
-                                i = 0
-                                for x2, y2, w2, h2 in foundLocations:
-                                    imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
-                                    # Draw rectangle around people
-                                    cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
-                                    # Print weight
-                                    cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                                    i += 1
+                            if mark:
+                                for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
+                                    i = 0
+                                    for x2, y2, w2, h2 in foundLocations:
+                                        imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                        # Draw rectangle around people
+                                        cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                        # Print weight
+                                        cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                        i += 1
                             logger.info("People detected locations: %s" % (foundLocationsList))
             else:
                 skipCount -= 1                        
@@ -155,5 +177,9 @@ if __name__ == '__main__':
         elapsed = time.time() - start
         fpsElapsed = frames / elapsed
         logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (fpsElapsed, elapsed))
-        socketFile.close()
-        streamSock.close()
+        # Clean up
+        if mjpeg:
+            socketFile.close()
+            streamSock.close()
+        else:
+            del videoCapture
