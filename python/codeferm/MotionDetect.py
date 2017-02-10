@@ -76,7 +76,6 @@ if __name__ == '__main__':
     logger.info("mjpeg %s" % mjpeg)
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
-    frameHeight, frameWidth, unknown = image.shape
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
     # Make sure we have positive values
     if frameWidth > 0 and frameHeight > 0:
