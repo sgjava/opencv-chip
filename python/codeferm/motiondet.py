@@ -56,7 +56,7 @@ def detect(image):
     height, width, unknown = image.shape
     motionPercent = 100.0 * cv2.countNonZero(grayImg) / (width * height)
     # Detect if camera is adjusting and reset reference if more than threshold
-    if motionPercent > 25.0:
+    if motionPercent > 50.0:
         movingAvgImg = numpy.float32(workImg)
     else:
         movementLocations = contours(grayImg)
