@@ -47,7 +47,7 @@ if __name__ == '__main__':
         fps = 5
         recordDir = "motion"
         detectType = "M"
-        mark = False
+        mark = "false"
     else:
         url = sys.argv[1]
         frames = int(sys.argv[2])
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                         logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                         peopleFound = False
                         recording = True
-                    if mark:
+                    if mark.lower() == "true":
                         for x, y, w, h in movementLocations:
                             cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                             # Draw rectangle around found objects
@@ -147,11 +147,11 @@ if __name__ == '__main__':
                                           ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                           (0, 255, 0), 2)
                     # Detect pedestrians ?
-                    if detectType == "P":
+                    if detectType.lower() == "p":
                         foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                         if len(foundLocationsList) > 0:
                             peopleFound = True
-                            if mark:
+                            if mark.lower() == "true":
                                 for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
                                     i = 0
                                     for x2, y2, w2, h2 in foundLocations:
