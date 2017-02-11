@@ -251,17 +251,18 @@ OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive
 
 This is the first example into the foray that is Computer Vision. This is also a practical example that you can use as the basis for other CV projects. From experience I can tell you that you need to understand the usage scenario. Simple motion detection will work well with static backgrounds, but using it outside you have to deal with cars, tree branches blowing, sudden light changes, etc. This is why built in motion detection is mostly useless on most security cameras. You can use ignore bitmaps and ROI (regions of interest) to improve results with dynamic backgrounds. For instance, I can ignore my palm tree, but trigger motion if you walk in my doorway.
 
-For starters we will do basic moving average based detection. It will return ROI that can be used in further processing. MotionDetect.py can mark the motion ROI before writing to video. You can use this for debugging and fine tuning. I ran a 14 hour test with MotionDetect.py (with pedestrian detection) and it stayed rock solid at 10 FPS while using < 40% CPU when idle and 90% peaks when doing pedestrian detection and recording according to Zabbix. This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing.
+For starters we will do basic moving average based detection. It will return ROI that can be used in further processing. MotionDetect.py can mark the motion ROI before writing to video. You can use this for debugging and fine tuning. I ran a 14 hour test with MotionDetect.py (with pedestrian detection) and it stayed rock solid at 10 FPS while using < 40% CPU when idle and 90% peaks when doing pedestrian detection and recording according to Zabbix.
 
 ![Pedestrian detection](images/people-10fps.png)
 
-To run example yourself use (this is 5 FPS example):
+This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `nohup mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www" &`
 * `python MotionDetect.py http://localhost:8080/?action=stream 400 XVID 5 /media/usb0 m true`
 
 To process a video file you have already recorded without marking (replace the file name):
 * `python MotionDetect.py /media/usb0/motion/2017-02-10/19-32-48.avi 400 XVID 5 /media/usb0 m true`
+* Frames and FPS parameters will be ignored for files since that comes from the video file
 * This is handy for debugging issues or fine tuning
 
 Videos will record to /media/usb0/motion using the date to build the directory and name time for file name. You can increase the frames parameter to something really large (216000 is 12 hours at 5 FPS) and run using `nohup`. This is what I will do for long term testing and burn in.
