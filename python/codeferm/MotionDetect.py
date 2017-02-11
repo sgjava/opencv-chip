@@ -169,13 +169,14 @@ if __name__ == '__main__':
                                             i += 1
                                 logger.info("People detected locations: %s" % (foundLocationsList))
                 else:
-                    skipCount -= 1                        
+                    skipCount -= 1
             # If recording write frame and check motion percent
             if recording:
                 # Write first image in buffer (the oldest)
-                videoWriter.write(frameBuf[0][0])
+                if frameOk:
+                    videoWriter.write(frameBuf[0][0])
                 # Threshold to stop recording
-                if motionPercent <= 0.25:
+                if motionPercent <= 0.25 or not frameOk:
                     logger.info("Stop recording")
                     del videoWriter
                     if peopleFound:
