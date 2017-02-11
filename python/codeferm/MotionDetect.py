@@ -103,18 +103,18 @@ if __name__ == '__main__':
         # Buffer one second of video
         frameBufSize = fps
         recording = False
-        lastFrame = False
+        frameOk = True
         frameCount = 0
         start = time.time()
         # Calculate FPS
-        while(framesLeft > 0 and not lastFrame):
+        while(framesLeft > 0 and frameOk):
             now = datetime.datetime.now()  # Used for timestamp in frame buffer and filename
             if mjpeg:
                 image = mjpegclient.getFrame(socketFile, boundary)
             else:
                 ret, image = videoCapture.read()
-                lastFrame = ret
-            if not lastFrame:
+                frameOk = ret
+            if frameOk:
                 frameCount += 1
                 # Buffer image
                 if len(frameBuf) == frameBufSize:
