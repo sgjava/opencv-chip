@@ -185,7 +185,7 @@ if __name__ == '__main__':
         if not mjpeg:
             frames = frameCount
         fpsElapsed = frames / elapsed
-        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (fpsElapsed, elapsed))
+        logger.info("Calculated %4.1f FPS, frames: %d, elapsed time: %4.2f seconds" % (fpsElapsed, frameCount, elapsed))
         # Clean up
         if mjpeg:
             socketFile.close()
