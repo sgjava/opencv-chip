@@ -260,6 +260,7 @@ To run example yourself use (this is 5 FPS example):
 
 To process a video file you have already recorded without marking (replace the file name):
 * `python MotionDetect.py /media/usb0/motion/2017-02-10/19-32-48.avi 400 XVID 5 /media/usb0 m true`
+* This is handy for debugging issues or fine tuning
 
 Videos will record to /media/usb0/motion using the date to build the directory and name time for file name. You can increase the frames parameter to something really large (216000 is 12 hours at 5 FPS) and run using `nohup`. This is what I will do for long term testing and burn in.
 
