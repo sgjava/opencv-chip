@@ -68,11 +68,14 @@ if __name__ == '__main__':
         # Determine image dimensions
         image = mjpegclient.getFrame(socketFile, boundary)
         frameHeight, frameWidth, unknown = image.shape
+        framesLeft = frames
     else:
         videoCapture = cv2.VideoCapture(url)
         frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
         fps = int(videoCapture.get(cv2.CAP_PROP_FPS))
+        # We do not know frame count using VideoCapture to read file
+        framesLeft = 10000000
     logger.info("mjpeg %s" % mjpeg)
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
@@ -95,74 +98,78 @@ if __name__ == '__main__':
         if frameToCheck < 1:
             frameToCheck = 0
         skipCount = 0         
-        framesLeft = frames
         # Frame buffer, so we can record just before motion starts
         frameBuf = []
         # Buffer one second of video
         frameBufSize = fps
         recording = False
+        lastFrame = False
+        frameCount = 0
         start = time.time()
         # Calculate FPS
-        while(framesLeft > 0):
+        while(framesLeft > 0 and not lastFrame):
             now = datetime.datetime.now()  # Used for timestamp in frame buffer and filename
             if mjpeg:
                 image = mjpegclient.getFrame(socketFile, boundary)
             else:
                 ret, image = videoCapture.read()
-            # Buffer image
-            if len(frameBuf) == frameBufSize:
-                # Toss first image in list (oldest)
-                frameBuf.pop(0)
-            # Add new image to end of list
-            frameBuf.append((image, int(time.mktime(now.timetuple()) * 1000000 + now.microsecond)))            
-            # Skip frames until skip count <= 0
-            if skipCount <= 0:
-                skipCount = frameToCheck
-                # Resize image if not the same size as the original
-                if frameResizeWidth != frameWidth:
-                    resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
+                lastFrame = ret
+            if not lastFrame:
+                frameCount += 1
+                # Buffer image
+                if len(frameBuf) == frameBufSize:
+                    # Toss first image in list (oldest)
+                    frameBuf.pop(0)
+                # Add new image to end of list
+                frameBuf.append((image, int(time.mktime(now.timetuple()) * 1000000 + now.microsecond)))            
+                # Skip frames until skip count <= 0
+                if skipCount <= 0:
+                    skipCount = frameToCheck
+                    # Resize image if not the same size as the original
+                    if frameResizeWidth != frameWidth:
+                        resizeImg = cv2.resize(image, (frameResizeWidth, frameResizeHeight), interpolation=cv2.INTER_NEAREST)
+                    else:
+                        resizeImg = image
+                    # Detect motion
+                    motionPercent, movementLocations = motiondet.detect(resizeImg)
+                    # Threshold to trigger motion
+                    if motionPercent > 2.0:
+                        if not recording:
+                            # Construct directory name from recordDir and date
+                            fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                            # Create dir if it doesn"t exist
+                            if not os.path.exists(fileDir):
+                                os.makedirs(fileDir)
+                            fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
+                            videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
+                            logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                            peopleFound = False
+                            recording = True
+                        if mark.lower() == "true":
+                            for x, y, w, h in movementLocations:
+                                cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                # Draw rectangle around found objects
+                                cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
+                                              ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
+                                              (0, 255, 0), 2)
+                        # Detect pedestrians ?
+                        if detectType.lower() == "p":
+                            foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
+                            if len(foundLocationsList) > 0:
+                                peopleFound = True
+                                if mark.lower() == "true":
+                                    for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
+                                        i = 0
+                                        for x2, y2, w2, h2 in foundLocations:
+                                            imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                            # Draw rectangle around people
+                                            cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                            # Print weight
+                                            cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                            i += 1
+                                logger.info("People detected locations: %s" % (foundLocationsList))
                 else:
-                    resizeImg = image
-                # Detect motion
-                motionPercent, movementLocations = motiondet.detect(resizeImg)
-                # Threshold to trigger motion
-                if motionPercent > 2.0:
-                    if not recording:
-                        # Construct directory name from recordDir and date
-                        fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
-                        # Create dir if it doesn"t exist
-                        if not os.path.exists(fileDir):
-                            os.makedirs(fileDir)
-                        fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
-                        videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
-                        logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
-                        peopleFound = False
-                        recording = True
-                    if mark.lower() == "true":
-                        for x, y, w, h in movementLocations:
-                            cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                            # Draw rectangle around found objects
-                            cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
-                                          ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
-                                          (0, 255, 0), 2)
-                    # Detect pedestrians ?
-                    if detectType.lower() == "p":
-                        foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
-                        if len(foundLocationsList) > 0:
-                            peopleFound = True
-                            if mark.lower() == "true":
-                                for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
-                                    i = 0
-                                    for x2, y2, w2, h2 in foundLocations:
-                                        imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
-                                        # Draw rectangle around people
-                                        cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
-                                        # Print weight
-                                        cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                                        i += 1
-                            logger.info("People detected locations: %s" % (foundLocationsList))
-            else:
-                skipCount -= 1                        
+                    skipCount -= 1                        
             # If recording write frame and check motion percent
             if recording:
                 # Write first image in buffer (the oldest)
@@ -174,6 +181,9 @@ if __name__ == '__main__':
                     recording = False
             framesLeft -= 1
         elapsed = time.time() - start
+        # Use actual frame count if VideoCapture
+        if not mjpeg:
+            frames = frameCount
         fpsElapsed = frames / elapsed
         logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (fpsElapsed, elapsed))
         # Clean up
