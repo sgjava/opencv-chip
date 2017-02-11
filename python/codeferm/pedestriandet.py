@@ -18,7 +18,7 @@ hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
 def detect(locations, image):
-    """Check ROIs for pedestrians"""
+    """Check ROI for pedestrians"""
     global hog
     foundLocationsList = []
     foundWeightsList = []

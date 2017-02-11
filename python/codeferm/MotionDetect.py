@@ -7,11 +7,11 @@ sgoldsmith@codeferm.com
 
 """Motion detector.
 
-Resizes frame, sampling and use moving average to determine change percent. Inner
+Resizes frame, sampling and uses moving average to determine change percent. Inner
 rectangles are filtered out as well. This can result in better performance and
 a more stable ROI.
 
-Optional pedestrian detector using sampling, resize and motion ROIs. Histogram of Oriented
+Optional pedestrian detector using sampling, resize and motion ROI. Histogram of Oriented
 Gradients ([Dalal2005]) object detector is used. You can get up to 1200%
 performance boost using this method.
 
