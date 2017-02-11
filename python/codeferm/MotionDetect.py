@@ -70,8 +70,8 @@ if __name__ == '__main__':
         frameHeight, frameWidth, unknown = image.shape
     else:
         videoCapture = cv2.VideoCapture(url)
-        frameHeight = videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        frameWidth = videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
         fps = int(videoCapture.get(cv2.CAP_PROP_FPS))
     logger.info("mjpeg %s" % mjpeg)
     logger.info("OpenCV %s" % cv2.__version__)
