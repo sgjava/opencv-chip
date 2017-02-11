@@ -178,6 +178,8 @@ if __name__ == '__main__':
                 if motionPercent <= 0.25:
                     logger.info("Stop recording")
                     del videoWriter
+                    if peopleFound:
+                        os.rename("%s/%s" % (fileDir, fileName),"%s/%s-people" % (fileDir, fileName))
                     recording = False
             framesLeft -= 1
         elapsed = time.time() - start
