@@ -179,8 +179,9 @@ if __name__ == '__main__':
                 if motionPercent <= 0.25 or not frameOk:
                     logger.info("Stop recording")
                     del videoWriter
+                    # Rename video to show people found
                     if peopleFound:
-                        os.rename("%s/%s" % (fileDir, fileName),"%s/%s-people" % (fileDir, fileName))
+                        os.rename("%s/%s" % (fileDir, fileName),"%s/people-%s" % (fileDir, fileName))
                     recording = False
             framesLeft -= 1
         elapsed = time.time() - start
