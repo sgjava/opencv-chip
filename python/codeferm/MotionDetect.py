@@ -22,8 +22,8 @@ sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
 sys.argv[3] = fourcc, string or will default to "XVID" if no args passed.
 sys.argv[4] = frames per second for writer, int or will default to 5 if no args passed.
 sys.argv[5] = recording dir, string or will default to "motion" if no args passed.
-sys.argv[6] = detection type, string or will default to "M" if no args passed.
-sys.argv[7] = mark objects, boolean or will default to "False" if no args passed.
+sys.argv[6] = detection type, string or will default to "m" if no args passed.
+sys.argv[7] = mark objects, boolean or will default to "false" if no args passed.
 
 @author: sgoldsmith
 
