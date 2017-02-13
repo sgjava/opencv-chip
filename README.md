@@ -258,10 +258,11 @@ For starters we will do basic moving average based detection. It will return ROI
 This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `nohup mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www" &`
-* `python MotionDetect.py http://localhost:8080/?action=stream 400 XVID 5 /media/usb0 m true`
+* `python MotionDetect.py motiondetect.ini`
 
 To process a video file you have already recorded without marking (replace the file name):
-* `python MotionDetect.py /media/usb0/motion/2017-02-10/19-32-48.avi 400 XVID 5 /media/usb0 m true`
+* Edit motiondetect.ini and change url to file name.
+* `python MotionDetect.py motiondetect.ini`
 * Frames and FPS parameters will be ignored for files since that comes from the video file
 * This is handy for debugging issues or fine tuning
 
