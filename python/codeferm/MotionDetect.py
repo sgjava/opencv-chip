@@ -45,6 +45,7 @@ if __name__ == '__main__':
     url = parser.get("camera", "url")
     frames = parser.getint("camera", "frames")
     fps = parser.getint("camera", "fps")
+    fourcc = parser.get("camera", "fourcc")
     recordFileExt = parser.get("camera", "recordFileExt")
     recordDir = parser.get("camera", "recordDir")
     detectType = parser.get("camera", "detectType")
