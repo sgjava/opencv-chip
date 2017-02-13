@@ -17,46 +17,39 @@ performance boost using this method.
 
 A frame buffer is used to record 1 second before motion threshold is triggered.
 
-sys.argv[1] = url or will default to "http://localhost:8080/?action=stream" if no args passed.
-sys.argv[2] = frames to capture, int or will default to "200" if no args passed.
-sys.argv[3] = fourcc, string or will default to "XVID" if no args passed.
-sys.argv[4] = frames per second for writer, int or will default to 5 if no args passed.
-sys.argv[5] = recording dir, string or will default to "motion" if no args passed.
-sys.argv[6] = detection type, string or will default to "m" if no args passed.
-sys.argv[7] = mark objects, boolean or will default to "false" if no args passed.
+sys.argv[1] = configuration file name or will default to "motiondetect.ini" if no args passed.
 
 @author: sgoldsmith
 
 """
 
-import logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet
+import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        configFileName = "motiondetect.ini"
+    else:
+        configFileName = sys.argv[1]
+    parser = ConfigParser.SafeConfigParser()
+    # Read configuration file
+    parser.read(configFileName)
     # Configure logger
     logger = logging.getLogger("MotionDetect")
-    logger.setLevel("INFO")
-    formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(module)s %(message)s")
+    logger.setLevel(parser.get("logging", "level"))
+    formatter = logging.Formatter(parser.get("logging", "formatter"))
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    # If no args passed then use defaults
-    if len(sys.argv) < 6:
-        url = "http://localhost:8080/?action=stream"
-        frames = 200
-        fourcc = "XVID"
-        fps = 5
-        recordDir = "motion"
-        detectType = "M"
-        mark = "false"
-    else:
-        url = sys.argv[1]
-        frames = int(sys.argv[2])
-        fourcc = sys.argv[3]
-        fps = int(sys.argv[4])
-        recordDir = sys.argv[5]
-        detectType = sys.argv[6]
-        mark = sys.argv[7]
-    # See if we should use MJPEG stream
+    # Set camera related data attributes
+    cameraName = parser.get("camera", "name")    
+    url = parser.get("camera", "url")
+    frames = parser.getint("camera", "frames")
+    fps = parser.getint("camera", "fps")
+    recordFileExt = parser.get("camera", "recordFileExt")
+    recordDir = parser.get("camera", "recordDir")
+    detectType = parser.get("camera", "detectType")
+    mark = parser.getboolean("camera", "mark")
+    # See if we should use MJPEG client
     if urlparse.urlparse(url).scheme == "http":
         mjpeg = True
     else:
@@ -76,7 +69,6 @@ if __name__ == '__main__':
         fps = int(videoCapture.get(cv2.CAP_PROP_FPS))
         # We do not know frame count using VideoCapture to read file
         framesLeft = 10000000
-    logger.info("mjpeg %s" % mjpeg)
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, frames to capture: %d" % (url, frames))
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
@@ -145,7 +137,7 @@ if __name__ == '__main__':
                             logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                             peopleFound = False
                             recording = True
-                        if mark.lower() == "true":
+                        if mark:
                             for x, y, w, h in movementLocations:
                                 cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                 # Draw rectangle around found objects
@@ -157,7 +149,7 @@ if __name__ == '__main__':
                             foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
-                                if mark.lower() == "true":
+                                if mark:
                                     for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
                                         i = 0
                                         for x2, y2, w2, h2 in foundLocations:
@@ -167,7 +159,7 @@ if __name__ == '__main__':
                                             # Print weight
                                             cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
-                                logger.info("People detected locations: %s" % (foundLocationsList))
+                                logger.debug("People detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
             # If recording write frame and check motion percent
