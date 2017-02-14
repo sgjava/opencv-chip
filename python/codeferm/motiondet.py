@@ -51,15 +51,15 @@ def detect(image):
     # Convert to grayscale
     grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
     # Convert to BW
-    ret, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
+    ret, bwImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
     # Total number of changed motion pixels
     height, width, unknown = image.shape
-    motionPercent = 100.0 * cv2.countNonZero(grayImg) / (width * height)
+    motionPercent = 100.0 * cv2.countNonZero(bwImg) / (width * height)
     # Detect if camera is adjusting and reset reference if more than threshold
     if motionPercent > 50.0:
         movingAvgImg = numpy.float32(workImg)
     else:
-        movementLocations = contours(grayImg)
+        movementLocations = contours(bwImg)
         # Filter out inside rectangles
         for ri, r in enumerate(movementLocations):
             for qi, q in enumerate(movementLocations):
