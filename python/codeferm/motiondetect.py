@@ -154,10 +154,10 @@ if __name__ == '__main__':
                                 cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
                                               ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                               (0, 255, 0), 2)
-                                if x < 0:
+                                if x <= 0:
                                     x = 0
-                                if y < 0:
-                                    y = 4
+                                if y <= 0:
+                                    y = 14
                                 cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
 
                         # Detect pedestrians ?
@@ -172,10 +172,10 @@ if __name__ == '__main__':
                                             imageRoi = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
                                             # Draw rectangle around people
                                             cv2.rectangle(imageRoi, (x * widthMultiplier, y * heightMultiplier), (x * widthMultiplier + (w * widthMultiplier), y * heightMultiplier + (h * heightMultiplier) - 1), (255, 0, 0), 2)
-                                            if x < 0:
+                                            if x <= 0:
                                                 x = 0
-                                            if y < 0:
-                                                y = 4
+                                            if y <= 0:
+                                                y = 14
                                             # Print weight
                                             cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x * widthMultiplier, y * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
