@@ -150,11 +150,16 @@ if __name__ == '__main__':
                             recording = True
                         if mark:
                             for x, y, w, h in movementLocations:
-                                cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                 # Draw rectangle around found objects
                                 cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
                                               ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                               (0, 255, 0), 2)
+                                if x < 0:
+                                    x = 0
+                                if y < 0:
+                                    y = 4
+                                cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
                             foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
@@ -163,12 +168,16 @@ if __name__ == '__main__':
                                 if mark:
                                     for foundLocations, foundWeights in zip(foundLocationsList, foundWeightsList):
                                         i = 0
-                                        for x2, y2, w2, h2 in foundLocations:
+                                        for x, y, w, h in foundLocations:
                                             imageRoi = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
                                             # Draw rectangle around people
-                                            cv2.rectangle(imageRoi, (x2 * widthMultiplier, y2 * heightMultiplier), (x2 * widthMultiplier + (w2 * widthMultiplier), y2 * heightMultiplier + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                            cv2.rectangle(imageRoi, (x * widthMultiplier, y * heightMultiplier), (x * widthMultiplier + (w * widthMultiplier), y * heightMultiplier + (h * heightMultiplier) - 1), (255, 0, 0), 2)
+                                            if x < 0:
+                                                x = 0
+                                            if y < 0:
+                                                y = 4
                                             # Print weight
-                                            cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x2 * widthMultiplier, y2 * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                            cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x * widthMultiplier, y * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
                         # Face detection?
@@ -178,10 +187,10 @@ if __name__ == '__main__':
                                 facesFound = True
                                 if mark:
                                     for foundLocations in foundLocationsList:
-                                        for x2, y2, w2, h2 in foundLocations:
+                                        for x, y, w, h in foundLocations:
                                             imageRoi = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
                                             # Draw rectangle around faces
-                                            cv2.rectangle(imageRoi, (x2 * widthMultiplier, y2 * heightMultiplier), (x2 * widthMultiplier + (w2 * widthMultiplier), y2 * heightMultiplier + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                            cv2.rectangle(imageRoi, (x * widthMultiplier, y * heightMultiplier), (x * widthMultiplier + (w * widthMultiplier), y * heightMultiplier + (h * heightMultiplier) - 1), (255, 0, 0), 2)
                                 logger.debug("Face detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
