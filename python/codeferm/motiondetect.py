@@ -144,7 +144,7 @@ if __name__ == '__main__':
                                 os.makedirs(fileDir)
                             fileName = "%s.%s" % (now.strftime("%H-%M-%S"), recordFileExt)
                             videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
-                            logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
+                            logger.info("Start recording (%4.2f) %s/%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                             peopleFound = False
                             facesFound = False
                             recording = True
