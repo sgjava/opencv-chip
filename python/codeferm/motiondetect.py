@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # Read configuration file
     parser.read(configFileName)
     # Configure logger
-    logger = logging.getLogger("MotionDetect")
+    logger = logging.getLogger("motiondetect")
     logger.setLevel(parser.get("logging", "level"))
     formatter = logging.Formatter(parser.get("logging", "formatter"))
     handler = logging.StreamHandler(sys.stdout)
@@ -114,7 +114,7 @@ if __name__ == '__main__':
                 if elapse >= fpsInterval:
                     start = curTime
                     fps = frames / elapse
-                    self.logger.debug("%3.1f FPS" % fps)
+                    logger.debug("%3.1f FPS" % fps)
                     frames = 0                
                 # Buffer image
                 if len(frameBuf) == frameBufSize:
