@@ -197,6 +197,8 @@ if __name__ == '__main__':
                     # Rename video to show people found
                     if peopleFound:
                         os.rename("%s/%s" % (fileDir, fileName), "%s/people-%s" % (fileDir, fileName))
+                    elif facesFound:
+                        os.rename("%s/%s" % (fileDir, fileName), "%s/faces-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - start
         # Clean up
