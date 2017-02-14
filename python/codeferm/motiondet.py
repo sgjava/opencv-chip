@@ -67,4 +67,4 @@ def detect(image):
                     break
             else:
                 movementLocationsFiltered.append(r)
-    return motionPercent, movementLocationsFiltered
+    return grayImg, motionPercent, movementLocationsFiltered

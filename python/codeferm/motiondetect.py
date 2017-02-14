@@ -133,7 +133,7 @@ if __name__ == '__main__':
                     else:
                         resizeImg = image
                     # Detect motion
-                    motionPercent, movementLocations = motiondet.detect(resizeImg)
+                    grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg)
                     # Threshold to trigger motion
                     if motionPercent > 2.0:
                         if not recording:
@@ -173,7 +173,7 @@ if __name__ == '__main__':
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
                         # Face detection?
                         elif detectType.lower() == "f":
-                            foundLocationsList = facedet.detect(movementLocations, resizeImg)
+                            foundLocationsList = facedet.detect(movementLocations, grayImg)
                             if len(foundLocationsList) > 0:
                                 facesFound = True
                                 if mark:
