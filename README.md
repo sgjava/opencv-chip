@@ -192,7 +192,7 @@ OpenCV's VideoCapture at 640x480. VideoCapture returns less than 50% of the actu
 
 To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
-* `python CameraFpsCv.py -1 200 640 480 5`
+* `python camerafpscv.py -1 200 640 480 5`
 
 OpenCV's VideoCapture and mjpg-streamer at 640x480. VideoCapture returns less than 66% of the actual frame rate.
 
@@ -208,7 +208,7 @@ OpenCV's VideoCapture and mjpg-streamer at 640x480. VideoCapture returns less th
 To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
-* `python CameraFpsCv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
+* `python camerafpscv.py http://localhost:8080/?action=stream?dummy=param.mjpg 200 640 480 5`
 
 My `mjpegclient` module and mjpg-streamer at 640x480. `mjpegclient` returns almost 100% of the actual frame rate!
 
@@ -224,7 +224,7 @@ My `mjpegclient` module and mjpg-streamer at 640x480. `mjpegclient` returns almo
 To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
-* `python CameraFpsMjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
+* `python camerafpsmjpeg.py http://localhost:8080/?action=stream?dummy=param.mjpg 200`
 
 The actual CPU% per frame processed is about the same for each method with `mjpegclient` being a little more efficient. If driving the camera near actual FPS is important then `mjpegclient` is one solution.
 
@@ -241,7 +241,7 @@ XVID actually made smaller files than X264 and was much more efficient.
 To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
-* `python CameraWriter.py http://localhost:8080/?action=stream 200 XVID 5 video-xvid.avi`
+* `python camerawriter.py http://localhost:8080/?action=stream 200 XVID 5 video-xvid.avi`
 
 OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU.
 
@@ -251,18 +251,18 @@ OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive
 
 This is the first example into the foray that is Computer Vision. This is also a practical example that you can use as the basis for other CV projects. From experience I can tell you that you need to understand the usage scenario. Simple motion detection will work well with static backgrounds, but using it outside you have to deal with cars, tree branches blowing, sudden light changes, etc. This is why built in motion detection is mostly useless on most security cameras. You can use ignore bitmaps and ROI (regions of interest) to improve results with dynamic backgrounds. For instance, I can ignore my palm tree, but trigger motion if you walk in my doorway.
 
-For starters we will do basic moving average based detection. It will return ROI that can be used in further processing. MotionDetect.py can mark the motion ROI before writing to video. You can use this for debugging and fine tuning. I ran a 14 hour test with MotionDetect.py (with pedestrian detection) and it stayed rock solid 640x480 @ 10 FPS while using < 40% CPU when idle and 90% peaks when doing pedestrian detection and recording according to Zabbix.
+For starters we will do basic moving average based detection. It will return ROI that can be used in further processing. motiondetect.py can mark the motion ROI before writing to video. You can use this for debugging and fine tuning. I ran a 14 hour test with motiondetect.py (with pedestrian detection) and it stayed rock solid 640x480 @ 10 FPS while using < 40% CPU when idle and 90% peaks when doing pedestrian detection and recording according to Zabbix.
 
 ![Pedestrian detection](images/people-10fps.png)
 
 This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `nohup mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www" &`
-* `python MotionDetect.py motiondetect.ini`
+* `python motiondetect.py motiondetect.ini`
 
 To process a video file you have already recorded without marking (replace the file name):
 * Edit motiondetect.ini and change url to file name.
-* `python MotionDetect.py motiondetect.ini`
+* `python motiondetect.py motiondetect.ini`
 * Frames and FPS parameters will be ignored for files since that comes from the video file
 * This is handy for debugging issues or fine tuning
 

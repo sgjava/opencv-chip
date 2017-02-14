@@ -101,7 +101,8 @@ if __name__ == '__main__':
         start = time.time()
         # Calculate FPS
         while(framesLeft > 0 and frameOk):
-            now = datetime.datetime.now()  # Used for timestamp in frame buffer and filename
+            # Used for timestamp in frame buffer and filename
+            now = datetime.datetime.now()
             if mjpeg:
                 image = mjpegclient.getFrame(socketFile, boundary)
             else:
