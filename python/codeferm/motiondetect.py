@@ -181,7 +181,7 @@ if __name__ == '__main__':
                                         for x2, y2, w2, h2 in foundLocations:
                                             imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
                                             # Draw rectangle around faces
-                                            cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                            cv2.rectangle(imageRoi2, (x2 * widthMultiplier, y2 * heightMultiplier), (x2 * widthMultiplier + (w2 * widthMultiplier), y2 * heightMultiplier + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
                                 logger.debug("Face detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
