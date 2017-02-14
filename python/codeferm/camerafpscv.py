@@ -23,7 +23,7 @@ http://host/?action=stream?dummy=param.mjpg
 import logging, sys, time, re, socket, cv2
 
 # Configure logger
-logger = logging.getLogger("CameraFpsCv")
+logger = logging.getLogger("camerfpscv")
 logger.setLevel("INFO")
 formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(module)s %(message)s")
 handler = logging.StreamHandler(sys.stdout)
