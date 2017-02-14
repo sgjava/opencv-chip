@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # Set camera related data attributes
     cameraName = parser.get("camera", "name")    
     url = parser.get("camera", "url")
-    frames = parser.getint("camera", "frames")
+    fpsInterval = parser.getfloat("camera", "fpsInterval")
     fps = parser.getint("camera", "fps")
     fourcc = parser.get("camera", "fourcc")
     recordFileExt = parser.get("camera", "recordFileExt")
@@ -62,16 +62,13 @@ if __name__ == '__main__':
         # Determine image dimensions
         image = mjpegclient.getFrame(socketFile, boundary)
         frameHeight, frameWidth, unknown = image.shape
-        framesLeft = frames
     else:
         videoCapture = cv2.VideoCapture(url)
         frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
         fps = int(videoCapture.get(cv2.CAP_PROP_FPS))
-        # We do not know frame count using VideoCapture to read file
-        framesLeft = 10000000
     logger.info("OpenCV %s" % cv2.__version__)
-    logger.info("URL: %s, frames to capture: %d" % (url, frames))
+    logger.info("URL: %s, fps: %d" % (url, fps))
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
     # Make sure we have positive values
     if frameWidth > 0 and frameHeight > 0:
@@ -97,10 +94,10 @@ if __name__ == '__main__':
         frameBufSize = fps
         recording = False
         frameOk = True
-        frameCount = 0
+        frames = 0
         start = time.time()
         # Calculate FPS
-        while(framesLeft > 0 and frameOk):
+        while(frameOk):
             # Used for timestamp in frame buffer and filename
             now = datetime.datetime.now()
             if mjpeg:
@@ -109,7 +106,16 @@ if __name__ == '__main__':
                 ret, image = videoCapture.read()
                 frameOk = ret
             if frameOk:
-                frameCount += 1
+                # Calc FPS    
+                frames += 1
+                curTime = time.time()
+                elapse = curTime - start
+                # Log FPS
+                if elapse >= fpsInterval:
+                    start = curTime
+                    fps = frames / elapse
+                    self.logger.debug("%3.1f FPS" % fps)
+                    frames = 0                
                 # Buffer image
                 if len(frameBuf) == frameBufSize:
                     # Toss first image in list (oldest)
@@ -177,13 +183,7 @@ if __name__ == '__main__':
                     if peopleFound:
                         os.rename("%s/%s" % (fileDir, fileName),"%s/people-%s" % (fileDir, fileName))
                     recording = False
-            framesLeft -= 1
         elapsed = time.time() - start
-        # Use actual frame count if VideoCapture
-        if not mjpeg:
-            frames = frameCount
-        fpsElapsed = frames / elapsed
-        logger.info("Calculated %4.1f FPS, frames: %d, elapsed time: %4.2f seconds" % (fpsElapsed, frameCount, elapsed))
         # Clean up
         if mjpeg:
             socketFile.close()
