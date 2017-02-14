@@ -103,8 +103,7 @@ if __name__ == '__main__':
             if mjpeg:
                 image = mjpegclient.getFrame(socketFile, boundary)
             else:
-                ret, image = videoCapture.read()
-                frameOk = ret
+                frameOk, image = videoCapture.read()
             if frameOk:
                 # Calc FPS    
                 frames += 1
