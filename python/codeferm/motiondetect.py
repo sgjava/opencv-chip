@@ -161,7 +161,7 @@ if __name__ == '__main__':
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
                                 if mark:
-                                    for foundLocations, foundWeights in zip(foundLocationsList,foundWeightsList):
+                                    for foundLocations, foundWeights in zip(foundLocationsList, foundWeightsList):
                                         i = 0
                                         for x2, y2, w2, h2 in foundLocations:
                                             imageRoi = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
@@ -196,7 +196,7 @@ if __name__ == '__main__':
                     del videoWriter
                     # Rename video to show people found
                     if peopleFound:
-                        os.rename("%s/%s" % (fileDir, fileName),"%s/people-%s" % (fileDir, fileName))
+                        os.rename("%s/%s" % (fileDir, fileName), "%s/people-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - start
         # Clean up
