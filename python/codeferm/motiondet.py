@@ -5,7 +5,7 @@ Created by Steven P. Goldsmith on February 8, 2017
 sgoldsmith@codeferm.com
 """
 
-"""Motion detector.
+"""Motion detector using moving average.
 
 @author: sgoldsmith
 
