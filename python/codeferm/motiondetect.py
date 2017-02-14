@@ -23,11 +23,11 @@ sys.argv[1] = configuration file name or will default to "motiondetect.ini" if n
 
 """
 
-import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet
+import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, facedet
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        configFileName = "motiondetect.ini"
+        configFileName = "../config/motiondetect.ini"
     else:
         configFileName = sys.argv[1]
     parser = ConfigParser.SafeConfigParser()
@@ -50,6 +50,7 @@ if __name__ == '__main__':
     recordDir = parser.get("camera", "recordDir")
     detectType = parser.get("camera", "detectType")
     mark = parser.getboolean("camera", "mark")
+    cascadeFile = parser.get("camera", "cascadeFile")
     # See if we should use MJPEG client
     if urlparse.urlparse(url).scheme == "http":
         mjpeg = True
@@ -95,6 +96,8 @@ if __name__ == '__main__':
         recording = False
         frameOk = True
         frames = 0
+        if detectType.lower() == "f":
+            facedet.init(cascadeFile)
         start = time.time()
         # Calculate FPS
         while(frameOk):
@@ -135,14 +138,15 @@ if __name__ == '__main__':
                     if motionPercent > 2.0:
                         if not recording:
                             # Construct directory name from recordDir and date
-                            fileDir = "%s%s%s%s%s%s" % (recordDir, os.sep, "motion", os.sep, now.strftime("%Y-%m-%d"), os.sep)
+                            fileDir = "%s/%s" % (recordDir, now.strftime("%Y-%m-%d"))
                             # Create dir if it doesn"t exist
                             if not os.path.exists(fileDir):
                                 os.makedirs(fileDir)
-                            fileName = "%s.%s" % (now.strftime("%H-%M-%S"), "avi")
+                            fileName = "%s.%s" % (now.strftime("%H-%M-%S"), recordFileExt)
                             videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
                             logger.info("Start recording (%4.2f) %s%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                             peopleFound = False
+                            facesFound = False
                             recording = True
                         if mark:
                             for x, y, w, h in movementLocations:
@@ -167,6 +171,18 @@ if __name__ == '__main__':
                                             cv2.putText(imageRoi2, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
+                        # Face detection?
+                        elif detectType.lower() == "f":
+                            foundLocationsList = facedet.detect(movementLocations, resizeImg)
+                            if len(foundLocationsList) > 0:
+                                facesFound = True
+                                if mark:
+                                    for foundLocations in foundLocationsList:
+                                        for x2, y2, w2, h2 in foundLocations:
+                                            imageRoi2 = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                            # Draw rectangle around faces
+                                            cv2.rectangle(imageRoi2, (x2, y2), (x2 + (w2 * widthMultiplier), y2 + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
+                                logger.debug("Face detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
             # If recording write frame and check motion percent

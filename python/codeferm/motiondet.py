@@ -51,7 +51,7 @@ def detect(image):
     # Convert to grayscale
     grayImg = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)
     # Convert to BW
-    return_val, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
+    ret, grayImg = cv2.threshold(grayImg, 25, 255, cv2.THRESH_BINARY)
     # Total number of changed motion pixels
     height, width, unknown = image.shape
     motionPercent = 100.0 * cv2.countNonZero(grayImg) / (width * height)
