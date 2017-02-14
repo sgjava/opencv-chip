@@ -28,7 +28,7 @@ def detect(locations, image):
         if w > 16 and h > 16:
             imageRoi = image[y:y + h, x:x + w]
             # Convert ROI to grayscale
-            grayRoi = cv2.cvtColor(diffImg, cv2.COLOR_BGR2GRAY)            
+            grayRoi = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)            
             foundLocations = faceCascade.detectMultiScale(grayRoi, 1.3, 5)
             if len(foundLocations) > 0:
                 foundLocationsList.append(foundLocations)
