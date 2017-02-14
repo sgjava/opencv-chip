@@ -168,7 +168,7 @@ if __name__ == '__main__':
                                             # Draw rectangle around people
                                             cv2.rectangle(imageRoi, (x2 * widthMultiplier, y2 * heightMultiplier), (x2 * widthMultiplier + (w2 * widthMultiplier), y2 * heightMultiplier + (h2 * heightMultiplier) - 1), (255, 0, 0), 2)
                                             # Print weight
-                                            cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x2, y2 - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                            cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x2 * widthMultiplier, y2 * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
                         # Face detection?
