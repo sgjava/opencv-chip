@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # Make sure we have positive values
     if frameWidth > 0 and frameHeight > 0:
         # Motion detection generally works best with 320 or wider images
-        widthDivisor = int(frameWidth / 320)
+        widthDivisor = int(frameWidth / 400)
         if widthDivisor < 1:
             widthDivisor = 1
         frameResizeWidth = int(frameWidth / widthDivisor)
@@ -164,25 +164,22 @@ if __name__ == '__main__':
                             markImg(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
-                            roiList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
+                            locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
                                 if mark:
-                                    for imageRoi, foundLocations, foundWeights in zip(roiList, foundLocationsList, foundWeightsList):
+                                    for location, foundLocations, foundWeights in zip(locationsList, foundLocationsList, foundWeightsList):
                                         i = 0
                                         for x, y, w, h in foundLocations:
-                                            imageRoi2 = imageRoi[y : y + h, x : x + w]
-                                            print str(imageRoi2.type)
-                                            (x2, y2, w2, h2) = imageRoi2
-                                            # Draw rectangle around people
-                                            cv2.rectangle(image, (x2 * widthMultiplier, y2 * heightMultiplier),
-                                            ((x2 + w2) * widthMultiplier, (y2 + h2) * heightMultiplier), (255, 0, 0), 2)
+                                            x2, y2, w2, h2 = location
+                                            cv2.rectangle(image, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
+                                            ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), (255, 0, 0), 2)
                                             if x <= 0:
                                                 x = 2
                                             if y <= 0:
                                                 y = 7
                                             # Print weight
-                                            cv2.putText(image, "%1.2f" % foundWeights[i], (x2 * widthMultiplier, y2 * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                            cv2.putText(image, "%1.2f" % foundWeights[i], ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
                         # Face detection?

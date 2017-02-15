@@ -20,7 +20,7 @@ hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 def detect(locations, image):
     """Check ROI for pedestrians"""
     global hog
-    roiList = []
+    locationsList = []
     foundLocationsList = []
     foundWeightsList = []
     for x, y, w, h in locations:
@@ -29,7 +29,7 @@ def detect(locations, image):
             imageRoi = image[y:y + h, x:x + w]
             foundLocations, foundWeights = hog.detectMultiScale(imageRoi, winStride=(8, 8), padding=(8, 8), scale=1.1)
             if len(foundLocations) > 0:
-                roiList.append(imageRoi)
+                locationsList.append((x, y, w, h))
                 foundLocationsList.append(foundLocations)
                 foundWeightsList.append(foundWeights)
-    return roiList, foundLocationsList, foundWeightsList
+    return locationsList, foundLocationsList, foundWeightsList
