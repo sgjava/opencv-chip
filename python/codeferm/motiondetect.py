@@ -25,7 +25,7 @@ sys.argv[1] = configuration file name or will default to "motiondetect.ini" if n
 
 import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, facedet
 
-def mark(target, rects, widthMul, heightMul, boxColor, boxThickness):
+def markImg(target, rects, widthMul, heightMul, boxColor, boxThickness):
     """Mark detected objects in image"""
     for x, y, w, h in rects:
         # Mark target
@@ -161,7 +161,7 @@ if __name__ == '__main__':
                             recording = True
                         if mark:
                             # Draw rectangle around found objects
-                            mark(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
+                            markImg(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
                             roiList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
