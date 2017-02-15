@@ -157,7 +157,7 @@ if __name__ == '__main__':
                                 if x <= 0:
                                     x = 0
                                 if y <= 0:
-                                    y = 14
+                                    y = 7
                                 cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
 
                         # Detect pedestrians ?
@@ -175,7 +175,7 @@ if __name__ == '__main__':
                                             if x <= 0:
                                                 x = 0
                                             if y <= 0:
-                                                y = 14
+                                                y = 7
                                             # Print weight
                                             cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x * widthMultiplier, y * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
