@@ -155,7 +155,7 @@ if __name__ == '__main__':
                                               ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
                                               (0, 255, 0), 2)
                                 if x <= 0:
-                                    x = 0
+                                    x = 2
                                 if y <= 0:
                                     y = 7
                                 cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
@@ -173,7 +173,7 @@ if __name__ == '__main__':
                                             # Draw rectangle around people
                                             cv2.rectangle(imageRoi, (x * widthMultiplier, y * heightMultiplier), (x * widthMultiplier + (w * widthMultiplier), y * heightMultiplier + (h * heightMultiplier) - 1), (255, 0, 0), 2)
                                             if x <= 0:
-                                                x = 0
+                                                x = 2
                                             if y <= 0:
                                                 y = 7
                                             # Print weight
