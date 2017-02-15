@@ -172,6 +172,7 @@ if __name__ == '__main__':
                                         i = 0
                                         for x, y, w, h in foundLocations:
                                             imageRoi2 = imageRoi[y : y + h, x : x + w]
+                                            print str(imageRoi2.type)
                                             (x2, y2, w2, h2) = imageRoi2
                                             # Draw rectangle around people
                                             cv2.rectangle(image, (x2 * widthMultiplier, y2 * heightMultiplier),
