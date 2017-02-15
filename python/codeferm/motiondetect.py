@@ -25,6 +25,17 @@ sys.argv[1] = configuration file name or will default to "motiondetect.ini" if n
 
 import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, facedet
 
+def mark(target, rects, widthMul, heightMul, boxColor, boxThickness):
+    """Mark detected objects in image"""
+    for x, y, w, h in rects:
+        # Mark target
+        cv2.rectangle(target, (x * widthMul, y * heightMul), ((x + w) * widthMul, (y + h) * heightMul), boxColor, boxThickness)
+        if x <= 0:
+            x = 2
+        if y <= 0:
+            y = 7
+        cv2.putText(target, "%dw x %dh" % (w, h), (x * widthMul, (y * heightMul) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         configFileName = "../config/motiondetect.ini"
@@ -149,36 +160,28 @@ if __name__ == '__main__':
                             facesFound = False
                             recording = True
                         if mark:
-                            for x, y, w, h in movementLocations:
-                                # Draw rectangle around found objects
-                                cv2.rectangle(image, (x * widthMultiplier, y * heightMultiplier),
-                                              ((x + w) * widthMultiplier, (y + h) * heightMultiplier),
-                                              (0, 255, 0), 2)
-                                if x <= 0:
-                                    x = 2
-                                if y <= 0:
-                                    y = 7
-                                cv2.putText(image, "%dw x %dh" % (w, h), (x * widthMultiplier, (y * heightMultiplier) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-
+                            # Draw rectangle around found objects
+                            mark(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
-                            foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
+                            roiList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
                                 if mark:
-                                    for foundLocations, foundWeights in zip(foundLocationsList, foundWeightsList):
+                                    for imageRoi, foundLocations, foundWeights in zip(roiList, foundLocationsList, foundWeightsList):
                                         i = 0
                                         for x, y, w, h in foundLocations:
-                                            imageRoi = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
+                                            imageRoi2 = imageRoi[y : y + h, x : x + w]
+                                            x2, y2, w2, h2 = cv2.boundingRect(imageRoi2)
                                             # Draw rectangle around people
-                                            cv2.rectangle(imageRoi, (x * widthMultiplier, y * heightMultiplier),
-                                            ((x + w) * widthMultiplier, (y + h) * heightMultiplier), (255, 0, 0), 2)
+                                            cv2.rectangle(image, (x2 * widthMultiplier, y2 * heightMultiplier),
+                                            ((x2 + w2) * widthMultiplier, (y2 + h2) * heightMultiplier), (255, 0, 0), 2)
                                             if x <= 0:
                                                 x = 2
                                             if y <= 0:
                                                 y = 7
                                             # Print weight
-                                            cv2.putText(imageRoi, "%1.2f" % foundWeights[i], (x * widthMultiplier, y * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+                                            cv2.putText(image, "%1.2f" % foundWeights[i], (x2 * widthMultiplier, y2 * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
                                             i += 1
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
                         # Face detection?
