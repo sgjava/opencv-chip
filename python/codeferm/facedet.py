@@ -22,6 +22,7 @@ def init(fileName):
 def detect(locations, image):
     """Check ROI for faces"""
     global faceCascade
+    locationsList = []
     foundLocationsList = []
     for x, y, w, h in locations:
         # Make sure ROI is big enough for detector
@@ -30,5 +31,6 @@ def detect(locations, image):
             imageRoi = image[y:y + h, x:x + w]
             foundLocations = faceCascade.detectMultiScale(imageRoi, 1.3, 5)
             if len(foundLocations) > 0:
+                locationsList.append((x, y, w, h))
                 foundLocationsList.append(foundLocations)
-    return foundLocationsList
+    return locationsList, foundLocationsList

@@ -25,8 +25,8 @@ sys.argv[1] = configuration file name or will default to "motiondetect.ini" if n
 
 import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, facedet
 
-def markImg(target, rects, widthMul, heightMul, boxColor, boxThickness):
-    """Mark detected objects in image"""
+def markMotion(target, rects, widthMul, heightMul, boxColor, boxThickness):
+    """Mark motion objects in image"""
     for x, y, w, h in rects:
         # Mark target
         cv2.rectangle(target, (x * widthMul, y * heightMul), ((x + w) * widthMul, (y + h) * heightMul), boxColor, boxThickness)
@@ -35,6 +35,32 @@ def markImg(target, rects, widthMul, heightMul, boxColor, boxThickness):
         if y <= 0:
             y = 7
         cv2.putText(target, "%dw x %dh" % (w, h), (x * widthMul, (y * heightMul) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+
+def markPedestrian(target, locList, foundLocsList, foundWghtsList, widthMul, heightMul, boxColor, boxThickness):
+    """Mark pedestrian objects in image"""
+    for location, foundLocations, foundWeights in zip(locList, foundLocsList, foundWghtsList):
+        i = 0
+        # Mark target
+        for x, y, w, h in foundLocations:
+            x2, y2, w2, h2 = location
+            cv2.rectangle(target, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
+            ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), boxColor, boxThickness)
+            if x2 <= 0:
+                x2 = 2
+            if y2 <= 0:
+                y2 = 7
+            # Print weight
+            cv2.putText(image, "%1.2f" % foundWeights[i], ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+            i += 1
+
+def markRoi(target, locList, foundLocsList, widthMul, heightMul, boxColor, boxThickness):
+    """Mark ROI objects in image"""
+    for location, foundLocations in zip(locList, foundLocsList):
+        # Mark target
+        for x, y, w, h in foundLocations:
+            x2, y2, w2, h2 = location
+            cv2.rectangle(target, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
+            ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), boxColor, boxThickness)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -161,39 +187,24 @@ if __name__ == '__main__':
                             recording = True
                         if mark:
                             # Draw rectangle around found objects
-                            markImg(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
+                            markMotion(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
                             locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
                                 if mark:
-                                    for location, foundLocations, foundWeights in zip(locationsList, foundLocationsList, foundWeightsList):
-                                        i = 0
-                                        for x, y, w, h in foundLocations:
-                                            x2, y2, w2, h2 = location
-                                            cv2.rectangle(image, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
-                                            ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), (255, 0, 0), 2)
-                                            if x <= 0:
-                                                x = 2
-                                            if y <= 0:
-                                                y = 7
-                                            # Print weight
-                                            cv2.putText(image, "%1.2f" % foundWeights[i], ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
-                                            i += 1
+                                    # Draw rectangle around found objects
+                                    markPedestrian(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
                                 logger.debug("People detected locations: %s" % (foundLocationsList))
                         # Face detection?
                         elif detectType.lower() == "f":
-                            foundLocationsList = facedet.detect(movementLocations, grayImg)
+                            locationsList, foundLocationsList = facedet.detect(movementLocations, grayImg)
                             if len(foundLocationsList) > 0:
                                 facesFound = True
                                 if mark:
-                                    for foundLocations in foundLocationsList:
-                                        for x, y, w, h in foundLocations:
-                                            imageRoi = image[y * heightMultiplier:y * heightMultiplier + (h * heightMultiplier), x * widthMultiplier:x * widthMultiplier + (w * widthMultiplier)]
-                                            # Draw rectangle around faces
-                                            cv2.rectangle(imageRoi, (x * widthMultiplier, y * heightMultiplier),
-                                            ((x + w) * widthMultiplier, (y + h) * heightMultiplier), (255, 0, 0), 2)
+                                    # Draw rectangle around found objects
+                                    markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
                                 logger.debug("Face detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
