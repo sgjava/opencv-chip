@@ -23,18 +23,19 @@ sys.argv[1] = configuration file name or will default to "motiondetect.ini" if n
 
 """
 
-import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, facedet
+import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, cascadedet
 
 def markMotion(target, rects, widthMul, heightMul, boxColor, boxThickness):
     """Mark motion objects in image"""
     for x, y, w, h in rects:
         # Mark target
         cv2.rectangle(target, (x * widthMul, y * heightMul), ((x + w) * widthMul, (y + h) * heightMul), boxColor, boxThickness)
-        if x <= 0:
-            x = 2
+        if x <= 2:
+            x = 4
         if y <= 0:
-            y = 7
-        cv2.putText(target, "%dw x %dh" % (w, h), (x * widthMul, (y * heightMul) - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+            y = 9
+        # Show width and height of full size image
+        cv2.putText(target, "%dx%d" % (w * widthMul, h * heightMul), (x * widthMul, (y * heightMul) - 4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
 
 def markPedestrian(target, locList, foundLocsList, foundWghtsList, widthMul, heightMul, boxColor, boxThickness):
     """Mark pedestrian objects in image"""
@@ -45,12 +46,12 @@ def markPedestrian(target, locList, foundLocsList, foundWghtsList, widthMul, hei
             x2, y2, w2, h2 = location
             cv2.rectangle(target, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
             ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), boxColor, boxThickness)
-            if x2 <= 0:
-                x2 = 2
+            if x2 <= 2:
+                x2 = 4
             if y2 <= 0:
-                y2 = 7
+                y2 = 9
             # Print weight
-            cv2.putText(image, "%1.2f" % foundWeights[i], ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+            cv2.putText(image, "%1.2f" % foundWeights[i], ((x + x2) * widthMultiplier, (y + y2 + h) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
             i += 1
 
 def markRoi(target, locList, foundLocsList, widthMul, heightMul, boxColor, boxThickness):
@@ -61,6 +62,12 @@ def markRoi(target, locList, foundLocsList, widthMul, heightMul, boxColor, boxTh
             x2, y2, w2, h2 = location
             cv2.rectangle(target, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
             ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), boxColor, boxThickness)
+        if x2 <= 2:
+            x2 = 4
+        if y2 <= 0:
+            y2 = 9
+        # Show width and height of full size image
+        cv2.putText(image, "%dx%d" % (w * widthMul, h * heightMul), ((x + x2) * widthMultiplier, (y + y2 + h) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -80,6 +87,7 @@ if __name__ == '__main__':
     # Set camera related data attributes
     cameraName = parser.get("camera", "name")    
     url = parser.get("camera", "url")
+    resizeWidthDiv = parser.getint("camera", "resizeWidthDiv")
     fpsInterval = parser.getfloat("camera", "fpsInterval")
     fps = parser.getint("camera", "fps")
     fourcc = parser.get("camera", "fourcc")
@@ -87,7 +95,19 @@ if __name__ == '__main__':
     recordDir = parser.get("camera", "recordDir")
     detectType = parser.get("camera", "detectType")
     mark = parser.getboolean("camera", "mark")
-    cascadeFile = parser.get("camera", "cascadeFile")
+    # Set pedestrian detect related data attributes
+    hitThreshold = parser.getfloat("pedestrian", "hitThreshold")
+    winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
+    padding = eval(parser.get("pedestrian", "padding"), {}, {})
+    scale0 = parser.getfloat("pedestrian", "scale0")
+    finalThreshold = parser.getfloat("pedestrian", "finalThreshold")
+    useMeanshiftGrouping = parser.getboolean("pedestrian", "useMeanshiftGrouping")          
+    # Set cascade related data attributes
+    cascadeFile = parser.get("cascade", "cascadeFile")
+    scaleFactor = parser.getfloat("cascade", "scaleFactor")
+    minNeighbors = parser.getint("cascade", "minNeighbors")
+    minWidth = parser.getint("cascade", "minWidth")
+    minHeight = parser.getint("cascade", "minHeight")
     # See if we should use MJPEG client
     if urlparse.urlparse(url).scheme == "http":
         mjpeg = True
@@ -111,7 +131,7 @@ if __name__ == '__main__':
     # Make sure we have positive values
     if frameWidth > 0 and frameHeight > 0:
         # Motion detection generally works best with 320 or wider images
-        widthDivisor = int(frameWidth / 400)
+        widthDivisor = int(frameWidth / resizeWidthDiv)
         if widthDivisor < 1:
             widthDivisor = 1
         frameResizeWidth = int(frameWidth / widthDivisor)
@@ -133,8 +153,9 @@ if __name__ == '__main__':
         recording = False
         frameOk = True
         frames = 0
-        if detectType.lower() == "f":
-            facedet.init(cascadeFile)
+        # Init cascade classifier
+        if detectType.lower() == "h":
+            cascadedet.init(cascadeFile)
         start = time.time()
         # Calculate FPS
         while(frameOk):
@@ -174,8 +195,8 @@ if __name__ == '__main__':
                     # Threshold to trigger motion
                     if motionPercent > 2.0:
                         if not recording:
-                            # Construct directory name from recordDir and date
-                            fileDir = "%s/%s" % (recordDir, now.strftime("%Y-%m-%d"))
+                            # Construct directory name from camera name, recordDir and date
+                            fileDir = "%s/%s/%s" % (os.path.expanduser(recordDir), cameraName, now.strftime("%Y-%m-%d"))
                             # Create dir if it doesn"t exist
                             if not os.path.exists(fileDir):
                                 os.makedirs(fileDir)
@@ -183,29 +204,29 @@ if __name__ == '__main__':
                             videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]), fps, (frameWidth, frameHeight), True)
                             logger.info("Start recording (%4.2f) %s/%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                             peopleFound = False
-                            facesFound = False
+                            cascadeFound = False
                             recording = True
                         if mark:
                             # Draw rectangle around found objects
                             markMotion(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
-                            locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg)
+                            locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg, winStride, padding, scale0)
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
                                 if mark:
                                     # Draw rectangle around found objects
                                     markPedestrian(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
-                                logger.debug("People detected locations: %s" % (foundLocationsList))
-                        # Face detection?
-                        elif detectType.lower() == "f":
-                            locationsList, foundLocationsList = facedet.detect(movementLocations, grayImg)
+                                logger.debug("Pedestrian detected locations: %s" % (foundLocationsList))
+                        # Haar Cascades detection?
+                        elif detectType.lower() == "h":
+                            locationsList, foundLocationsList = cascadedet.detect(movementLocations, grayImg, scaleFactor, minNeighbors, minWidth, minHeight)
                             if len(foundLocationsList) > 0:
-                                facesFound = True
+                                cascadeFound = True
                                 if mark:
                                     # Draw rectangle around found objects
                                     markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
-                                logger.debug("Face detected locations: %s" % (foundLocationsList))
+                                logger.debug("Cascade detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
             # If recording write frame and check motion percent
@@ -219,9 +240,9 @@ if __name__ == '__main__':
                     del videoWriter
                     # Rename video to show people found
                     if peopleFound:
-                        os.rename("%s/%s" % (fileDir, fileName), "%s/people-%s" % (fileDir, fileName))
-                    elif facesFound:
-                        os.rename("%s/%s" % (fileDir, fileName), "%s/faces-%s" % (fileDir, fileName))
+                        os.rename("%s/%s" % (fileDir, fileName), "%s/pedestrian-%s" % (fileDir, fileName))
+                    elif cascadeFound:
+                        os.rename("%s/%s" % (fileDir, fileName), "%s/cascade-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - start
         # Clean up

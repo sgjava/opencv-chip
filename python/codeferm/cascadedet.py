@@ -5,7 +5,7 @@ Created by Steven P. Goldsmith on February 13, 2017
 sgoldsmith@codeferm.com
 """
 
-"""Face detector using ROI.
+"""Cascade classifier detector using ROI.
 
 @author: sgoldsmith
 
@@ -13,23 +13,23 @@ sgoldsmith@codeferm.com
 
 import cv2
 
-faceCascade = None
+cascade = None
 
 def init(fileName):
-    global faceCascade
-    faceCascade = cv2.CascadeClassifier(fileName)
+    global cascade
+    cascade = cv2.CascadeClassifier(fileName)
 
-def detect(locations, image):
+def detect(locations, image, scaleFactor, minNeighbors, minWidth, minHeight):
     """Check ROI for faces"""
-    global faceCascade
+    global cascade
     locationsList = []
     foundLocationsList = []
     for x, y, w, h in locations:
         # Make sure ROI is big enough for detector
-        if w > 16 and h > 16:
+        if w > minWidth and h > minHeight:
             # Image should be gray scale
             imageRoi = image[y:y + h, x:x + w]
-            foundLocations = faceCascade.detectMultiScale(imageRoi, 1.3, 5)
+            foundLocations = cascade.detectMultiScale(imageRoi, scaleFactor, minNeighbors)
             if len(foundLocations) > 0:
                 locationsList.append((x, y, w, h))
                 foundLocationsList.append(foundLocations)
