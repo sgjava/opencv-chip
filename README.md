@@ -8,7 +8,7 @@ If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co
 
 ![Title](images/pedestrian-detect.png)
 
-Usually after you install a complex framework like OpenCV you want to start exploring (unless it is a dependency for another project). Since platforms without GPU/VPU must rely on the CPU to do everything you have to optimize extensively. The CHIP only has one core, but you can do real time object detection using techniques I'll describe later.
+Usually after you install a complex framework like OpenCV you want to start exploring (unless it is a dependency for another project). You have to optimize extensively on platforms with an incompatible VPU/GPU such as the Mali 400. The CHIP only has one core, but you can do real time object detection using techniques I'll describe later on. The image above is a screenshot of a video frame that has been processed. Motion is bounded by green boxes and pedestrians by blue boxes.
 
 * [Provides](#provides)
 * [Low Cost CV Camera](#low-cost-cv-camera)
