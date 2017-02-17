@@ -265,7 +265,7 @@ Solution: Use MJPEG compatible USB camera, mjpg-streamer and my [mjpegclient.py]
 
 Problem: OpenCV functions max out the CPU resulting in low FPS.
 
-Solution: Resize image before any processing. Check out [Pedestrian Detection OpenCV](http://www.pyimagesearch.com/2015/11/09/pedestrian-detection-opencv) as it covers reduction in detection time and improved detection accuracy. The pedestrian HOG detector was trained with 64 x 128 images, so a 320x240 image is fine for some scenarios. As you go up in resolution you get even better performance versus operating on the full sized image. This article also covers and non-maxima suppression which is basically removing overlapping rectangles from detection type functions.
+Solution: Resize image before any processing. Check out [Pedestrian Detection OpenCV](http://www.pyimagesearch.com/2015/11/09/pedestrian-detection-opencv) as it covers reduction in detection time and improved detection accuracy. The pedestrian HOG detector was trained with 64 x 128 images, so a 320x240 image is fine for some scenarios. As you go up in resolution you get even better performance versus operating on the full sized image. This article also touches on non-maxima suppression which is basically removing overlapping rectangles from detection type functions.
 
 Solution: Sample only some frames. Motion detection using the moving average algorithm works best at around 3 or 4 FPS. This works to our advantage since that is an ideal time to do other types of detection such as for pedestrians. This also works out well as your camera FPS goes higher. That means ~3 FPS are processed even at 30 FPS. You still have to consider video recording overhead since that's still 30 FPS.
 
@@ -276,19 +276,14 @@ Solution: Analyze only motion ROI (regions of interest). By analyzing only ROI y
 I ran a 14 hour test with motiondetect.py (with pedestrian detection) and it stayed rock solid 640x480 @ 10 FPS while using < 40% CPU when idle and 80% peaks when doing pedestrian detection and recording according to Zabbix.
 
 The default [motiondetect.ini](https://github.com/sgjava/opencv-chip/blob/master/python/config/motiondetect.ini) is configured to detect pedestrians from a local video file in the project. Try this first and make sure it works properly.
+* `cd /media/usb0/opencv-chip/python/codeferm`
+* `python motiondetect.py`
+* Video will record to ~/motion using the date to build the directory and name time for file name
+* This is handy for debugging issues or fine tuning using the same file over and over
 
 This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `nohup mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www" &`
-* `python motiondetect.py ../config/motiondetect.ini`
-
-To process a video file you have already recorded without marking (replace the file name):
-* Edit motiondetect.ini and change url to file name.
-* `python motiondetect.py ../config/motiondetect.ini`
-* Frames and FPS parameters will be ignored for files since that comes from the video file
-* This is handy for debugging issues or fine tuning
-
-Videos will record to /media/usb0/motion using the date to build the directory and name time for file name. You can increase the frames parameter to something really large (216000 is 12 hours at 5 FPS) and run using `nohup`. This is what I will do for long term testing and burn in.
 
 ###References
 * [openCV 3.1.0 optimized for Raspberry Pi, with libjpeg-turbo 1.5.0 and NEON SIMD support](http://hopkinsdev.blogspot.com/2016/06/opencv-310-optimized-for-raspberry-pi.html)
