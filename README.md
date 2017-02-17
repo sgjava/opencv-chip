@@ -258,7 +258,7 @@ I see a lot of posts on the Internet about OpenCV performance on various ARM bas
 
 Problem: Slow or inconsistent FPS using USB camera.
 
-Solution: Use MJPEG comp[atible USB camera and mjpg-streamer.
+Solution: Use MJPEG comp[atible USB camera, mjpg-streamer and my mjpegclient.
 
 Problem: OpenCV functions max out the CPU resulting in low FPS.
 
