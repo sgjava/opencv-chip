@@ -141,6 +141,9 @@ Patches jdhuff.c to remove "Invalid SOS parameters for sequential JPEG" warning 
 ###Install mjpg-streamer
 Sometimes all you need is a live video feed without further processing. This section will be what you are looking for. It also makes sense to move the UVC processing into a different Linux process or thread from the main CV code.
 
+####WARNING
+I'm running this on a test LAN and not securing mjpg-streamer. In production you will want to use a user and password with mjpg-streamer. You will also want to put it behind a secure proxy if you are accessing it from the Internet.
+
 Change `whitepatch` in `install-mjpg-streamer.sh` to `True` if you get a white image. I had to set this to True for using MPJEG mode. In YUYV I set it to `False`. The default setting is `True`.
 
 * `cd /media/usb0/opencv-chip/scripts`
@@ -258,19 +261,21 @@ I see a lot of posts on the Internet about OpenCV performance on various ARM bas
 
 Problem: Slow or inconsistent FPS using USB camera.
 
-Solution: Use MJPEG compatible USB camera, mjpg-streamer and my mjpegclient.
+Solution: Use MJPEG compatible USB camera, mjpg-streamer and my [mjpegclient.py](https://github.com/sgjava/opencv-chip/blob/master/python/codeferm/mjpegclient.py).
 
 Problem: OpenCV functions max out the CPU resulting in low FPS.
 
 Solution: Resize image before any processing. Check out [Pedestrian Detection OpenCV](http://www.pyimagesearch.com/2015/11/09/pedestrian-detection-opencv) as it covers reduction in detection time and improved detection accuracy. The pedestrian HOG detector was trained with 64 x 128 images, so a 320x240 image is fine for some scenarios. As you go up in resolution you get even better performance versus operating on the full sized image. This article also covers and non-maxima suppression which is basically removing overlapping rectangles from detection type functions.
 
-Solution: Sample only some frames. Motion detection using the moving average algorithm works best at around 3 or 4 FPS. This works to our advantage since that is an ideal time to do other types of detection such as for pedestrians. This also works out well as your camera FPS goes higher. That means ~3 FPS are processed even at 30 FPS. You still have to consider video recording overhead.
+Solution: Sample only some frames. Motion detection using the moving average algorithm works best at around 3 or 4 FPS. This works to our advantage since that is an ideal time to do other types of detection such as for pedestrians. This also works out well as your camera FPS goes higher. That means ~3 FPS are processed even at 30 FPS. You still have to consider video recording overhead since that's still 30 FPS.
 
-Solution: Analyze only motion ROI (regions of interest). By analyzing only ROI you can cut down processing time tremendously. For instance, if only 10% of the frame has motion then the OpenCV function should run about 900% faster! This may not work where there's a large change frame after frame. Luckily this will not happen for most security type scenarios.
+Solution: Analyze only motion ROI (regions of interest). By analyzing only ROI you can cut down processing time tremendously. For instance, if only 10% of the frame has motion then the OpenCV function should run about 900% faster! This may not work where there's a large change frame after frame. Luckily this will not happen for most security type scenarios. If a region is too small for the detector it is not processed thus speeding things up even more.
 
 ![Pedestrian detection](images/people-10fps.png)
 
 I ran a 14 hour test with motiondetect.py (with pedestrian detection) and it stayed rock solid 640x480 @ 10 FPS while using < 40% CPU when idle and 80% peaks when doing pedestrian detection and recording according to Zabbix.
+
+The default [motiondetect.ini](https://github.com/sgjava/opencv-chip/blob/master/python/config/motiondetect.ini) is configured to detect pedestrians from a local video file in the project. Try this first and make sure it works properly.
 
 This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
