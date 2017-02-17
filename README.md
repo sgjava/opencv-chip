@@ -26,6 +26,7 @@ Usually after you install a complex framework like OpenCV you want to start expl
 * [Install OpenCV](#install-opencv)
 * [Performance testing](#performance-testing)
 * [Motion Detection](#motion-detection)
+    * [Boosting Performance](#boosting-performance)
 * [References](#references)
 * [FreeBSD License](#freebsd-license)
 
