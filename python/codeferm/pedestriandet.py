@@ -7,6 +7,8 @@ sgoldsmith@codeferm.com
 
 """Pedestrian detector using ROI.
 
+Histogram of Oriented Gradients ([Dalal2005]) object detector is used.
+
 @author: sgoldsmith
 
 """

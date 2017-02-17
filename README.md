@@ -8,7 +8,7 @@ If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co
 
 ![Title](images/pedestrian-detect.png)
 
-Usually after you install a complex framework like OpenCV you want to start exploring (unless it is a dependency for another project). You have to optimize extensively on platforms with an incompatible VPU/GPU such as the Mali 400. The CHIP only has one core, but you can do real time object detection using techniques I'll describe later on. The image above is a screenshot of a video frame that has been processed. Motion is bounded by green boxes and pedestrians by blue boxes.
+Usually after you install a complex framework like OpenCV you want to start exploring (unless it is a dependency for another project). You have to optimize extensively on platforms with an incompatible VPU/GPU such as the Mali 400. The CHIP only has one CPU core, but you can do real time object detection using techniques I'll describe later on. The image above is a screenshot of a video frame that has been processed. Motion is bounded by green boxes and pedestrians by blue boxes.
 
 * [Provides](#provides)
 * [Low Cost CV Camera](#low-cost-cv-camera)
@@ -34,7 +34,7 @@ Usually after you install a complex framework like OpenCV you want to start expl
 * Latest libjpeg-turbo optimized for Cortex-A8 and Neon
 * Latest mjpg-streamer (10/27/2013 last commit) optimized with libjpeg-turbo
 * Latest OpenCV with opencv_contrib optimized for libjpeg-turbo, Cortex-A8 and Neon
-* CV examples in Python for the CHIP
+* Application provides motion, pedestrian (HOG) and Haar Cascade detection
 
 ###Low Cost CV Camera
 I have made my own cameras for several years now, but the CHIPcam will be the least expensive so far. I ended up buying 10 CHIPS, so the shipping costs were spread over 5 units on each shipment. I would have just bought 10 if I knew they worked so well. The prices I give here are in US dollars, so you can expect to pay more or less depending on where you live.
@@ -247,14 +247,29 @@ To run example yourself use (this is 5 FPS example):
 * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * `python camerawriter.py http://localhost:8080/?action=stream 200 XVID 5 video-xvid.avi`
 
-OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on. Since there's currently no way to utilize GPU/VPU acceleration on the CHIP with OpenCV you must rely on the general CPU.
+OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on.
 
 ###Motion Detection
-This is the first example into the foray that is Computer Vision. This is also a practical example that you can use as the basis for other CV projects. From experience I can tell you that you need to understand the usage scenario. Simple motion detection will work well with static backgrounds, but using it outside you have to deal with cars, tree branches blowing, sudden light changes, etc. This is why built in motion detection is mostly useless on most security cameras. You can use ignore bitmaps and ROI (regions of interest) to improve results with dynamic backgrounds. For instance, I can ignore my palm tree, but trigger motion if you walk in my doorway.
+This is a good first example into the foray that is Computer Vision. This is also a practical example that you can use as the basis for other CV projects. From experience I can tell you that you need to understand the usage scenario. Simple motion detection will work well with static backgrounds, but using it outside you have to deal with cars, tree branches blowing, sudden light changes, etc. This is why built in motion detection is mostly useless on security cameras for these types of scenarios. You can use ignore bitmaps and ROI (regions of interest) to improve results with dynamic backgrounds. For instance, I can ignore my palm tree, but trigger motion if you walk in my doorway.
 
-For starters we will do basic moving average based detection. It will return ROI that can be used in further processing. motiondetect.py can mark the motion ROI before writing to video. You can use this for debugging and fine tuning. I ran a 14 hour test with motiondetect.py (with pedestrian detection) and it stayed rock solid 640x480 @ 10 FPS while using < 40% CPU when idle and 90% peaks when doing pedestrian detection and recording according to Zabbix.
+####Boosting Performance
+I see a lot of posts on the Internet about OpenCV performance on various ARM based SBCs being CPU intensive or slow frame capture, etc. Over time I learned the tricks of the trade and kicked it up a few notches from my own research. These techniques may not work for all usage scenarios or OpenCV functions. They do work well for security type applications.
+
+Problem: Slow or inconsistent FPS using USB camera.
+
+Solution: Use MJPEG comp[atible USB camera and mjpg-streamer.
+
+Problem: OpenCV functions max out the CPU resulting in low FPS.
+
+Solution: Resize image before any processing. Check out [Pedestrian Detection OpenCV](http://www.pyimagesearch.com/2015/11/09/pedestrian-detection-opencv) as it covers reduction in detection time and improved detection accuracy. The pedestrian HOG detector was trained with 64 x 128 images, so a 320x240 image is fine for some scenarios. As you go up in resolution you get even better performance versus operating on the full sized image. This article also covers and non-maxima suppression which is basically removing overlapping rectangles from detection type functions.
+
+Solution: Sample only some frames. Motion detection using the moving average algorithm works best at around 3 or 4 FPS. This works to our advantage since that is an ideal time to do other types of detection such as for pedestrians. This also works out well as your camera FPS goes higher. That means ~3 FPS are processed even at 30 FPS. You still have to consider video recording overhead.
+
+Solution: Analyze only motion ROI (regions of interest). By analyzing only ROI you can cut down processing time tremendously. For instance, if only 10% of the frame has motion then the OpenCV function should run about 900% faster! This may not work where there's a large change frame after frame. Luckily this will not happen for most security type scenarios.
 
 ![Pedestrian detection](images/people-10fps.png)
+
+I ran a 14 hour test with motiondetect.py (with pedestrian detection) and it stayed rock solid 640x480 @ 10 FPS while using < 40% CPU when idle and 80% peaks when doing pedestrian detection and recording according to Zabbix.
 
 This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):
 * `cd /media/usb0/opencv-chip/python/codeferm`
