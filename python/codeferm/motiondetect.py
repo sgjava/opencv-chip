@@ -95,6 +95,17 @@ if __name__ == '__main__':
     recordDir = parser.get("camera", "recordDir")
     detectType = parser.get("camera", "detectType")
     mark = parser.getboolean("camera", "mark")
+    # Set motion related data attributes
+    kSize = eval(parser.get("motion", "kSize"), {}, {})
+    alpha = parser.getfloat("motion", "alpha")
+    blackThreshold = parser.getint("motion", "blackThreshold")
+    maxChange = parser.getfloat("motion", "maxChange")
+    skipFrames = parser.getint("motion", "skipFrames")
+    startThreshold = parser.getfloat("motion", "startThreshold")
+    stopThreshold = parser.getfloat("motion", "stopThreshold")
+    # Set contour related data attributes
+    dilateAmount = parser.getint("motion", "dilateAmount")
+    erodeAmount = parser.getint("motion", "erodeAmount")
     # Set pedestrian detect related data attributes
     hitThreshold = parser.getfloat("pedestrian", "hitThreshold")
     winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
@@ -157,6 +168,7 @@ if __name__ == '__main__':
         if detectType.lower() == "h":
             cascadedet.init(cascadeFile)
         start = time.time()
+        appstart = start
         # Calculate FPS
         while(frameOk):
             # Used for timestamp in frame buffer and filename
@@ -191,9 +203,9 @@ if __name__ == '__main__':
                     else:
                         resizeImg = image
                     # Detect motion
-                    grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg)
+                    grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg, kSize, alpha, blackThreshold, maxChange, dilateAmount, erodeAmount)
                     # Threshold to trigger motion
-                    if motionPercent > 2.0:
+                    if motionPercent > startThreshold:
                         if not recording:
                             # Construct directory name from camera name, recordDir and date
                             fileDir = "%s/%s/%s" % (os.path.expanduser(recordDir), cameraName, now.strftime("%Y-%m-%d"))
@@ -235,16 +247,18 @@ if __name__ == '__main__':
                 if frameOk:
                     videoWriter.write(frameBuf[0][0])
                 # Threshold to stop recording
-                if motionPercent <= 0.25 or not frameOk:
+                if motionPercent <= stopThreshold or not frameOk:
                     logger.info("Stop recording")
                     del videoWriter
-                    # Rename video to show people found
+                    # Rename video to show pedestrian found
                     if peopleFound:
                         os.rename("%s/%s" % (fileDir, fileName), "%s/pedestrian-%s" % (fileDir, fileName))
+                    # Rename video to show cascade found
                     elif cascadeFound:
                         os.rename("%s/%s" % (fileDir, fileName), "%s/cascade-%s" % (fileDir, fileName))
                     recording = False
-        elapsed = time.time() - start
+        elapsed = time.time() - appstart
+        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frames / elapsed, elapsed))        
         # Clean up
         if mjpeg:
             socketFile.close()
