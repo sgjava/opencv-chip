@@ -25,33 +25,53 @@ sys.argv[1] = configuration file name or will default to "motiondetect.ini" if n
 
 import ConfigParser, logging, sys, os, time, datetime, numpy, cv2, urlparse, mjpegclient, motiondet, pedestriandet, cascadedet
 
-def markMotion(target, rects, widthMul, heightMul, boxColor, boxThickness):
-    """Mark motion objects in image"""
+def markRectSize(target, rects, widthMul, heightMul, boxColor, boxThickness):
+    """Mark rectangles in image"""
     for x, y, w, h in rects:
+        # Calculate full size
+        x2 = x * widthMul
+        y2 = y * heightMul
+        w2 = w * widthMul
+        h2 = h * heightMul
         # Mark target
-        cv2.rectangle(target, (x * widthMul, y * heightMul), ((x + w) * widthMul, (y + h) * heightMul), boxColor, boxThickness)
-        if x <= 2:
-            x = 4
-        if y <= 0:
-            y = 9
+        cv2.rectangle(target, (x2, y2), (x2 + w2, y2 + h2), boxColor, boxThickness)
+        label = "%dx%d" % (w2, h2)
+        # Figure out text size
+        size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1.0, 1)[0]
+        # Deal with possible text outside of image bounds
+        if x2 < 0:
+            x2 = 0
+        if y2 < size[1]:
+            y2 = size[1] + 2
+        else:
+            y2 = y2 - 2
         # Show width and height of full size image
-        cv2.putText(target, "%dx%d" % (w * widthMul, h * heightMul), (x * widthMul, (y * heightMul) - 4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(target, label, (x2, y2), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
 
-def markPedestrian(target, locList, foundLocsList, foundWghtsList, widthMul, heightMul, boxColor, boxThickness):
-    """Mark pedestrian objects in image"""
+def markRectWeight(target, locList, foundLocsList, foundWghtsList, widthMul, heightMul, boxColor, boxThickness):
+    """Mark ROI rectangles with weight in image"""
     for location, foundLocations, foundWeights in zip(locList, foundLocsList, foundWghtsList):
         i = 0
         # Mark target
         for x, y, w, h in foundLocations:
-            x2, y2, w2, h2 = location
-            cv2.rectangle(target, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
-            ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), boxColor, boxThickness)
-            if x2 <= 2:
-                x2 = 4
-            if y2 <= 0:
-                y2 = 9
+            # Calculate full size
+            x2 = x * widthMul
+            y2 = y * heightMul
+            w2 = w * widthMul
+            h2 = h * heightMul            
+            x3, y3, w3, h3 = location
+            # Calculate full size
+            x4 = x3 * widthMul
+            y4 = y3 * heightMul
+            w4 = w3 * widthMul
+            h4 = h3 * heightMul
+            # Mark target
+            cv2.rectangle(target, (x2 + x4, y2 + y4), (x2 + x4 + w2, y2 + y4 + h2), boxColor, boxThickness)
+            label = "%1.2f" % foundWeights[i]
+            # Figure out text size
+            size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1.0, 1)[0]            
             # Print weight
-            cv2.putText(image, "%1.2f" % foundWeights[i], ((x + x2) * widthMultiplier, (y + y2 + h) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
+            cv2.putText(target, label, (x2 + x4, y2 + y4 + h2 - size[1]), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
             i += 1
 
 def markRoi(target, locList, foundLocsList, widthMul, heightMul, boxColor, boxThickness):
@@ -59,16 +79,32 @@ def markRoi(target, locList, foundLocsList, widthMul, heightMul, boxColor, boxTh
     for location, foundLocations in zip(locList, foundLocsList):
         # Mark target
         for x, y, w, h in foundLocations:
-            x2, y2, w2, h2 = location
-            cv2.rectangle(target, ((x + x2) * widthMultiplier, (y + y2) * heightMultiplier),
-            ((x + x2 + w) * widthMultiplier, (y + y2 + h) * heightMultiplier), boxColor, boxThickness)
-        if x2 <= 2:
-            x2 = 4
-        if y2 <= 0:
-            y2 = 9
-        # Show width and height of full size image
-        cv2.putText(image, "%dx%d" % (w * widthMul, h * heightMul), ((x + x2) * widthMultiplier, (y + y2 + h) * heightMultiplier - 4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
-
+            # Calculate full size
+            x2 = x * widthMul
+            y2 = y * heightMul
+            w2 = w * widthMul
+            h2 = h * heightMul            
+            x3, y3, w3, h3 = location
+            # Calculate full size
+            x4 = x3 * widthMul
+            y4 = y3 * heightMul
+            w4 = w3 * widthMul
+            h4 = h3 * heightMul
+            # Mark target
+            cv2.rectangle(target, (x2 + x4, y2 + y4), (x2 + x4 + w2, y2 + y4 + h2), boxColor, boxThickness)
+            label = "%dx%d" % (w2, h2)
+            # Figure out text size
+            size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1.0, 1)[0]            
+            # Deal with possible text outside of image bounds
+            if x2 < 0:
+                x2 = 0
+            if y2 < size[1]:
+                y2 = size[1] + 2
+            else:
+                y2 = y2 - 2
+            # Show width and height of full size image
+            cv2.putText(target, label, (x2 + x4, y2 + y4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
+            
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         configFileName = "../config/motiondetect.ini"
@@ -220,7 +256,7 @@ if __name__ == '__main__':
                             recording = True
                         if mark:
                             # Draw rectangle around found objects
-                            markMotion(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
+                            markRectSize(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 1)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
                             locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg, winStride, padding, scale0)
@@ -228,7 +264,7 @@ if __name__ == '__main__':
                                 peopleFound = True
                                 if mark:
                                     # Draw rectangle around found objects
-                                    markPedestrian(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
+                                    markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 1)
                                 logger.debug("Pedestrian detected locations: %s" % (foundLocationsList))
                         # Haar Cascades detection?
                         elif detectType.lower() == "h":
@@ -237,7 +273,7 @@ if __name__ == '__main__':
                                 cascadeFound = True
                                 if mark:
                                     # Draw rectangle around found objects
-                                    markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
+                                    markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 1)
                                 logger.debug("Cascade detected locations: %s" % (foundLocationsList))
                 else:
                     skipCount -= 1
