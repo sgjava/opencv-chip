@@ -200,6 +200,7 @@ if __name__ == '__main__':
         recording = False
         frameOk = True
         frames = 0
+        frameCount = 0
         # Init cascade classifier
         if detectType.lower() == "h":
             cascadedet.init(cascadeFile)
@@ -214,6 +215,7 @@ if __name__ == '__main__':
             else:
                 frameOk, image = videoCapture.read()
             if frameOk:
+                frameCount += 1
                 # Calc FPS    
                 frames += 1
                 curTime = time.time()
@@ -242,6 +244,9 @@ if __name__ == '__main__':
                     grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg, kSize, alpha, blackThreshold, maxChange, dilateAmount, erodeAmount)
                     # Threshold to trigger motion
                     if motionPercent > startThreshold:
+                        if motionPercent > maxChange:
+                            skipCount = skipFrames
+                            logger.debug("Maximum motion change: %4.2f" % motionPercent)
                         if not recording:
                             # Construct directory name from camera name, recordDir and date
                             fileDir = "%s/%s/%s" % (os.path.expanduser(recordDir), cameraName, now.strftime("%Y-%m-%d"))
@@ -265,8 +270,8 @@ if __name__ == '__main__':
                                 if mark:
                                     # Draw rectangle around found objects
                                     markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 1)
-                                logger.debug("Pedestrian detected locations: %s" % (foundLocationsList))
-                        # Haar Cascades detection?
+                                logger.debug("Pedestrian detected locations: %s" % foundLocationsList)
+                        # Haar Cascade detection?
                         elif detectType.lower() == "h":
                             locationsList, foundLocationsList = cascadedet.detect(movementLocations, grayImg, scaleFactor, minNeighbors, minWidth, minHeight)
                             if len(foundLocationsList) > 0:
@@ -274,7 +279,7 @@ if __name__ == '__main__':
                                 if mark:
                                     # Draw rectangle around found objects
                                     markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 1)
-                                logger.debug("Cascade detected locations: %s" % (foundLocationsList))
+                                logger.debug("Cascade detected locations: %s" % foundLocationsList)
                 else:
                     skipCount -= 1
             # If recording write frame and check motion percent
@@ -294,7 +299,7 @@ if __name__ == '__main__':
                         os.rename("%s/%s" % (fileDir, fileName), "%s/cascade-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - appstart
-        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frames / elapsed, elapsed))        
+        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frameCount / elapsed, elapsed))        
         # Clean up
         if mjpeg:
             socketFile.close()

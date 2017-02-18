@@ -58,13 +58,12 @@ def detect(image, kSize, alpha, blackThreshold, maxChange, dilateAmount, erodeAm
     # Detect if camera is adjusting and reset reference if more than threshold
     if motionPercent > maxChange:
         movingAvgImg = numpy.float32(workImg)
-    else:
-        movementLocations = contours(bwImg, dilateAmount, erodeAmount)
-        # Filter out inside rectangles
-        for ri, r in enumerate(movementLocations):
-            for qi, q in enumerate(movementLocations):
-                if ri != qi and inside(r, q):
-                    break
-            else:
-                movementLocationsFiltered.append(r)
+    movementLocations = contours(bwImg, dilateAmount, erodeAmount)
+    # Filter out inside rectangles
+    for ri, r in enumerate(movementLocations):
+        for qi, q in enumerate(movementLocations):
+            if ri != qi and inside(r, q):
+                break
+        else:
+            movementLocationsFiltered.append(r)
     return grayImg, motionPercent, movementLocationsFiltered

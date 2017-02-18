@@ -20,7 +20,7 @@ def init(fileName):
     cascade = cv2.CascadeClassifier(fileName)
 
 def detect(locations, image, scaleFactor, minNeighbors, minWidth, minHeight):
-    """Check ROI for faces"""
+    """Cascade detect ROI"""
     global cascade
     locationsList = []
     foundLocationsList = []
