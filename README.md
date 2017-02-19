@@ -171,7 +171,7 @@ Change `whitepatch` in `install-mjpg-streamer.sh` to `True` if you get a white i
     * `mjpg_streamer -i "/usr/local/lib/input_uvc.so -y" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * To run mjpg-streamer with 'MJPG' use
     * `mjpg_streamer -i "/usr/local/lib/input_uvc.so" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
-* In your web browser or VLC player goto `http://yourhost:8080/?action=stream` and you should see the video stream.
+* In your web browser or VLC player go to `http://yourhost:8080/?action=stream` and you should see the video stream.
 
 ####mjpg-streamer performance
 The bottom line is you need an MJPEG USB camera because CPU usage is too high using YUYV. CHIP only has one core, so you want to use a little CPU as possible acquiring the frames. If you plan on streaming only then this might not be a big deal, but CV is CPU intensive. I used a Logitech C270 for the following tests:
@@ -187,7 +187,7 @@ MJPG 640x480 5 FPS
 * Bitrate 503 kb/s
 
 MJPG 1280x720 5 FPS
-* `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 640x480" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
+* `mjpg_streamer -i "/usr/local/lib/input_uvc.so -n -f 5 -r 1280x720" -o "/usr/local/lib/output_http.so -w /usr/local/www"`
 * CPU < 1%
 * Bitrate 1689 kb/s
 
