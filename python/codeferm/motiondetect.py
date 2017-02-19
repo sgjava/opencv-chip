@@ -210,6 +210,7 @@ if __name__ == '__main__':
         while(frameOk):
             # Used for timestamp in frame buffer and filename
             now = datetime.datetime.now()
+            # Use custom client for MJPEG
             if mjpeg:
                 image = mjpegclient.getFrame(socketFile, boundary)
             else:
@@ -244,7 +245,7 @@ if __name__ == '__main__':
                     grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg, kSize, alpha, blackThreshold, maxChange, dilateAmount, erodeAmount)
                     # Threshold to trigger motion
                     if motionPercent > startThreshold:
-                        if motionPercent > maxChange:
+                        if motionPercent >= maxChange:
                             skipCount = skipFrames
                             logger.debug("Maximum motion change: %4.2f" % motionPercent)
                         if not recording:
@@ -297,6 +298,8 @@ if __name__ == '__main__':
                     # Rename video to show cascade found
                     elif cascadeFound:
                         os.rename("%s/%s" % (fileDir, fileName), "%s/cascade-%s" % (fileDir, fileName))
+                    else:
+                        os.rename("%s/%s" % (fileDir, fileName), "%s/motion-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - appstart
         logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frameCount / elapsed, elapsed))        
