@@ -8,7 +8,23 @@ If you want to make your own CHG-IN cables click [here](https://bbs.nextthing.co
 
 ![Title](images/pedestrian-detect.png)
 
-Usually after you install a complex framework like OpenCV you want to start exploring (unless it is a dependency for another project). You have to optimize extensively on platforms with an incompatible VPU/GPU such as the Mali 400. The CHIP only has one CPU core, but you can do real time object detection using techniques I'll describe later on. The image above is a screenshot of a video frame that has been processed. Motion is bounded by green boxes and pedestrians by blue boxes.
+Usually after you install a complex framework like OpenCV you want to start exploring (unless it is a dependency for another project). You have to optimize extensively on platforms with an incompatible VPU/GPU such as the Mali 400. The CHIP only has one CPU core, but you can do real time object detection using techniques I'll describe later on. The image above is a screenshot of a video frame that has been processed. Motion is bounded by green boxes and pedestrians by blue boxes. Below are examples of resolutions and frame rates based on detection type: 
+
+Motion detection (MJPEG camera and XVID encoding)
+
+| Resolution | Record FPS | Sample FPS |
+|------------|:----------:|-----------:|
+|   1280x720 |          5 |        2.5 |
+|    800x448 |         10 |        3.1 |
+|    640x480 |         20 |        3.1 |
+
+Pedestrian detection (MJPEG camera and XVID encoding)
+
+| Resolution | Record FPS | Sample FPS |
+|------------|:----------:|-----------:|
+|    800x448 |          5 |        2.5 |
+|    640x480 |         10 |        3.1 |
+|    320x240 |         15 |        3.1 |
 
 * [Provides](#provides)
 * [Low Cost CV Camera](#low-cost-cv-camera)
