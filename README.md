@@ -16,7 +16,7 @@ Motion detection (MJPEG camera and XVID encoding)
 |------------|:----------:|-----------:|
 |   1280x720 |          5 |        2.5 |
 |    800x448 |         10 |        3.1 |
-|    640x480 |         20 |        3.1 |
+|    640x480 |         15 |        3.1 |
 
 Pedestrian detection (MJPEG camera and XVID encoding)
 
