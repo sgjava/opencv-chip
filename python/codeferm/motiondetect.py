@@ -262,7 +262,7 @@ if __name__ == '__main__':
                             recording = True
                         if mark:
                             # Draw rectangle around found objects
-                            markRectSize(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 1)
+                            markRectSize(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
                         if detectType.lower() == "p":
                             locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg, winStride, padding, scale0)
@@ -270,7 +270,7 @@ if __name__ == '__main__':
                                 peopleFound = True
                                 if mark:
                                     # Draw rectangle around found objects
-                                    markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 1)
+                                    markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
                                 logger.debug("Pedestrian detected locations: %s" % foundLocationsList)
                         # Haar Cascade detection?
                         elif detectType.lower() == "h":
@@ -279,7 +279,7 @@ if __name__ == '__main__':
                                 cascadeFound = True
                                 if mark:
                                     # Draw rectangle around found objects
-                                    markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 1)
+                                    markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
                                 logger.debug("Cascade detected locations: %s" % foundLocationsList)
                 else:
                     skipCount -= 1
