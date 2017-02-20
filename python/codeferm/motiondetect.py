@@ -147,8 +147,6 @@ if __name__ == '__main__':
     winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
     padding = eval(parser.get("pedestrian", "padding"), {}, {})
     scale0 = parser.getfloat("pedestrian", "scale0")
-    finalThreshold = parser.getfloat("pedestrian", "finalThreshold")
-    useMeanshiftGrouping = parser.getboolean("pedestrian", "useMeanshiftGrouping")          
     # Set cascade related data attributes
     cascadeFile = parser.get("cascade", "cascadeFile")
     scaleFactor = parser.getfloat("cascade", "scaleFactor")
