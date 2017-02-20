@@ -294,7 +294,7 @@ I ran a 14 hour test with motiondetect.py (with pedestrian detection) and it sta
 The default [motiondetect.ini](https://github.com/sgjava/opencv-chip/blob/master/python/config/motiondetect.ini) is configured to detect pedestrians from a local video file in the project. Try this first and make sure it works properly.
 * `cd /media/usb0/opencv-chip/python/codeferm`
 * `python motiondetect.py`
-* Video will record to ~/motion using the date to build the directory and name time for file name
+* Video will record to ~/motion/test using camera name, date for directory and time for file name
 * This is handy for debugging issues or fine tuning using the same file over and over
 
 This time we will run mjpg-streamer in background. Using `-b` did not work for me as `chip` user, so I used `nohup`. Eventually mjpg-streamer will become a service, but this works for testing. To run example yourself use (this is 5 FPS example):

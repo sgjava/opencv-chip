@@ -104,6 +104,18 @@ def markRoi(target, locList, foundLocsList, widthMul, heightMul, boxColor, boxTh
                 y2 = y2 - 2
             # Show width and height of full size image
             cv2.putText(target, label, (x2 + x4, y2 + y4), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
+
+def saveFrame(frame, saveDir, saveFileName):
+    """Save JPEG frame and convert if needed"""
+    # Create dir if it doesn"t exist
+    if not os.path.exists(saveDir):
+        os.makedirs(saveDir)
+    if isinstance(frame, numpy.ndarray):
+        cv2.imwrite("%s/%s" % (saveDir, saveFileName), frame)
+    else:
+        writer = open("%s/%s" % (saveDir, saveFileName), "wb")
+        writer.write(frame)
+        writer.close()
             
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -131,6 +143,7 @@ if __name__ == '__main__':
     recordDir = parser.get("camera", "recordDir")
     detectType = parser.get("camera", "detectType")
     mark = parser.getboolean("camera", "mark")
+    saveFrames = parser.getboolean("camera", "saveFrames")
     # Set motion related data attributes
     kSize = eval(parser.get("motion", "kSize"), {}, {})
     alpha = parser.getfloat("motion", "alpha")
@@ -163,7 +176,7 @@ if __name__ == '__main__':
         # Open MJPEG stream
         socketFile, streamSock, boundary = mjpegclient.open(url, 10)
         # Determine image dimensions
-        image = mjpegclient.getFrame(socketFile, boundary)
+        jpeg, image = mjpegclient.getFrame(socketFile, boundary)
         frameHeight, frameWidth, unknown = image.shape
     else:
         videoCapture = cv2.VideoCapture(url)
@@ -210,7 +223,7 @@ if __name__ == '__main__':
             now = datetime.datetime.now()
             # Use custom client for MJPEG
             if mjpeg:
-                image = mjpegclient.getFrame(socketFile, boundary)
+                jpeg, image = mjpegclient.getFrame(socketFile, boundary)
             else:
                 frameOk, image = videoCapture.read()
             if frameOk:
@@ -269,6 +282,15 @@ if __name__ == '__main__':
                                 if mark:
                                     # Draw rectangle around found objects
                                     markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
+                                # Save off detected frames
+                                if saveFrames:
+                                    pedDir = "%s/pedestrian" % fileDir
+                                    pedName = "%s-%d.jpg" % (os.path.splitext(fileName)[0], frameCount)
+                                    # Save raw JPEG without encoding
+                                    if mjpeg:
+                                        saveFrame(jpeg, pedDir, pedName)
+                                    else:
+                                        saveFrame(image, pedDir, pedName)
                                 logger.debug("Pedestrian detected locations: %s" % foundLocationsList)
                         # Haar Cascade detection?
                         elif detectType.lower() == "h":
