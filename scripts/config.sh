@@ -23,4 +23,4 @@ buildhome="/media/usb0"
 #extracflag="-mtune=cortex-a8 -mfloat-abi=hard"
 
 # Leaving default since libjpeg-turbo and OpenCV detect CPU features
-extracflag=""
+extra_c_flag=""
