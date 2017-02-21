@@ -41,8 +41,8 @@ jdkarchive="jdk-8u121-linux-arm32-vfp-hflt.tar.gz"
 
 # Apache Ant
 anturl="https://www.apache.org/dist/ant/binaries/"
-antarchive="apache-ant-1.10.0-bin.tar.gz"
-antver="apache-ant-1.10.0"
+antarchive="apache-ant-1.10.1-bin.tar.gz"
+antver="apache-ant-1.10.1"
 anthome="/opt/ant"
 antbin="/opt/ant/bin"
 
