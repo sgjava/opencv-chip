@@ -47,15 +47,6 @@ if [ "$arch" = "armv7l" ]; then
 # ARM 64
 elif [ "$arch" = "aarch64" ]; then
 	export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
-	# See if LD_LIBRARY_PATH exists and if not add it to /etc/environment
-	if grep -q "LD_LIBRARY_PATH" /etc/environment; then
-		log "LD_LIBRARY_PATH already exists"
-	else
-		# Add LD_LIBRARY_PATH to /etc/environment
-		log "Adding LD_LIBRARY_PATH to /etc/environment"
-		echo "LD_LIBRARY_PATH=/opt/libjpeg-turbo/lib64" >> /etc/environment
-		. /etc/environment
-	fi
 # Not supported
 else
 	echo "\nNo supported architectures detected!"
@@ -99,6 +90,12 @@ log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1
+# ARM 64
+if [ "$arch" = "aarch64" ]; then
+	export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
+	echo "/opt/libjpeg-turbo/lib64" > /etc/ld.so.conf.d/libjpeg-turbo.conf
+	ldconfig
+fi
 log "Copy www dir"
 cp -R www /usr/local/www >> $logfile 2>&1
 
