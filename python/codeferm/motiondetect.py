@@ -125,16 +125,19 @@ def initVideo(url, fps):
         # Determine image dimensions
         jpeg, image = mjpegclient.getFrame(socketFile, boundary)
         frameHeight, frameWidth, unknown = image.shape
-        videoCapture = None
         retFps = fps
+        videoCapture = None
         mjpeg = True
     else:
         videoCapture = cv2.VideoCapture(url)
         frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
         retFps = int(videoCapture.get(cv2.CAP_PROP_FPS))
+        socketFile = None
+        streamSock = None
+        boundary = None        
         mjpeg = False
-    return mjpeg, retFps, frameWidth, frameHeight, videoCapture
+    return mjpeg, retFps, frameWidth, frameHeight, videoCapture, socketFile, streamSock, boundary
             
 def main():
     """Main function"""
@@ -194,7 +197,7 @@ def main():
     # Load values from ini file
     config()
     # Initialize video    
-    mjpeg, fps, frameWidth, frameHeight, videoCapture = initVideo(config.url, config.fps)
+    mjpeg, fps, frameWidth, frameHeight, videoCapture, socketFile, streamSock, boundary = initVideo(config.url, config.fps)
     logger.info("OpenCV %s" % cv2.__version__)
     logger.info("URL: %s, fps: %d" % (config.url, fps))
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
