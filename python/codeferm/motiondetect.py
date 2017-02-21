@@ -249,7 +249,7 @@ def main():
                 # Log FPS
                 if elapse >= config.fpsInterval:
                     start = curTime
-                    logger.debug("%3.1f FPS" % elapsedFrames / elapse)
+                    logger.debug("%3.1f FPS" % (elapsedFrames / elapse))
                     elapsedFrames = 0                
                 # Buffer image
                 if len(frameBuf) == frameBufSize:
