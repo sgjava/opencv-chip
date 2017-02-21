@@ -20,14 +20,11 @@ dateformat="+%a %b %-eth %Y %I:%M:%S %p %Z"
 starttime=$(date "$dateformat")
 starttimesec=$(date +%s)
 
-# Get architecture
-arch=$(uname -m)
-
 # Get current directory
 curdir=$(cd `dirname $0` && pwd)
 
-# Temp dir for downloads, etc.
-tmpdir="/media/usb0/temp"
+# Source config file
+. "$curdir"/config.sh
 
 # Oracle JDK
 javahome=/usr/lib/jvm/jdk1.8.0

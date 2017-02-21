@@ -28,11 +28,9 @@ patchjava="False"
 # Get current directory
 curdir=$(cd `dirname $0` && pwd)
 
-# Temp dir for downloads, etc.
-tmpdir="/media/usb0/temp"
+# Source config file
+. "$curdir"/config.sh
 
-# Build home
-buildhome="/media/usb0"
 opencvhome="$buildhome/opencv"
 contribhome="$buildhome/opencv_contrib"
 

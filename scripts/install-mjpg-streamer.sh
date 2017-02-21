@@ -25,22 +25,22 @@ whitepatch="True"
 # Get current directory
 curdir=$(cd `dirname $0` && pwd)
 
-# Temp dir for downloads, etc.
-tmpdir="/media/usb0/temp"
-
-# Patch OpenCV Java code to fix memory leaks and performance issues.
-# See https://github.com/sgjava/opencvmem for details
-patchjava="False"
-
-# Build home
-buildhome="/media/usb0"
+# Source config file
+. "$curdir"/config.sh
 
 # Point to our libjpeg-turbo
 export CPATH="/opt/libjpeg-turbo/include"
-export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
-
+# ARM 32
+if [ "$arch" = "armv7l" ]; then
+	export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
 # ARM 64
-#export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
+elif [ "$arch" = "aarch64" ]; then
+	export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
+# Not supported
+else
+	echo "\nNo supported architectures detected!"
+	exit 1
+fi
 
 # stdout and stderr for commands logged
 logfile="$curdir/install-mjpg-streamer.log"

@@ -22,11 +22,8 @@ starttimesec=$(date +%s)
 # Get current directory
 curdir=$(cd `dirname $0` && pwd)
 
-# Temp dir for downloads, etc.
-tmpdir="/media/usb0/temp"
-
-# Build home
-buildhome="/media/usb0"
+# Source config file
+. "$curdir"/config.sh
 
 # Optimize for CHIP - need to test without
 #export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
