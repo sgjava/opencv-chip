@@ -35,6 +35,13 @@ patchjava="False"
 # Build home
 buildhome="/media/usb0"
 
+# Point to our libjpeg-turbo
+export CPATH="/opt/libjpeg-turbo/include"
+export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
+
+# ARM 64
+#export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
+
 # stdout and stderr for commands logged
 logfile="$curdir/install-mjpg-streamer.log"
 rm -f $logfile
@@ -66,7 +73,6 @@ fi
 
 cd "$buildhome" >> $logfile 2>&1
 log "Installing mjpg-streamer dependenices..."
-#apt-get -y install subversion g++ pkg-config build-essential cmake imagemagick libv4l-dev libjpeg62-turbo-dev >> $logfile 2>&1
 apt-get -y install subversion g++ pkg-config build-essential cmake imagemagick libv4l-dev >> $logfile 2>&1
 log "Create symlink videodev.h -> videodev2.h"
 ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h >> $logfile 2>&1
@@ -81,9 +87,6 @@ if [ "$whitepatch" = "True" ]; then
 	patch -p0 < input_uvc_patch.txt >> $logfile 2>&1
 fi
 log "Make..."
-# Point to our libjpeg-turbo
-export CPATH="/opt/libjpeg-turbo/include"
-export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1

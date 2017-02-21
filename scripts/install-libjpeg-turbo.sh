@@ -28,13 +28,9 @@ tmpdir="/media/usb0/temp"
 # Build home
 buildhome="/media/usb0"
 
-# Optimize for CHIP
-export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
-export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
-
-# Optimize for Pine 64
-#export CFLAGS="-march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon -mfloat-abi=hard"
-#export CXXFLAGS="-march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon -mfloat-abi=hard"
+# Optimize for CHIP - need to test without
+#export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
+#export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
 
 # stdout and stderr for commands logged
 logfile="$curdir/install-libjpeg-turbo.log"
