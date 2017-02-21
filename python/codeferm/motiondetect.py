@@ -127,79 +127,132 @@ def config():
     # Read configuration file
     parser.read(configFileName)
     # Configure logger
-    main.logger = logging.getLogger("motiondetect")
-    main.logger.setLevel(parser.get("logging", "level"))
+    logger = logging.getLogger("motiondetect")
+    logger.setLevel(parser.get("logging", "level"))
     formatter = logging.Formatter(parser.get("logging", "formatter"))
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
-    main.logger.addHandler(handler)
+    logger.addHandler(handler)
     # Set camera related data attributes
-    main.cameraName = parser.get("camera", "name")    
-    main.url = parser.get("camera", "url")
-    main.resizeWidthDiv = parser.getint("camera", "resizeWidthDiv")
-    main.fpsInterval = parser.getfloat("camera", "fpsInterval")
-    main.fps = parser.getint("camera", "fps")
-    main.fourcc = parser.get("camera", "fourcc")
-    main.recordFileExt = parser.get("camera", "recordFileExt")
-    main.recordDir = parser.get("camera", "recordDir")
-    main.detectType = parser.get("camera", "detectType")
-    main.mark = parser.getboolean("camera", "mark")
-    main.saveFrames = parser.getboolean("camera", "saveFrames")
+    cameraName = parser.get("camera", "name")    
+    url = parser.get("camera", "url")
+    resizeWidthDiv = parser.getint("camera", "resizeWidthDiv")
+    fpsInterval = parser.getfloat("camera", "fpsInterval")
+    fps = parser.getint("camera", "fps")
+    fourcc = parser.get("camera", "fourcc")
+    recordFileExt = parser.get("camera", "recordFileExt")
+    recordDir = parser.get("camera", "recordDir")
+    detectType = parser.get("camera", "detectType")
+    mark = parser.getboolean("camera", "mark")
+    saveFrames = parser.getboolean("camera", "saveFrames")
     # Set motion related data attributes
-    main.kSize = eval(parser.get("motion", "kSize"), {}, {})
-    main.alpha = parser.getfloat("motion", "alpha")
-    main.blackThreshold = parser.getint("motion", "blackThreshold")
-    main.maxChange = parser.getfloat("motion", "maxChange")
-    main.skipFrames = parser.getint("motion", "skipFrames")
-    main.startThreshold = parser.getfloat("motion", "startThreshold")
-    main.stopThreshold = parser.getfloat("motion", "stopThreshold")
+    kSize = eval(parser.get("motion", "kSize"), {}, {})
+    alpha = parser.getfloat("motion", "alpha")
+    blackThreshold = parser.getint("motion", "blackThreshold")
+    maxChange = parser.getfloat("motion", "maxChange")
+    skipFrames = parser.getint("motion", "skipFrames")
+    startThreshold = parser.getfloat("motion", "startThreshold")
+    stopThreshold = parser.getfloat("motion", "stopThreshold")
     # Set contour related data attributes
-    main.dilateAmount = parser.getint("motion", "dilateAmount")
-    main.erodeAmount = parser.getint("motion", "erodeAmount")
+    dilateAmount = parser.getint("motion", "dilateAmount")
+    erodeAmount = parser.getint("motion", "erodeAmount")
     # Set pedestrian detect related data attributes
-    main.hitThreshold = parser.getfloat("pedestrian", "hitThreshold")
-    main.winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
-    main.padding = eval(parser.get("pedestrian", "padding"), {}, {})
-    main.scale0 = parser.getfloat("pedestrian", "scale0")
+    hitThreshold = parser.getfloat("pedestrian", "hitThreshold")
+    winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
+    padding = eval(parser.get("pedestrian", "padding"), {}, {})
+    scale0 = parser.getfloat("pedestrian", "scale0")
     # Set cascade related data attributes
-    main.cascadeFile = parser.get("cascade", "cascadeFile")
-    main.scaleFactor = parser.getfloat("cascade", "scaleFactor")
-    main.minNeighbors = parser.getint("cascade", "minNeighbors")
-    main.minWidth = parser.getint("cascade", "minWidth")
-    main.minHeight = parser.getint("cascade", "minHeight")
+    cascadeFile = parser.get("cascade", "cascadeFile")
+    scaleFactor = parser.getfloat("cascade", "scaleFactor")
+    minNeighbors = parser.getint("cascade", "minNeighbors")
+    minWidth = parser.getint("cascade", "minWidth")
+    minHeight = parser.getint("cascade", "minHeight")
             
 def main():
     """Main function"""
+    
+    def config():
+        """Config from INI file"""
+        # Set camera related data attributes
+        config.cameraName = parser.get("camera", "name")    
+        config.url = parser.get("camera", "url")
+        config.resizeWidthDiv = parser.getint("camera", "resizeWidthDiv")
+        config.fpsInterval = parser.getfloat("camera", "fpsInterval")
+        config.fps = parser.getint("camera", "fps")
+        config.fourcc = parser.get("camera", "fourcc")
+        config.recordFileExt = parser.get("camera", "recordFileExt")
+        config.recordDir = parser.get("camera", "recordDir")
+        config.detectType = parser.get("camera", "detectType")
+        config.mark = parser.getboolean("camera", "mark")
+        config.saveFrames = parser.getboolean("camera", "saveFrames")
+        # Set motion related data attributes
+        config.kSize = eval(parser.get("motion", "kSize"), {}, {})
+        config.alpha = parser.getfloat("motion", "alpha")
+        config.blackThreshold = parser.getint("motion", "blackThreshold")
+        config.maxChange = parser.getfloat("motion", "maxChange")
+        config.skipFrames = parser.getint("motion", "skipFrames")
+        config.startThreshold = parser.getfloat("motion", "startThreshold")
+        config.stopThreshold = parser.getfloat("motion", "stopThreshold")
+        # Set contour related data attributes
+        config.dilateAmount = parser.getint("motion", "dilateAmount")
+        config.erodeAmount = parser.getint("motion", "erodeAmount")
+        # Set pedestrian detect related data attributes
+        config.hitThreshold = parser.getfloat("pedestrian", "hitThreshold")
+        config.winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
+        config.padding = eval(parser.get("pedestrian", "padding"), {}, {})
+        config.scale0 = parser.getfloat("pedestrian", "scale0")
+        # Set cascade related data attributes
+        config.cascadeFile = parser.get("cascade", "cascadeFile")
+        config.scaleFactor = parser.getfloat("cascade", "scaleFactor")
+        config.minNeighbors = parser.getint("cascade", "minNeighbors")
+        config.minWidth = parser.getint("cascade", "minWidth")
+        config.minHeight = parser.getint("cascade", "minHeight")
+    
+    
+    if len(sys.argv) < 2:
+        configFileName = "../config/motiondetect.ini"
+    else:
+        configFileName = sys.argv[1]
+    parser = ConfigParser.SafeConfigParser()
+    # Read configuration file
+    parser.read(configFileName)
+    # Configure logger
+    logger = logging.getLogger("motiondetect")
+    logger.setLevel(parser.get("logging", "level"))
+    formatter = logging.Formatter(parser.get("logging", "formatter"))
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
     config()    
     # See if we should use MJPEG client
-    if urlparse.urlparse(main.url).scheme == "http":
+    if urlparse.urlparse(config.url).scheme == "http":
         mjpeg = True
     else:
         mjpeg = False
     # Init video capture
     if mjpeg:
         # Open MJPEG stream
-        socketFile, streamSock, boundary = mjpegclient.open(url, 10)
+        socketFile, streamSock, boundary = mjpegclient.open(config.url, 10)
         # Determine image dimensions
         jpeg, image = mjpegclient.getFrame(socketFile, boundary)
         frameHeight, frameWidth, unknown = image.shape
     else:
-        videoCapture = cv2.VideoCapture(main.url)
+        videoCapture = cv2.VideoCapture(config.url)
         frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
         fps = int(videoCapture.get(cv2.CAP_PROP_FPS))
-    main.logger.info("OpenCV %s" % cv2.__version__)
-    main.logger.info("URL: %s, fps: %d" % (main.url, main.fps))
-    main.logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
+    logger.info("OpenCV %s" % cv2.__version__)
+    logger.info("URL: %s, fps: %d" % (config.url, config.fps))
+    logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
     # Make sure we have positive values
     if frameWidth > 0 and frameHeight > 0:
         # Motion detection generally works best with 320 or wider images
-        widthDivisor = int(frameWidth / main.resizeWidthDiv)
+        widthDivisor = int(frameWidth / config.resizeWidthDiv)
         if widthDivisor < 1:
             widthDivisor = 1
         frameResizeWidth = int(frameWidth / widthDivisor)
         frameResizeHeight = int(frameHeight / widthDivisor)
-        main.logger.info("Resized to: %dx%d" % (frameResizeWidth, frameResizeHeight))
+        logger.info("Resized to: %dx%d" % (frameResizeWidth, frameResizeHeight))
         # Used for full size image marking
         widthMultiplier = int(frameWidth / frameResizeWidth)
         heightMultiplier = int(frameHeight / frameResizeHeight)
@@ -218,8 +271,8 @@ def main():
         frames = 0
         frameCount = 0
         # Init cascade classifier
-        if main.detectType.lower() == "h":
-            cascadedet.init(main.cascadeFile)
+        if config.detectType.lower() == "h":
+            cascadedet.init(os.path.expanduser(config.cascadeFile))
         start = time.time()
         appstart = start
         # Calculate FPS
@@ -238,7 +291,7 @@ def main():
                 curTime = time.time()
                 elapse = curTime - start
                 # Log FPS
-                if elapse >= main.fpsInterval:
+                if elapse >= config.fpsInterval:
                     start = curTime
                     fps = frames / elapse
                     logger.debug("%3.1f FPS" % fps)
@@ -258,37 +311,37 @@ def main():
                     else:
                         resizeImg = image
                     # Detect motion
-                    grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg, main.kSize, main.alpha, main.blackThreshold, main.maxChange, main.dilateAmount, main.erodeAmount)
+                    grayImg, motionPercent, movementLocations = motiondet.detect(resizeImg, config.kSize, config.alpha, config.blackThreshold, config.maxChange, config.dilateAmount, config.erodeAmount)
                     # Threshold to trigger motion
-                    if motionPercent > main.startThreshold:
-                        if motionPercent >= main.maxChange:
-                            skipCount = main.skipFrames
+                    if motionPercent > config.startThreshold:
+                        if motionPercent >= config.maxChange:
+                            skipCount = config.skipFrames
                             logger.debug("Maximum motion change: %4.2f" % motionPercent)
                         if not recording:
                             # Construct directory name from camera name, recordDir and date
-                            fileDir = "%s/%s/%s" % (os.path.expanduser(main.recordDir), main.cameraName, now.strftime("%Y-%m-%d"))
+                            fileDir = "%s/%s/%s" % (os.path.expanduser(config.recordDir), config.cameraName, now.strftime("%Y-%m-%d"))
                             # Create dir if it doesn"t exist
                             if not os.path.exists(fileDir):
                                 os.makedirs(fileDir)
-                            fileName = "%s.%s" % (now.strftime("%H-%M-%S"), main.recordFileExt)
-                            videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(main.fourcc[0], main.fourcc[1], main.fourcc[2], main.fourcc[3]), fps, (frameWidth, frameHeight), True)
-                            main.logger.info("Start recording (%4.2f) %s/%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, main.fps))
+                            fileName = "%s.%s" % (now.strftime("%H-%M-%S"), config.recordFileExt)
+                            videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(config.fourcc[0], config.fourcc[1], config.fourcc[2], config.fourcc[3]), config.fps, (frameWidth, frameHeight), True)
+                            logger.info("Start recording (%4.2f) %s/%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                             peopleFound = False
                             cascadeFound = False
                             recording = True
-                        if main.mark:
+                        if config.mark:
                             # Draw rectangle around found objects
                             markRectSize(image, movementLocations, widthMultiplier, heightMultiplier, (0, 255, 0), 2)
                         # Detect pedestrians ?
-                        if main.detectType.lower() == "p":
-                            locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg, main.winStride, main.padding, main.scale0)
+                        if config.detectType.lower() == "p":
+                            locationsList, foundLocationsList, foundWeightsList = pedestriandet.detect(movementLocations, resizeImg, config.winStride, config.padding, config.scale0)
                             if len(foundLocationsList) > 0:
                                 peopleFound = True
-                                if main.mark:
+                                if config.mark:
                                     # Draw rectangle around found objects
                                     markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
                                 # Save off detected frames
-                                if main.saveFrames:
+                                if config.saveFrames:
                                     pedDir = "%s/pedestrian" % fileDir
                                     pedName = "%s-%d.jpg" % (os.path.splitext(fileName)[0], frameCount)
                                     # Save raw JPEG without encoding
@@ -296,16 +349,25 @@ def main():
                                         saveFrame(jpeg, pedDir, pedName)
                                     else:
                                         saveFrame(image, pedDir, pedName)
-                                main.logger.debug("Pedestrian detected locations: %s" % foundLocationsList)
+                                logger.debug("Pedestrian detected locations: %s" % foundLocationsList)
                         # Haar Cascade detection?
-                        elif main.detectType.lower() == "h":
-                            locationsList, foundLocationsList = cascadedet.detect(movementLocations, grayImg, main.scaleFactor, main.minNeighbors, main.minWidth, main.minHeight)
+                        elif config.detectType.lower() == "h":
+                            locationsList, foundLocationsList = cascadedet.detect(movementLocations, grayImg, config.scaleFactor, config.minNeighbors, config.minWidth, config.minHeight)
                             if len(foundLocationsList) > 0:
                                 cascadeFound = True
-                                if mark:
+                                if config.mark:
                                     # Draw rectangle around found objects
                                     markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
-                                main.logger.debug("Cascade detected locations: %s" % foundLocationsList)
+                                    # Save off detected frames
+                                    if config.saveFrames:
+                                        cascadeDir = "%s/cascade" % fileDir
+                                        cascadeName = "%s-%d.jpg" % (os.path.splitext(fileName)[0], frameCount)
+                                        # Save raw JPEG without encoding
+                                        if mjpeg:
+                                            saveFrame(jpeg, cascadeDir, cascadeName)
+                                        else:
+                                            saveFrame(image, cascadeDir, cascadeName)
+                                logger.debug("Cascade detected locations: %s" % foundLocationsList)
                 else:
                     skipCount -= 1
             # If recording write frame and check motion percent
@@ -314,8 +376,8 @@ def main():
                 if frameOk:
                     videoWriter.write(frameBuf[0][0])
                 # Threshold to stop recording
-                if motionPercent <= main.stopThreshold or not frameOk:
-                    main.logger.info("Stop recording")
+                if motionPercent <= config.stopThreshold or not frameOk:
+                    logger.info("Stop recording")
                     del videoWriter
                     # Rename video to show pedestrian found
                     if peopleFound:
@@ -327,7 +389,7 @@ def main():
                         os.rename("%s/%s" % (fileDir, fileName), "%s/motion-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - appstart
-        main.logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frameCount / elapsed, elapsed))        
+        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frameCount / elapsed, elapsed))        
         # Clean up
         if mjpeg:
             socketFile.close()
