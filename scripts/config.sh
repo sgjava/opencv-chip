@@ -18,3 +18,9 @@ tmpdir="/media/usb0/temp"
 
 # Build home
 buildhome="/media/usb0"
+
+# Optimize for CHIP R8. OpenCV 3.2 auto detects NEON, so we leave that out
+#extracflag="-mtune=cortex-a8 -mfloat-abi=hard"
+
+# Leaving default since libjpeg-turbo and OpenCV detect CPU features
+extracflag=""

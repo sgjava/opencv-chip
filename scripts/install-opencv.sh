@@ -123,17 +123,14 @@ cd "$opencvhome"
 mkdir build
 cd build
 
-# Optimize for CHIP R8. OpenCV 3.2 auto detects NEON, so we leave that out
-extra_c_flag="-mtune=cortex-a8 -mfloat-abi=hard"
-
 log "Patch OpenCVCompilerOptions.cmake to apply cflags pre cmake"
-sed -e "/set(OPENCV_EXTRA_C_FLAGS \"\")/c\set(OPENCV_EXTRA_C_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
-sed -e "/set(OPENCV_EXTRA_CXX_FLAGS \"\")/c\set(OPENCV_EXTRA_CXX_FLAGS \"${extra_c_flag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
-export CFLAGS="$extra_c_flag"
-export CXXFLAGS="$extra_c_flag"
+sed -e "/set(OPENCV_extracflagS \"\")/c\set(OPENCV_extracflagS \"${extracflag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
+sed -e "/set(OPENCV_EXTRA_CXX_FLAGS \"\")/c\set(OPENCV_EXTRA_CXX_FLAGS \"${extracflag}\")" -i "$opencvhome/cmake/OpenCVCompilerOptions.cmake"
+export CFLAGS="$extracflag"
+export CXXFLAGS="$extracflag"
 log "CMake..."
 # Make any required changes here like if you want to build for GUI, examples, etc.
-cmake -DOPENCV_EXTRA_MODULES_PATH=$contribhome/modules -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DEXTRA_C_FLAGS=$extra_c_flag -DEXTRA_CXX_FLAGS=$extra_c_flag -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_QT=OFF -DWITH_GTK=OFF -DWITH_TBB=ON -DBUILD_TBB=OFF -DENABLE_NEON=ON -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/opt/libjpeg-turbo/include -DJPEG_LIBRARY=/opt/libjpeg-turbo/lib32/libjpeg.a .. >> $logfile 2>&1
+cmake -DOPENCV_EXTRA_MODULES_PATH=$contribhome/modules -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DextracflagS=$extracflag -DEXTRA_CXX_FLAGS=$extracflag -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_QT=OFF -DWITH_GTK=OFF -DWITH_TBB=ON -DBUILD_TBB=OFF -DENABLE_NEON=ON -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/opt/libjpeg-turbo/include -DJPEG_LIBRARY=/opt/libjpeg-turbo/lib32/libjpeg.a .. >> $logfile 2>&1
 log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 make install >> $logfile 2>&1
