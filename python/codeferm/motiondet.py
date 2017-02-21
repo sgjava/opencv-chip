@@ -65,5 +65,9 @@ def detect(image, kSize, alpha, blackThreshold, maxChange, dilateAmount, erodeAm
             if ri != qi and inside(r, q):
                 break
         else:
-            movementLocationsFiltered.append(r)
+            rx, ry, rw, rh = r
+            regPercent = ((rw * rh) / (width * height)) * 100.0
+            # Toss rectangles >= maxChange percent of total frame
+            if regPercent < maxChange :
+                movementLocationsFiltered.append(r)
     return grayImg, motionPercent, movementLocationsFiltered

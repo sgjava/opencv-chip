@@ -116,6 +116,25 @@ def saveFrame(frame, saveDir, saveFileName):
         writer = open("%s/%s" % (saveDir, saveFileName), "wb")
         writer.write(frame)
         writer.close()
+        
+def initVideo(url, fps):
+    # See if we should use MJPEG client
+    if urlparse.urlparse(url).scheme == "http":
+        # Open MJPEG stream
+        socketFile, streamSock, boundary = mjpegclient.open(url, 10)
+        # Determine image dimensions
+        jpeg, image = mjpegclient.getFrame(socketFile, boundary)
+        frameHeight, frameWidth, unknown = image.shape
+        videoCapture = None
+        retFps = fps
+        mjpeg = True
+    else:
+        videoCapture = cv2.VideoCapture(url)
+        frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        retFps = int(videoCapture.get(cv2.CAP_PROP_FPS))
+        mjpeg = False
+    return mjpeg, retFps, frameWidth, frameHeight, videoCapture
             
 def main():
     """Main function"""
@@ -172,28 +191,14 @@ def main():
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    config()    
-    # See if we should use MJPEG client
-    if urlparse.urlparse(config.url).scheme == "http":
-        mjpeg = True
-    else:
-        mjpeg = False
-    # Init video capture
-    if mjpeg:
-        # Open MJPEG stream
-        socketFile, streamSock, boundary = mjpegclient.open(config.url, 10)
-        # Determine image dimensions
-        jpeg, image = mjpegclient.getFrame(socketFile, boundary)
-        frameHeight, frameWidth, unknown = image.shape
-    else:
-        videoCapture = cv2.VideoCapture(config.url)
-        frameHeight = int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        frameWidth = int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH))
-        fps = int(videoCapture.get(cv2.CAP_PROP_FPS))
+    # Load values from ini file
+    config()
+    # Initialize video    
+    mjpeg, fps, frameWidth, frameHeight, videoCapture = initVideo(config.url, config.fps)
     logger.info("OpenCV %s" % cv2.__version__)
-    logger.info("URL: %s, fps: %d" % (config.url, config.fps))
+    logger.info("URL: %s, fps: %d" % (config.url, fps))
     logger.info("Resolution: %dx%d" % (frameWidth, frameHeight))
-    # Make sure we have positive values
+    # Make sure we have values > 0
     if frameWidth > 0 and frameHeight > 0:
         # Motion detection generally works best with 320 or wider images
         widthDivisor = int(frameWidth / config.resizeWidthDiv)
@@ -217,8 +222,9 @@ def main():
         frameBufSize = fps
         recording = False
         frameOk = True
-        frames = 0
-        frameCount = 0
+        elapsedFrames = 0
+        frameTotal = 0
+        frameNum = 0
         # Init cascade classifier
         if config.detectType.lower() == "h":
             cascadedet.init(os.path.expanduser(config.cascadeFile))
@@ -234,24 +240,24 @@ def main():
             else:
                 frameOk, image = videoCapture.read()
             if frameOk:
-                frameCount += 1
+                frameNum += 1
+                frameTotal += 1
                 # Calc FPS    
-                frames += 1
+                elapsedFrames += 1
                 curTime = time.time()
                 elapse = curTime - start
                 # Log FPS
                 if elapse >= config.fpsInterval:
                     start = curTime
-                    fps = frames / elapse
-                    logger.debug("%3.1f FPS" % fps)
-                    frames = 0                
+                    logger.debug("%3.1f FPS" % elapsedFrames / elapse)
+                    elapsedFrames = 0                
                 # Buffer image
                 if len(frameBuf) == frameBufSize:
                     # Toss first image in list (oldest)
                     frameBuf.pop(0)
                 # Add new image to end of list
                 frameBuf.append((image, int(time.mktime(now.timetuple()) * 1000000 + now.microsecond)))            
-                # Skip frames until skip count <= 0
+                # Skip elapsedFrames until skip count <= 0
                 if skipCount <= 0:
                     skipCount = frameToCheck
                     # Resize image if not the same size as the original
@@ -273,7 +279,7 @@ def main():
                             if not os.path.exists(fileDir):
                                 os.makedirs(fileDir)
                             fileName = "%s.%s" % (now.strftime("%H-%M-%S"), config.recordFileExt)
-                            videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(config.fourcc[0], config.fourcc[1], config.fourcc[2], config.fourcc[3]), config.fps, (frameWidth, frameHeight), True)
+                            videoWriter = cv2.VideoWriter("%s/%s" % (fileDir, fileName), cv2.VideoWriter_fourcc(config.fourcc[0], config.fourcc[1], config.fourcc[2], config.fourcc[3]), fps, (frameWidth, frameHeight), True)
                             logger.info("Start recording (%4.2f) %s/%s @ %3.1f FPS" % (motionPercent, fileDir, fileName, fps))
                             peopleFound = False
                             cascadeFound = False
@@ -289,10 +295,10 @@ def main():
                                 if config.mark:
                                     # Draw rectangle around found objects
                                     markRectWeight(image, locationsList, foundLocationsList, foundWeightsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
-                                # Save off detected frames
+                                # Save off detected elapsedFrames
                                 if config.saveFrames:
-                                    pedDir = "%s/pedestrian" % fileDir
-                                    pedName = "%s-%d.jpg" % (os.path.splitext(fileName)[0], frameCount)
+                                    pedDir = "%s/pedestrian-%s" % (fileDir, os.path.splitext(fileName)[0])
+                                    pedName = "%d.jpg" % frameNum
                                     # Save raw JPEG without encoding
                                     if mjpeg:
                                         saveFrame(jpeg, pedDir, pedName)
@@ -307,10 +313,10 @@ def main():
                                 if config.mark:
                                     # Draw rectangle around found objects
                                     markRoi(image, locationsList, foundLocationsList, widthMultiplier, heightMultiplier, (255, 0, 0), 2)
-                                    # Save off detected frames
+                                    # Save off detected elapsedFrames
                                     if config.saveFrames:
-                                        cascadeDir = "%s/cascade" % fileDir
-                                        cascadeName = "%s-%d.jpg" % (os.path.splitext(fileName)[0], frameCount)
+                                        cascadeDir = "%s/cascade-%s" % (fileDir, os.path.splitext(fileName)[0])
+                                        cascadeName = "%d.jpg" % frameNum
                                         # Save raw JPEG without encoding
                                         if mjpeg:
                                             saveFrame(jpeg, cascadeDir, cascadeName)
@@ -338,7 +344,7 @@ def main():
                         os.rename("%s/%s" % (fileDir, fileName), "%s/motion-%s" % (fileDir, fileName))
                     recording = False
         elapsed = time.time() - appstart
-        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frameCount / elapsed, elapsed))        
+        logger.info("Calculated %4.1f FPS, elapsed time: %4.2f seconds" % (frameTotal / elapsed, elapsed))        
         # Clean up
         if mjpeg:
             socketFile.close()
