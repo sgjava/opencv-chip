@@ -28,20 +28,6 @@ curdir=$(cd `dirname $0` && pwd)
 # Source config file
 . "$curdir"/config.sh
 
-# Point to our libjpeg-turbo
-export CPATH="/opt/libjpeg-turbo/include"
-# ARM 32
-if [ "$arch" = "armv7l" ]; then
-	export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
-# ARM 64
-elif [ "$arch" = "aarch64" ]; then
-	export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
-# Not supported
-else
-	echo "\nNo supported architectures detected!"
-	exit 1
-fi
-
 # stdout and stderr for commands logged
 logfile="$curdir/install-mjpg-streamer.log"
 rm -f $logfile
@@ -52,6 +38,29 @@ log(){
 	echo "$timestamp $1"
 	echo "$timestamp $1" >> $logfile 2>&1
 }
+
+# Point to our libjpeg-turbo
+export CPATH="/opt/libjpeg-turbo/include"
+# ARM 32
+if [ "$arch" = "armv7l" ]; then
+	export LIBRARY_PATH="/opt/libjpeg-turbo/lib32"
+# ARM 64
+elif [ "$arch" = "aarch64" ]; then
+	export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
+	# See if LD_LIBRARY_PATH exists and if not add it to /etc/environment
+	if grep -q "LD_LIBRARY_PATH" /etc/environment; then
+		log "LD_LIBRARY_PATH already exists"
+	else
+		# Add LD_LIBRARY_PATH to /etc/environment
+		log "Adding LD_LIBRARY_PATH to /etc/environment"
+		echo "LD_LIBRARY_PATH=/opt/libjpeg-turbo/lib64" >> /etc/environment
+		. /etc/environment
+	fi
+# Not supported
+else
+	echo "\nNo supported architectures detected!"
+	exit 1
+fi
 
 # Remove temp dir
 log "Removing temp dir $tmpdir"
