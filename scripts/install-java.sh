@@ -20,6 +20,9 @@ dateformat="+%a %b %-eth %Y %I:%M:%S %p %Z"
 starttime=$(date "$dateformat")
 starttimesec=$(date +%s)
 
+# Get architecture
+arch=$(uname -m)
+
 # Get current directory
 curdir=$(cd `dirname $0` && pwd)
 
@@ -31,13 +34,19 @@ javahome=/usr/lib/jvm/jdk1.8.0
 
 # JDK archive stuff
 
-# ARM 32
 jdkurl="http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/"
 jdkver="jdk1.8.0_121"
-jdkarchive="jdk-8u121-linux-arm32-vfp-hflt.tar.gz"
-
+# ARM 32
+if [ "$arch" = "armv7l" ]; then
+	jdkarchive="jdk-8u121-linux-arm32-vfp-hflt.tar.gz"
 # ARM 64
-#jdkarchive="jdk-8u121-linux-arm64-vfp-hflt.tar.gz"
+elif [ "$arch" = "aarch64" ]; then
+	jdkarchive="jdk-8u121-linux-arm64-vfp-hflt.tar.gz"
+# Not supported
+else
+	echo "\nNo supported architectures detected!"
+	exit 1
+fi
 
 # Apache Ant
 anturl="https://www.apache.org/dist/ant/binaries/"
