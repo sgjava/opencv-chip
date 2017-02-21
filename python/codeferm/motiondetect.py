@@ -116,57 +116,6 @@ def saveFrame(frame, saveDir, saveFileName):
         writer = open("%s/%s" % (saveDir, saveFileName), "wb")
         writer.write(frame)
         writer.close()
-
-def config():
-    """Config from INI file"""
-    if len(sys.argv) < 2:
-        configFileName = "../config/motiondetect.ini"
-    else:
-        configFileName = sys.argv[1]
-    parser = ConfigParser.SafeConfigParser()
-    # Read configuration file
-    parser.read(configFileName)
-    # Configure logger
-    logger = logging.getLogger("motiondetect")
-    logger.setLevel(parser.get("logging", "level"))
-    formatter = logging.Formatter(parser.get("logging", "formatter"))
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    # Set camera related data attributes
-    cameraName = parser.get("camera", "name")    
-    url = parser.get("camera", "url")
-    resizeWidthDiv = parser.getint("camera", "resizeWidthDiv")
-    fpsInterval = parser.getfloat("camera", "fpsInterval")
-    fps = parser.getint("camera", "fps")
-    fourcc = parser.get("camera", "fourcc")
-    recordFileExt = parser.get("camera", "recordFileExt")
-    recordDir = parser.get("camera", "recordDir")
-    detectType = parser.get("camera", "detectType")
-    mark = parser.getboolean("camera", "mark")
-    saveFrames = parser.getboolean("camera", "saveFrames")
-    # Set motion related data attributes
-    kSize = eval(parser.get("motion", "kSize"), {}, {})
-    alpha = parser.getfloat("motion", "alpha")
-    blackThreshold = parser.getint("motion", "blackThreshold")
-    maxChange = parser.getfloat("motion", "maxChange")
-    skipFrames = parser.getint("motion", "skipFrames")
-    startThreshold = parser.getfloat("motion", "startThreshold")
-    stopThreshold = parser.getfloat("motion", "stopThreshold")
-    # Set contour related data attributes
-    dilateAmount = parser.getint("motion", "dilateAmount")
-    erodeAmount = parser.getint("motion", "erodeAmount")
-    # Set pedestrian detect related data attributes
-    hitThreshold = parser.getfloat("pedestrian", "hitThreshold")
-    winStride = eval(parser.get("pedestrian", "winStride"), {}, {})
-    padding = eval(parser.get("pedestrian", "padding"), {}, {})
-    scale0 = parser.getfloat("pedestrian", "scale0")
-    # Set cascade related data attributes
-    cascadeFile = parser.get("cascade", "cascadeFile")
-    scaleFactor = parser.getfloat("cascade", "scaleFactor")
-    minNeighbors = parser.getint("cascade", "minNeighbors")
-    minWidth = parser.getint("cascade", "minWidth")
-    minHeight = parser.getint("cascade", "minHeight")
             
 def main():
     """Main function"""
