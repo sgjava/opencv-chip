@@ -90,12 +90,6 @@ log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 log "Install..."
 make install >> $logfile 2>&1
-# ARM 64
-if [ "$arch" = "aarch64" ]; then
-	export LIBRARY_PATH="/opt/libjpeg-turbo/lib64"
-	echo "/opt/libjpeg-turbo/lib64" > /etc/ld.so.conf.d/libjpeg-turbo.conf
-	ldconfig
-fi
 log "Copy www dir"
 cp -R www /usr/local/www >> $logfile 2>&1
 
