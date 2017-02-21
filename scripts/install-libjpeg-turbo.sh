@@ -28,6 +28,14 @@ tmpdir="/media/usb0/temp"
 # Build home
 buildhome="/media/usb0"
 
+# Optimize for CHIP
+export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
+export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
+
+# Optimize for Pine 64
+#export CFLAGS="-march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon -mfloat-abi=hard"
+#export CXXFLAGS="-march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon -mfloat-abi=hard"
+
 # stdout and stderr for commands logged
 logfile="$curdir/install-libjpeg-turbo.log"
 rm -f $logfile
@@ -69,9 +77,6 @@ mkdir build >> $logfile 2>&1
 log "autoreconf"
 autoreconf -fiv >> $logfile 2>&1
 cd build >> $logfile 2>&1
-# Optimize for CHIP
-export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
-export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
 log "Configure..."
 sh ../configure >> $logfile 2>&1
 log "Make..."

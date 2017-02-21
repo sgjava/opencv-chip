@@ -30,9 +30,14 @@ tmpdir="/media/usb0/temp"
 javahome=/usr/lib/jvm/jdk1.8.0
 
 # JDK archive stuff
+
+# ARM 32
 jdkurl="http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/"
 jdkver="jdk1.8.0_121"
 jdkarchive="jdk-8u121-linux-arm32-vfp-hflt.tar.gz"
+
+# ARM 64
+#jdkarchive="jdk-8u121-linux-arm64-vfp-hflt.tar.gz"
 
 # Apache Ant
 anturl="https://www.apache.org/dist/ant/binaries/"
