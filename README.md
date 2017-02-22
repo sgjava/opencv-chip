@@ -136,6 +136,7 @@ Make sure you plugged in your USB drive to the USB adapter and plug that into CH
 ###Install The Whole Enchilada
 This is probably the easiest way to install everything, but you can follow the individual steps below to build or rebuild individual components. There are values you can change in the individual scripts, so read them over. Skip the rest of the individual scripts below if you run this.
 * `cd /media/usb0/opencv-chip/scripts`
+* Edit `config.sh` and make changes as needed
 * `sudo nohup ./install.sh &`
     * Use `top` to monitor until build completes
     * Runtime ~5 hours
