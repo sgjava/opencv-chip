@@ -140,8 +140,8 @@ else
 	echo "\nNo supported architectures detected!"
 	exit 1
 fi
-# Make any required changes here like if you want to build for GUI, examples, etc.
-cmake -DOPENCV_EXTRA_MODULES_PATH=$contribhome/modules -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DEXTRA_C_FLAGS=$extra_c_flag -DEXTRA_CXX_FLAGS=$extra_c_flag -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_QT=OFF -DWITH_GTK=OFF -DWITH_TBB=ON -DBUILD_TBB=OFF -DENABLE_NEON=ON -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/opt/libjpeg-turbo/include -DJPEG_LIBRARY=$jpeglib .. >> $logfile 2>&1
+# Make any changes in config.sh cmakeopts for extra options
+cmake -DOPENCV_EXTRA_MODULES_PATH=$contribhome/modules -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DEXTRA_C_FLAGS=$extra_c_flag -DEXTRA_CXX_FLAGS=$extra_c_flag -DWITH_JPEG=ON -DBUILD_JPEG=OFF -DJPEG_INCLUDE_DIR=/opt/libjpeg-turbo/include -DJPEG_LIBRARY=$jpeglib $cmakeopts .. >> $logfile 2>&1
 log "Make..."
 make -j$(getconf _NPROCESSORS_ONLN) >> $logfile 2>&1
 make install >> $logfile 2>&1
