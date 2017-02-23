@@ -25,9 +25,9 @@ curdir=$(cd `dirname $0` && pwd)
 # Source config file
 . "$curdir"/config.sh
 
-# Optimize for CHIP - need to test without
-#export CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
-#export CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fPIC -O3"
+# Fix "final link failed: Bad value" in OpenCV build
+export CFLAGS="-fPIC -O3"
+export CXXFLAGS="-fPIC -O3"
 
 # stdout and stderr for commands logged
 logfile="$curdir/install-libjpeg-turbo.log"
