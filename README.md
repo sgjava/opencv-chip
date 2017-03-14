@@ -39,6 +39,7 @@ Pedestrian detection (MJPEG camera and XVID encoding)
 * [FreeBSD License](#freebsd-license)
 
 ###Low Cost CV Camera
+
 I have made my own cameras for several years now, but the CHIPcam will be the least expensive so far. I ended up buying 10 CHIPS, so the shipping costs were spread over 5 units on each shipment. I would have just bought 10 if I knew they worked so well. The prices I give here are in US dollars, so you can expect to pay more or less depending on where you live.
 * CHIP $9 + $1.85 shipping ($9.25 shipping for 5 units), say $12
 * [10x 1M/3.3ft Black 22AWG USB A Male Plug 2 wire Power Cable Cord Connectors DIY](http://www.ebay.com/itm/321827926426) $7.59 / 10 = $0.76 (this will take a month or so from China)
@@ -52,6 +53,7 @@ Total cost: $47.84
 You can pay more or less depending on the camera and flash drive. This is my first less than $50 CV camera I've built. If you were just to build a video streamer you can forego the flash drive saving another $11.
 
 ###Requirements
+
 * CHIP
 * USB 5V/2A PSU with micro USB cable or USB cable with Dupont pins for CHG-IN.
 * USB flash drive formatted as ext4
@@ -62,9 +64,11 @@ You can pay more or less depending on the camera and flash drive. This is my fir
     * Some USB cameras like the Logitech C270 can use up to 500 mA. If your CHIP shuts down try a different PSU or cable. My shutdown issues were always caused by a shady PSU. I found a good PSU in my supply and use home made CHG-IN cables. It had no problems running 100% CPU with camera and flash drive plugged in directly recording video.
 
 ###WARNING
+
 I used no-limit setting on CHIP to prevent power issues with OpenCV failing to compile at maximum CPU speed or with a USB drive attached. This setting could damage a laptop or PC USB port, so make sure you use a dedicated 5V/2A PSU to power off the OTG port.
 
 ###Flash CHIP
+
 I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hdmi-and-more/4319) since OpenCV compile and runtime can use quite a bit of memory. Plus all of my CV projects only require a headless server to run. After you flash your CHIP unplug everything and insert a ext4 formatted USB drive and the PSU. Boot up CHIP and ssh in (I had to ping the IP first in order for ssh to work).
 
 * Set a static IP address
@@ -76,6 +80,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
          * `sudo shutdown now -h`
 
 ###Configure OS
+
 * Assign hostname and IP
     * `sudo nano /etc/hostname`
     * `sudo nano /etc/hosts`
@@ -98,6 +103,7 @@ I used the [Headless 4.4](https://bbs.nextthing.co/t/chip-os-4-4-released-vga-hd
     * `sudo chown -R chip:chip /media/usb0`
 
 ###mjpg-streamer performance
+
 The bottom line is you need an MJPEG USB camera because CPU usage is too high using YUYV. CHIP only has one core, so you want to use a little CPU as possible acquiring the frames. If you plan on streaming only then this might not be a big deal, but CV is CPU intensive. I used a Logitech C270 for the following tests:
 
 YUYV 640x480 5 FPS
@@ -115,10 +121,12 @@ MJPG 1280x720 5 FPS
 * CPU < 1%
 * Bitrate 1689 kb/s
 
-### Install OpenCV
+###Install OpenCV
+
 Follow [Install OpenCV](https://github.com/sgjava/install-opencv) instructions. Make sure you change config.sh before running any of the scripts.
 
 ###Performance testing
+
 I have included some Python code that will enable you to test various performance aspects of your camera. The goal is to see which methods are the most efficient and accurate. As a baseline we acquire a frame and convert it to a Numpy array. This is the format OpevCV utilizes for optimal performance. A Logitech C270 was used for testing.
 
 OpenCV's VideoCapture at 640x480. VideoCapture returns less than 50% of the actual frame rate.
@@ -189,6 +197,7 @@ To run example yourself use (this is 5 FPS example):
 OpenCV uses FOURCC to set the codec for VideoWriter. Some are more CPU intensive than others, so plan to use a codec that is realistic on the platform you are running on.
 
 ###FreeBSD License
+
 Copyright (c) Steven P. Goldsmith
 
 All rights reserved.
