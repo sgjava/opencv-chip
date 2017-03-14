@@ -38,8 +38,7 @@ Pedestrian detection (MJPEG camera and XVID encoding)
 * [Performance testing](#performance-testing)
 * [FreeBSD License](#freebsd-license)
 
-###Low Cost CV Camera
-
+### Low Cost CV Camera
 I have made my own cameras for several years now, but the CHIPcam will be the least expensive so far. I ended up buying 10 CHIPS, so the shipping costs were spread over 5 units on each shipment. I would have just bought 10 if I knew they worked so well. The prices I give here are in US dollars, so you can expect to pay more or less depending on where you live.
 * CHIP $9 + $1.85 shipping ($9.25 shipping for 5 units), say $12
 * [10x 1M/3.3ft Black 22AWG USB A Male Plug 2 wire Power Cable Cord Connectors DIY](http://www.ebay.com/itm/321827926426) $7.59 / 10 = $0.76 (this will take a month or so from China)
