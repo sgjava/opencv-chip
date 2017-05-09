@@ -55,7 +55,7 @@ Total cost: $36.85
 * Internet connection
 * USB camera (this is only if you wish to use a camera)
     * You will need a powered USB hub if you are powering off the OTG port
-    * For CHG-IN you need an OTG flash drive or an adapter for OTG to USB
+    * For CHG-IN you need an OTG flash drive or an adapter for OTG to USB if you want more storagr than what the CHIP's NAND provides
     * Some USB cameras like the Logitech C270 can use up to 500 mA. If your CHIP shuts down try a different PSU or cable. My shutdown issues were always caused by a shady PSU. I found a good PSU in my supply and use home made CHG-IN cables. It had no problems running 100% CPU with camera and flash drive plugged in directly recording video.
 
 ### WARNING
