@@ -24,7 +24,7 @@ Pedestrian detection (MJPEG camera and XVID encoding)
 
 | Resolution | Record FPS | Sample FPS |
 |------------|:----------:|-----------:|
-|    800x448 |          5 |        2.5 |
+|    800x600 |          5 |        2.5 |
 |    640x480 |         10 |        3.1 |
 |    320x240 |         15 |        3.1 |
 
